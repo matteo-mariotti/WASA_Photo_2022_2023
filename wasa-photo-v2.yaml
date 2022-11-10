@@ -1,0 +1,316 @@
+openapi: 3.0.0
+info:
+  title: WasaPhoto
+  version: 0.0.1
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  
+  schemas:
+    identifier:
+      type: string
+      description: identifier
+      example: "abcdef012345"
+
+    comment:
+      type: string
+      example: "This is a comment"
+      pattern: "ˆ.*?$"
+      minLength: 1
+      maxLength: 256
+
+    photo:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: photo identifier     
+        image:
+            type: string
+            format: binary
+        likes:
+            type: array
+            items:
+              $ref: "#/components/schemas/identifier"
+        comments:
+            type: array
+            items:
+              type: object
+              properties:
+                user:
+                  $ref: "#/components/schemas/identifier"
+                comment:
+                  $ref: "#/components/schemas/comment"
+              
+    profile:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "Maria"
+          pattern: "ˆ.*?$"
+          minLength: 3
+          maxLength: 16
+        photos:
+          description: List of photos uploaded by the user
+          type: array
+          items:
+            $ref: "#/components/schemas/photo"
+        followers:
+          type: array
+          items:
+            $ref: "#/components/schemas/identifier"
+        following:
+          type: array
+          items:
+            $ref: "#/components/schemas/identifier"
+        blocked:
+          type: array
+          items:
+            $ref: "#/components/schemas/identifier"
+
+security:
+  - BearerAuth: []
+
+paths:
+  /session:
+
+    post:
+      security: [] #No security is required to login into the application
+      tags: ["login"]
+      summary: Logs in the user
+      description: |-
+        If the user does not exist, it will be created,
+        and an identifier is returned.
+        If the user exists, the user identifier is returned.
+      operationId: doLogin
+      requestBody:
+        description: User details
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Maria
+                  pattern: "ˆ.*?$"
+                  minLength: 3
+                  maxLength: 16
+        required: true
+      responses:
+        "201":
+          description: User log-in action successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  identifier:
+                    # change here if you decide to use an integer or any other type of identifier
+                    type: string
+                    example: "abcdef012345"
+  /home:
+    get:
+      summary: Returns the photos of the users that the user is following (the stream)
+      operationId: getMtStream
+      responses:
+        "200":
+          description: Photos of the users that the user is following
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/photo"
+        #Add the responses for the other HTTP methods
+  /users:
+    get:
+      summary: Get the list all users
+      description: |
+        Get all users
+      operationId: getUsers
+      responses:
+        "200":
+          description: Users list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/identifier"
+        #Add the responses for the other HTTP methods
+  /users/{userID}:
+    parameters:
+      - name: userID
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+    get:
+      summary: Get the user profile
+      description: |
+        Get the user's profile using the given identifier
+      operationId: getUserProfile
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/profile"
+        #Add the responses for the other HTTP methods
+  /profile:
+    get:
+      summary: Get the user profile
+      description: |
+        Get the user's profile using the given identifier
+      operationId: getMyProfile
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/profile"
+        #Add the responses for the other HTTP methods
+    post:
+      summary: Update the username
+      description: |
+        Update the username profile (if available)
+      operationId: setMyUserName
+      requestBody:
+        description: newUserName
+        content:
+          application/json:
+            schema:
+              type: string
+              example: Maria
+              pattern: "ˆ.*?$"
+              minLength: 3
+              maxLength: 16
+        required: true
+      responses:
+        "200":
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/profile"
+        #Add the responses for the other HTTP methods (error if the username is not available)
+  /bans/{blockedID}:
+    parameters:
+      - name: blockedID
+        in: path
+        description: User to be blocked/unblocked
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+    put:
+      summary: Block a user from the logged in user
+      description: |
+        Block a user 
+      operationId: banUser
+      responses:
+        "200":
+          description: User blocked successfully
+        #Add the responses for the other HTTP methods
+    delete:
+      summary: Unblock a user from the logged in user
+      description: |
+        Unblock a user 
+      operationId: unbanUser
+      responses:
+        "200":
+          description: User unblocked successfully
+        #Add the responses for the other HTTP methods
+  /followers/{followerID}:
+    parameters:
+      - name: followerID
+        in: path
+        description: User to be followed/unfollowed
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+    put:
+      summary: Follow a user
+      description: |
+        Follow a user 
+      operationId: followUser
+      responses:
+        "200":
+          description: User followed successfully
+        #Add the responses for the other HTTP methods
+    delete:
+      summary: Unfollow a user
+      description: |
+        Unfollow a user 
+      operationId: unfollowUser
+      responses:
+        "200":
+          description: User unfollowed successfully
+        #Add the responses for the other HTTP methods
+
+  #BHO NON LO SO SE VA BENE
+
+  /like/{photoID}:
+    parameters:
+      - name: photoID
+        in: path
+        description: Photo to be liked/unliked
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+    put:
+      summary: Like a photo
+      description: |
+        Like a photo 
+      operationId: likePhoto
+      responses:
+        "200":
+          description: Photo liked successfully
+        #Add the responses for the other HTTP methods
+    delete:
+      summary: Unlike a photo
+      description: |
+        Unlike a photo 
+      operationId: unlikePhoto
+      responses:
+        "200":
+          description: Photo unliked successfully
+        #Add the responses for the other HTTP methods
+    
+  /comment/{photoID}:
+    parameters:
+      - name: photoID
+        in: path
+        description: Photo to be commented
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+    post:
+      summary: Comment a photo
+      description: |
+        Comment a photo 
+      operationId: commentPhoto
+      requestBody:
+        description: comment
+        content:
+          application/json:
+            schema:
+              type: string
+              example: Nice photo!
+              pattern: "ˆ.*?$"
+              minLength: 3
+              maxLength: 256
+        required: true
+      responses:
+        "200":
+          description: Photo commented successfully
+        #Add the responses for the other HTTP methods
+  
+  #MANCA DA AGGIUNGERE L'UPLOAD E L'ELIMINAZIONE DELLE FOTO DELL'UTENTE LOGGATO
