@@ -1,7 +1,14 @@
 openapi: 3.0.0
 info:
   title: WasaPhoto
-  version: 0.0.1
+  version: 1.0.0
+  description: |
+    This is a simple API for a photo sharing service.
+    You can upload photos, like photos, and comment on photos.
+    You can also see who has liked or commented on a photo.
+    This API is meant to be used with the WasaPhoto web application.
+    You can find the source code for the web application 
+    at https://github.com/matteo-mariotti/WASA_Photo_2022_2023
 
 components:
   securitySchemes:
@@ -71,13 +78,17 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/identifier"
+  responses:
+    NotFound:
+      description: The specified resource was not found
+    Unauthorized:
+      description: Unauthorized
 
 security:
   - BearerAuth: []
 
 paths:
   /session:
-
     post:
       security: [] #No security is required to login into the application
       tags: ["login"]
@@ -116,7 +127,8 @@ paths:
   /home:
     get:
       summary: Returns the photos of the users that the user is following (the stream)
-      operationId: getMtStream
+      tags: ["home"]
+      operationId: getMyStream
       responses:
         "200":
           description: Photos of the users that the user is following
@@ -126,10 +138,14 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/photo"
-        #Add the responses for the other HTTP methods
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /users:
     get:
       summary: Get the list all users
+      tags: ["users"]
       description: |
         Get all users
       operationId: getUsers
@@ -142,8 +158,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/identifier"
-        #Add the responses for the other HTTP methods
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /users/{userID}:
+    
     parameters:
       - name: userID
         in: path
@@ -152,6 +172,7 @@ paths:
         schema:
           $ref: "#/components/schemas/identifier"
     get:
+      tags: ["users"]
       summary: Get the user profile
       description: |
         Get the user's profile using the given identifier
@@ -163,9 +184,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/profile"
-        #Add the responses for the other HTTP methods
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /profile:
     get:
+      tags: ["profile"]
       summary: Get the user profile
       description: |
         Get the user's profile using the given identifier
@@ -177,9 +202,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/profile"
-        #Add the responses for the other HTTP methods
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     post:
       summary: Update the username
+      tags: ["profile"]
       description: |
         Update the username profile (if available)
       operationId: setMyUserName
@@ -201,7 +230,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/profile"
-        #Add the responses for the other HTTP methods (error if the username is not available)
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: Username already taken
+        "404":
+          $ref: "#/components/responses/NotFound"
   /bans/{blockedID}:
     parameters:
       - name: blockedID
@@ -211,6 +245,7 @@ paths:
         schema:
           $ref: "#/components/schemas/identifier"
     put:
+      tags: ["ban"]
       summary: Block a user from the logged in user
       description: |
         Block a user 
@@ -218,8 +253,9 @@ paths:
       responses:
         "200":
           description: User blocked successfully
-        #Add the responses for the other HTTP methods
+        
     delete:
+      tags: ["ban"]
       summary: Unblock a user from the logged in user
       description: |
         Unblock a user 
@@ -227,7 +263,10 @@ paths:
       responses:
         "200":
           description: User unblocked successfully
-        #Add the responses for the other HTTP methods
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /followers/{followerID}:
     parameters:
       - name: followerID
@@ -237,6 +276,7 @@ paths:
         schema:
           $ref: "#/components/schemas/identifier"
     put:
+      tags: ["follow"]
       summary: Follow a user
       description: |
         Follow a user 
@@ -244,18 +284,23 @@ paths:
       responses:
         "200":
           description: User followed successfully
-        #Add the responses for the other HTTP methods
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     delete:
       summary: Unfollow a user
+      tags: ["follow"]
       description: |
         Unfollow a user 
       operationId: unfollowUser
       responses:
         "200":
           description: User unfollowed successfully
-        #Add the responses for the other HTTP methods
-
-  #BHO NON LO SO SE VA BENE
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
 
   /like/{photoID}:
     parameters:
@@ -266,6 +311,7 @@ paths:
         schema:
           $ref: "#/components/schemas/identifier"
     put:
+      tags: ["photo"]
       summary: Like a photo
       description: |
         Like a photo 
@@ -273,8 +319,12 @@ paths:
       responses:
         "200":
           description: Photo liked successfully
-        #Add the responses for the other HTTP methods
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     delete:
+      tags: ["photo"]
       summary: Unlike a photo
       description: |
         Unlike a photo 
@@ -282,7 +332,10 @@ paths:
       responses:
         "200":
           description: Photo unliked successfully
-        #Add the responses for the other HTTP methods
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     
   /comment/{photoID}:
     parameters:
@@ -293,6 +346,7 @@ paths:
         schema:
           $ref: "#/components/schemas/identifier"
     post:
+      tags: ["photo"]
       summary: Comment a photo
       description: |
         Comment a photo 
@@ -311,6 +365,43 @@ paths:
       responses:
         "200":
           description: Photo commented successfully
-        #Add the responses for the other HTTP methods
-  
-  #MANCA DA AGGIUNGERE L'UPLOAD E L'ELIMINAZIONE DELLE FOTO DELL'UTENTE LOGGATO
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /photos:
+    post:
+      tags: ["photo"]
+      summary: Upload a photo
+      description: |
+        Upload a photo 
+      operationId: uploadPhoto
+      requestBody:
+        description: photo
+        content:
+          image/png:
+            schema:
+              type: string
+              format: binary
+        required: true
+      responses:
+        "200":
+          description: Photo uploaded successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /photos/{photoID}:
+    delete:
+      tags: ["photo"]
+      summary: Delete a photo
+      description: |
+        Delete the photo with the given identifier 
+      operationId: deletePhoto
+      responses:
+        "200":
+          description: Photo deleted successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
