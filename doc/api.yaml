@@ -19,13 +19,17 @@ components:
   schemas:
     identifier:
       type: string
+      pattern: "^[a-z0-9]*$"
       description: identifier
       example: "abcdef012345"
+      maxLength: 12
+      minLength: 12
 
     comment:
       type: string
+      pattern: "^[a-zA-Z0-9 .,:]*$"
+      description: comment
       example: "This is a comment"
-      pattern: "ˆ.*?$"
       minLength: 1
       maxLength: 256
 
@@ -158,6 +162,8 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/identifier"
+                example:
+                  ["abcdef012345","abcdef012346","abcdef012347"]
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
@@ -392,6 +398,14 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
   /photos/{photoID}:
+    parameters:
+      - name: photoID
+        in: path
+        description: Photo to be deleted
+        required: true
+        schema:
+          type: integer
+          description: photo identifier     
     delete:
       tags: ["photo"]
       summary: Delete a photo
