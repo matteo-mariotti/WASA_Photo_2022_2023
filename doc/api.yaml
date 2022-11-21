@@ -117,7 +117,7 @@ paths:
                   maxLength: 16
         required: true
       responses:
-        "201":
+        "200":
           description: User log-in action successful
           content:
             application/json:
@@ -230,7 +230,7 @@ paths:
               maxLength: 16
         required: true
       responses:
-        "200":
+        "201":
           description: User profile updated successfully
           content:
             application/json:
@@ -257,7 +257,7 @@ paths:
         Block a user 
       operationId: banUser
       responses:
-        "200":
+        "204":
           description: User blocked successfully
         
     delete:
@@ -267,7 +267,7 @@ paths:
         Unblock a user 
       operationId: unbanUser
       responses:
-        "200":
+        "204":
           description: User unblocked successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -288,7 +288,7 @@ paths:
         Follow a user 
       operationId: followUser
       responses:
-        "200":
+        "204":
           description: User followed successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -301,7 +301,7 @@ paths:
         Unfollow a user 
       operationId: unfollowUser
       responses:
-        "200":
+        "204":
           description: User unfollowed successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -323,7 +323,7 @@ paths:
         Like a photo 
       operationId: likePhoto
       responses:
-        "200":
+        "204":
           description: Photo liked successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -336,7 +336,7 @@ paths:
         Unlike a photo 
       operationId: unlikePhoto
       responses:
-        "200":
+        "204":
           description: Photo unliked successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -369,7 +369,7 @@ paths:
               maxLength: 256
         required: true
       responses:
-        "200":
+        "204":
           description: Photo commented successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -391,7 +391,7 @@ paths:
               format: binary
         required: true
       responses:
-        "200":
+        "204":
           description: Photo uploaded successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -413,7 +413,7 @@ paths:
         Delete the photo with the given identifier 
       operationId: deletePhoto
       responses:
-        "200":
+        "204":
           description: Photo deleted successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
