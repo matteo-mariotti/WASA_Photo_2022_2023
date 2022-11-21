@@ -34,6 +34,7 @@ components:
           description: comment identifier
           example: "abcdef012345"
           maxLength: 12
+          minLength: 12
         userID:
           $ref: "#/components/schemas/identifier"
         text:
@@ -62,17 +63,20 @@ components:
         id:
           type: integer
           description: photo identifier     
-        image/png:
-            type: string
-            format: binary
+        image\png:
+          description: photo
         likes:
+            description: array of likes
             type: array
             items:
               $ref: "#/components/schemas/like"
+            minItems: 0
         comments:
+            description: array of comments
             type: array
             items:
               $ref: "#/components/schemas/comment"
+            minItems: 0
     
     username:
       type: string
@@ -84,6 +88,7 @@ components:
 
        
     profile:
+      description: user profile
       type: object
       properties:
         username:
@@ -93,18 +98,23 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/photo"
+          minItems: 0
         followers:
           type: array
           items:
             $ref: "#/components/schemas/identifier"
+          minItems: 0
         following:
           type: array
           items:
             $ref: "#/components/schemas/identifier"
+          minItems: 0
         blocked:
           type: array
           items:
             $ref: "#/components/schemas/identifier"
+          minItems: 0
+          
   responses:
     NotFound:
       description: The specified resource was not found
@@ -131,11 +141,13 @@ paths:
           application/json:
             schema:
               type: object
+              description: User details
               properties:
                 name:
+                  description: User name
                   type: string
                   example: Maria
-                  pattern: "ˆ.*?$"
+                  pattern: "^[a-zA-Z0-9]*$"
                   minLength: 3
                   maxLength: 16
         required: true
@@ -153,7 +165,8 @@ paths:
                     example: "abcdef012345"
   /home:
     get:
-      summary: Returns the photos of the users that the user is following (the stream)
+      description: Returns the photos of the users that the user is following (the stream)
+      summary: Returns the stream
       tags: ["home"]
       operationId: getMyStream
       responses:
@@ -162,9 +175,11 @@ paths:
           content:
             application/json:
               schema:
+                description: Photos of the users that the user is following
                 type: array
                 items:
                   $ref: "#/components/schemas/photo"
+                minItems: 0
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
@@ -182,11 +197,13 @@ paths:
           content:
             application/json:
               schema:
+                description: Users list
                 type: array
                 items:
                   $ref: "#/components/schemas/identifier"
                 example:
                   ["abcdef012345","abcdef012346","abcdef012347"]
+                minItems: 0
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
@@ -396,13 +413,14 @@ paths:
         content:
           application/json:
             schema:
+              description: Text of the comment
               type: string
-              example: Nice photo!
+              example: Nice photo
               pattern: "^[a-zA-Z0-9 ]*$"
               minLength: 3
               maxLength: 256
       responses:
-        "204":
+        "201":
           description: Photo commented successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -427,6 +445,7 @@ paths:
             description: comment identifier
             example: "abcdef012345"
             maxLength: 12
+            minLength: 12
     delete:
       tags: ["photo"]
       summary: Delete a comment
@@ -452,6 +471,7 @@ paths:
         content:
           image/png:
             schema:
+              description: Photo to be uploaded
               type: string
               format: binary
         required: true
