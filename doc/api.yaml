@@ -10,6 +10,22 @@ info:
     You can find the source code for the web application 
     at https://github.com/matteo-mariotti/WASA_Photo_2022_2023
 
+tags: 
+  - name: login
+    description: Login
+  - name: photo
+    description: Operations about photos
+  - name: users
+    description: Operations about users
+  - name: home
+    description: Operations about the stream
+  - name: profile
+    description: Operations about the logged user profile
+  - name: ban
+    description: Operations about banning/unbanning users
+  - name: follow
+    description: Operations about foloowing/unfollowing users
+
 components:
   securitySchemes:
     BearerAuth:
@@ -100,16 +116,19 @@ components:
             $ref: "#/components/schemas/photo"
           minItems: 0
         followers:
+          description: List of users following the user
           type: array
           items:
             $ref: "#/components/schemas/identifier"
           minItems: 0
         following:
+          description: List of users followed by the user
           type: array
           items:
             $ref: "#/components/schemas/identifier"
           minItems: 0
         blocked:
+          description: List of users blocked by the user
           type: array
           items:
             $ref: "#/components/schemas/identifier"
@@ -157,9 +176,11 @@ paths:
           content:
             application/json:
               schema:
+                description: User identifier
                 type: object
                 properties:
                   identifier:
+                    description: User identifier
                     # change here if you decide to use an integer or any other type of identifier
                     type: string
                     example: "abcdef012345"
@@ -401,7 +422,7 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
-    post:
+    put:
       tags: ["photo"]
       summary: Comment a photo
       description: |
@@ -420,7 +441,7 @@ paths:
               minLength: 3
               maxLength: 256
       responses:
-        "201":
+        "204":
           description: Photo commented successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -460,7 +481,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
   /photos:
-    post:
+    put:
       tags: ["photo"]
       summary: Upload a photo
       description: |
@@ -482,7 +503,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-  /photos/{photoID}/photo:
+  /photos/{photoID}:
     parameters:
       - name: photoID
         in: path
