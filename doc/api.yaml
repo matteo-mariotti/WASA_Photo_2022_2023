@@ -81,14 +81,19 @@ components:
         userID:
           $ref: "#/components/schemas/identifier"
 
+    photoID:
+      type: string
+      pattern: "^[a-z0-9]"
+      description: photo identifier
+      example: "abcdef012345"
+      maxLength: 12
+      minLength: 12
+
     photo:
       type: object
       properties:
         id:
-          type: integer
-          description: photo identifier     
-        image\png:
-          description: photo
+          $ref: "#/components/schemas/photoID"    
         likes:
             description: array of likes
             type: array
@@ -206,6 +211,31 @@ paths:
                 items:
                   $ref: "#/components/schemas/photo"
                 minItems: 0
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /photos/{photoID}:
+    get:
+      description: Returns the binary data of the photo with the specified identifier
+      summary: Returns the photo
+      tags: ["photo"]
+      operationId: getPhoto
+      parameters:
+        - name: photoID
+          in: path
+          description: Photo identifier
+          required: true
+          schema:
+            $ref: "#/components/schemas/photoID"
+      responses:
+        "200":
+          description: Photo with the specified identifier
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
