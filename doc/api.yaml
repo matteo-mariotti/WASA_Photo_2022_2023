@@ -35,11 +35,11 @@ components:
   schemas:
     identifier:
       type: string
-      pattern: "^[a-z0-9]*$"
+      pattern: "^[a-z0-9-*$"
       description: identifier
-      example: "abcdef012345"
-      maxLength: 12
-      minLength: 12
+      example: "6d459789-1a3b-4f0e-a64e-3ebd8e2e8e0b"
+      maxLength: 32
+      minLength: 32
 
     comment:
       type: object
@@ -180,10 +180,7 @@ paths:
                 type: object
                 properties:
                   identifier:
-                    description: User identifier
-                    # change here if you decide to use an integer or any other type of identifier
-                    type: string
-                    example: "abcdef012345"
+                    $ref: "#/components/schemas/identifier"
   /home:
     get:
       description: Returns the photos of the users that the user is following (the stream)
