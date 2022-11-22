@@ -39,8 +39,12 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
+	// Loggin functions
 	RegisterUser(uuid string, username string) error // Insert a new user in the database
 	LoginUser(username string) (string, error)       // Login a user
+
+	// Ban functions
+	BlockUser(userA string, userB string) error // Block a user
 
 	InsertFountain(fountain structs.Fountain) error // Insert a fountain in the database
 	GetWASA_Photo() ([]structs.Fountain, error)     // Get all the WASA_Photo from the database

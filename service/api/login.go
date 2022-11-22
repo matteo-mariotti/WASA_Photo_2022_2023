@@ -11,8 +11,9 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-// liveness is an HTTP handler that checks the API server status. If the server cannot serve requests (e.g., some
-// resources are not ready), this should reply with HTTP Status 500. Otherwise, with HTTP Status 200
+// login is the handler for POST /session which allows a user to login or signup into the web application.
+// It returns a session token that can be used to authenticate the user in subsequent requests
+// If there's and error during the deconding of the request body, it replies with a 400 Bad Request, if there is an error while adding the user to the database or while encoding the response, it replies with a 500 Internal Server Error.
 func (rt *_router) login(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	//Parsing the json input into a string
@@ -62,7 +63,6 @@ func (rt *_router) login(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("Error enconding")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 

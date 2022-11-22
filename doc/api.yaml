@@ -41,16 +41,28 @@ components:
       maxLength: 32
       minLength: 32
 
+    commentID:
+      type: string
+      pattern: "^[a-z0-9]"
+      description: comment identifier
+      example: "abcdef012345"
+      maxLength: 12
+      minLength: 12      
+
+    likeID:
+      type: string
+      pattern: "^[a-z0-9]"
+      description: comment identifier
+      example: "abcdef012345"
+      maxLength: 12
+      minLength: 12  
+
+
     comment:
       type: object
       properties:
         id:
-          type: string
-          pattern: "^[a-z0-9]"
-          description: comment identifier
-          example: "abcdef012345"
-          maxLength: 12
-          minLength: 12
+          $ref: "#/components/schemas/commentID"
         userID:
           $ref: "#/components/schemas/identifier"
         text:
@@ -65,22 +77,23 @@ components:
       type: object
       properties:
         id:
-          type: string
-          pattern: "^[a-z0-9]"
-          description: like identifier
-          example: "abcdef012345"
-          maxLength: 12
+          $ref: "#/components/schemas/likeID"
         userID:
           $ref: "#/components/schemas/identifier"
+
+    photoID:
+      type: string
+      pattern: "^[a-z0-9]"
+      description: photo identifier
+      example: "abcdef012345"
+      maxLength: 12
+      minLength: 12
 
     photo:
       type: object
       properties:
         id:
-          type: integer
-          description: photo identifier     
-        image\png:
-          description: photo
+          $ref: "#/components/schemas/photoID"    
         likes:
             description: array of likes
             type: array
@@ -202,6 +215,31 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+  /photos/{photoID}:
+    get:
+      description: Returns the binary data of the photo with the specified identifier
+      summary: Returns the photo
+      tags: ["photo"]
+      operationId: getPhoto
+      parameters:
+        - name: photoID
+          in: path
+          description: Photo identifier
+          required: true
+          schema:
+            $ref: "#/components/schemas/photoID"
+      responses:
+        "200":
+          description: Photo with the specified identifier
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /users:
     get:
       summary: Get the list all users
@@ -252,6 +290,14 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+  /users/{userID}/username:  
+    parameters:
+      - name: userID
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
     put:
       summary: Update the username
       tags: ["profile"]
@@ -317,15 +363,21 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
-  /users/{userID}/followers:
+  /users/{userID}/followers/{followerID}:
     parameters:
       - name: userID  
         in: path
-        description: User ID
+        description: User ID to follow/unfollow
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
-    post:
+      - name: followerID
+        in: path
+        description: identifier of the user that wants to follow/unfollow (the logged user)
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+    put:
       tags: ["follow"]
       summary: Follow a user
       description: |
@@ -352,20 +404,26 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
-  /users/{userID}/photos/{photoID}/likes:
+  /users/{userID}/photos/{photoID}/likes/{likeID}:
     parameters:
       - name: photoID
         in: path
         description: Photo to be liked/unliked
         required: true
         schema:
-          $ref: "#/components/schemas/identifier"
+          type: integer
       - name: userID  
         in: path
         description: User ID
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
+      - name: likeID
+        in: path
+        description: Like ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/likeID"
     put:
       tags: ["photo"]
       summary: Like a photo
@@ -393,6 +451,39 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
     
+  /users/{userID}/photos/{photoID}/comments/{commentID}:
+    parameters:
+      - name: photoID
+        in: path
+        description: Photo to be commented
+        required: true
+        schema:
+          type: integer
+      - name: userID
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+      - name: commentID
+        in: path
+        description: Comment to be deleted
+        required: true
+        schema:
+          $ref: "#/components/schemas/commentID"
+    delete:
+      tags: ["photo"]
+      summary: Delete a comment
+      description: |
+        Delete the comment with the given identifier
+      operationId: uncommentPhoto
+      responses:
+        "204":
+          description: Comment deleted successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
   /users/{userID}/photos/{photoID}/comments:
     parameters:
       - name: photoID
@@ -400,7 +491,7 @@ paths:
         description: Photo to be commented
         required: true
         schema:
-          $ref: "#/components/schemas/identifier"
+          type: integer
       - name: userID
         in: path
         description: User ID
@@ -432,31 +523,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-    delete:
-      requestBody:
-        description: comment to be deleted
-        content:
-            application/json:
-              schema:
-                type: string
-                pattern: "^[a-z0-9]"
-                description: comment identifier
-                example: "abcdef012345"
-                maxLength: 12
-                minLength: 12
-      tags: ["photo"]
-      summary: Delete a comment
-      description: |
-        Delete a comment 
-      operationId: uncommentPhoto
-      responses:
-        "204":
-          description: Comment deleted successfully
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-  /users/{userID}/photos:
+  /users/{userID}/photos/{photoID}:
     parameters:
       - name: userID  
         in: path
@@ -464,6 +531,12 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
+      - name: photoID
+        in: path
+        description: PhotoID
+        required: true
+        schema:
+          type: integer
     put:
       tags: ["photo"]
       summary: Upload a photo
@@ -487,14 +560,6 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"  
     delete:
-      requestBody:
-        description: photo
-        content:
-            application/json:
-              schema:
-                type: integer
-                description: photo identifier
-        required: true
       tags: ["photo"]
       summary: Delete a photo
       description: |
