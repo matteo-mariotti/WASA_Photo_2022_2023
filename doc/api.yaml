@@ -255,29 +255,11 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-  /profile:
-    get:
-      tags: ["profile"]
-      summary: Get the user profile
-      description: |
-        Get the user's profile using the given identifier
-      operationId: getMyProfile
-      responses:
-        "200":
-          description: User profile retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/profile"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-    post:
+    put:
       summary: Update the username
       tags: ["profile"]
       description: |
-        Update the username profile (if available)
+        Update the username profile (if available) and userID matches the logged user
       operationId: setMyUserName
       requestBody:
         description: newUserName
@@ -299,11 +281,18 @@ paths:
           description: Username already taken
         "404":
           $ref: "#/components/responses/NotFound"
-  /bans/{blockedID}:
+
+  /users/{userID}/bans/{blockedID}:
     parameters:
       - name: blockedID
         in: path
         description: User to be blocked/unblocked
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+      - name: userID  
+        in: path
+        description: User ID
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
@@ -330,19 +319,20 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-  /followers/{followerID}:
+
+  /users/{userID}/followers:
     parameters:
-      - name: followerID
+      - name: userID  
         in: path
-        description: User to be followed/unfollowed
+        description: User ID
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
-    put:
+    post:
       tags: ["follow"]
       summary: Follow a user
       description: |
-        Follow a user 
+        Adds the logged user to the followers list of the user with the given identifier 
       operationId: followUser
       responses:
         "204":
@@ -355,7 +345,7 @@ paths:
       summary: Unfollow a user
       tags: ["follow"]
       description: |
-        Unfollow a user 
+        Removes the logged user from the followers list of the user with the given identifier 
       operationId: unfollowUser
       responses:
         "204":
@@ -365,7 +355,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
-  /photos/{photoID}/likes:
+  /users/{userID}/photos/{photoID}/likes:
     parameters:
       - name: photoID
         in: path
@@ -373,11 +363,17 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
+      - name: userID  
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
     put:
       tags: ["photo"]
       summary: Like a photo
       description: |
-        Like a photo 
+        Adds the userID of the logged user to the likes list of the photo of the user with the given identifier
       operationId: likePhoto
       responses:
         "204":
@@ -386,25 +382,11 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-  /photos/{photoID}/likes/{likeID}:  
-    parameters:
-      - name: photoID
-        in: path
-        description: Photo to be liked/unliked
-        required: true
-        schema:
-          $ref: "#/components/schemas/identifier"
-      - name: likeID
-        in: path
-        description: Like to be deleted
-        required: true
-        schema:
-          $ref: "#/components/schemas/identifier"
     delete:
       tags: ["photo"]
       summary: Unlike a photo
       description: |
-        Unlike a photo 
+        Removes the userID of the logged user from the likes list of the photo of the user with the given identifier
       operationId: unlikePhoto
       responses:
         "204":
@@ -414,7 +396,7 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
     
-  /photos/{photoID}/comments:
+  /users/{userID}/photos/{photoID}/comments:
     parameters:
       - name: photoID
         in: path
@@ -422,7 +404,13 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
-    put:
+      - name: userID
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+    post:
       tags: ["photo"]
       summary: Comment a photo
       description: |
@@ -447,27 +435,18 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-
-  /photos/{photoID}/comments/{commentID}:
-    parameters:
-        - name: photoID
-          in: path
-          description: Photo to be commented
-          required: true
-          schema:
-            $ref: "#/components/schemas/identifier"
-        - name: commentID
-          in: path
-          description: Comment to be deleted
-          required: true
-          schema:
-            type: string
-            pattern: "^[a-z0-9]"
-            description: comment identifier
-            example: "abcdef012345"
-            maxLength: 12
-            minLength: 12
     delete:
+      requestBody:
+        description: comment to be deleted
+        content:
+            application/json:
+              schema:
+                type: string
+                pattern: "^[a-z0-9]"
+                description: comment identifier
+                example: "abcdef012345"
+                maxLength: 12
+                minLength: 12
       tags: ["photo"]
       summary: Delete a comment
       description: |
@@ -480,12 +459,19 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-  /photos:
+  /users/{userID}/photos:
+    parameters:
+      - name: userID  
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
     put:
       tags: ["photo"]
       summary: Upload a photo
       description: |
-        Upload a photo 
+        Upload a photo to the user's profile if the userID matches the logged user
       operationId: uploadPhoto
       requestBody:
         description: photo
@@ -502,21 +488,20 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
-          $ref: "#/components/responses/NotFound"
-  /photos/{photoID}:
-    parameters:
-      - name: photoID
-        in: path
-        description: Photo to be deleted
-        required: true
-        schema:
-          type: integer
-          description: photo identifier     
+          $ref: "#/components/responses/NotFound"  
     delete:
+      requestBody:
+        description: photo
+        content:
+            application/json:
+              schema:
+                type: integer
+                description: photo identifier
+        required: true
       tags: ["photo"]
       summary: Delete a photo
       description: |
-        Delete the photo with the given identifier 
+        Delete the photo with the given identifier if the logged user is the owner of the photo
       operationId: deletePhoto
       responses:
         "204":
