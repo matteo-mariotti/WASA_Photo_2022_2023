@@ -10,6 +10,22 @@ info:
     You can find the source code for the web application 
     at https://github.com/matteo-mariotti/WASA_Photo_2022_2023
 
+tags: 
+  - name: login
+    description: Login
+  - name: photo
+    description: Operations about photos
+  - name: users
+    description: Operations about users
+  - name: home
+    description: Operations about the stream
+  - name: profile
+    description: Operations about the logged user profile
+  - name: ban
+    description: Operations about banning/unbanning users
+  - name: follow
+    description: Operations about foloowing/unfollowing users
+
 components:
   securitySchemes:
     BearerAuth:
@@ -19,15 +35,43 @@ components:
   schemas:
     identifier:
       type: string
+      pattern: "^[a-z0-9-]*$"
       description: identifier
-      example: "abcdef012345"
+      example: "6d459789-1a3b-4f0e-a64e-3ebd8e2e8e0b"
+      maxLength: 32
+      minLength: 32
 
     comment:
-      type: string
-      example: "This is a comment"
-      pattern: "ˆ.*?$"
-      minLength: 1
-      maxLength: 256
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: "^[a-z0-9]"
+          description: comment identifier
+          example: "abcdef012345"
+          maxLength: 12
+          minLength: 12
+        userID:
+          $ref: "#/components/schemas/identifier"
+        text:
+          type: string
+          pattern: "^[a-zA-Z0-9 .,:]*$"
+          description: comment
+          example: "This is a comment"
+          minLength: 1
+          maxLength: 256
+      
+    like:
+      type: object
+      properties:
+        id:
+          type: string
+          pattern: "^[a-z0-9]"
+          description: like identifier
+          example: "abcdef012345"
+          maxLength: 12
+        userID:
+          $ref: "#/components/schemas/identifier"
 
     photo:
       type: object
@@ -35,49 +79,61 @@ components:
         id:
           type: integer
           description: photo identifier     
-        image:
-            type: string
-            format: binary
+        image\png:
+          description: photo
         likes:
+            description: array of likes
             type: array
             items:
-              $ref: "#/components/schemas/identifier"
+              $ref: "#/components/schemas/like"
+            minItems: 0
         comments:
+            description: array of comments
             type: array
             items:
-              type: object
-              properties:
-                user:
-                  $ref: "#/components/schemas/identifier"
-                comment:
-                  $ref: "#/components/schemas/comment"
-              
+              $ref: "#/components/schemas/comment"
+            minItems: 0
+    
+    username:
+      type: string
+      pattern: "^[a-zA-Z0-9]*$"
+      description: username
+      example: "Maria"
+      maxLength: 16
+      minLength: 3
+
+       
     profile:
+      description: user profile
       type: object
       properties:
         username:
-          type: string
-          example: "Maria"
-          pattern: "ˆ.*?$"
-          minLength: 3
-          maxLength: 16
+          $ref: "#/components/schemas/username"
         photos:
           description: List of photos uploaded by the user
           type: array
           items:
             $ref: "#/components/schemas/photo"
+          minItems: 0
         followers:
+          description: List of users following the user
           type: array
           items:
             $ref: "#/components/schemas/identifier"
+          minItems: 0
         following:
+          description: List of users followed by the user
           type: array
           items:
             $ref: "#/components/schemas/identifier"
+          minItems: 0
         blocked:
+          description: List of users blocked by the user
           type: array
           items:
             $ref: "#/components/schemas/identifier"
+          minItems: 0
+          
   responses:
     NotFound:
       description: The specified resource was not found
@@ -104,29 +160,31 @@ paths:
           application/json:
             schema:
               type: object
+              description: User details
               properties:
                 name:
+                  description: User name
                   type: string
                   example: Maria
-                  pattern: "ˆ.*?$"
+                  pattern: "^[a-zA-Z0-9]*$"
                   minLength: 3
                   maxLength: 16
         required: true
       responses:
-        "201":
+        "200":
           description: User log-in action successful
           content:
             application/json:
               schema:
+                description: User identifier
                 type: object
                 properties:
                   identifier:
-                    # change here if you decide to use an integer or any other type of identifier
-                    type: string
-                    example: "abcdef012345"
+                    $ref: "#/components/schemas/identifier"
   /home:
     get:
-      summary: Returns the photos of the users that the user is following (the stream)
+      description: Returns the photos of the users that the user is following (the stream)
+      summary: Returns the stream
       tags: ["home"]
       operationId: getMyStream
       responses:
@@ -135,9 +193,11 @@ paths:
           content:
             application/json:
               schema:
+                description: Photos of the users that the user is following
                 type: array
                 items:
                   $ref: "#/components/schemas/photo"
+                minItems: 0
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
@@ -155,15 +215,19 @@ paths:
           content:
             application/json:
               schema:
+                description: Users list
                 type: array
                 items:
                   $ref: "#/components/schemas/identifier"
+                example:
+                  ["abcdef012345","abcdef012346","abcdef012347"]
+                minItems: 0
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-  /users/{userID}:
-    
+  
+  /users/{userID}:  
     parameters:
       - name: userID
         in: path
@@ -173,7 +237,7 @@ paths:
           $ref: "#/components/schemas/identifier"
     get:
       tags: ["users"]
-      summary: Get the user profile
+      summary: Get the requested user profile
       description: |
         Get the user's profile using the given identifier
       operationId: getUserProfile
@@ -188,43 +252,21 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-  /profile:
-    get:
-      tags: ["profile"]
-      summary: Get the user profile
-      description: |
-        Get the user's profile using the given identifier
-      operationId: getMyProfile
-      responses:
-        "200":
-          description: User profile retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/profile"
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-    post:
+    put:
       summary: Update the username
       tags: ["profile"]
       description: |
-        Update the username profile (if available)
+        Update the username profile (if available) and userID matches the logged user
       operationId: setMyUserName
       requestBody:
         description: newUserName
         content:
           application/json:
             schema:
-              type: string
-              example: Maria
-              pattern: "ˆ.*?$"
-              minLength: 3
-              maxLength: 16
+              $ref: "#/components/schemas/username"
         required: true
       responses:
-        "200":
+        "201":
           description: User profile updated successfully
           content:
             application/json:
@@ -236,7 +278,8 @@ paths:
           description: Username already taken
         "404":
           $ref: "#/components/responses/NotFound"
-  /bans/{blockedID}:
+
+  /users/{userID}/bans/{blockedID}:
     parameters:
       - name: blockedID
         in: path
@@ -244,45 +287,52 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
+      - name: userID  
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
     put:
       tags: ["ban"]
-      summary: Block a user from the logged in user
+      summary: Blocks a user
       description: |
         Block a user 
       operationId: banUser
       responses:
-        "200":
+        "204":
           description: User blocked successfully
         
     delete:
       tags: ["ban"]
-      summary: Unblock a user from the logged in user
+      summary: Unblocks a user
       description: |
         Unblock a user 
       operationId: unbanUser
       responses:
-        "200":
+        "204":
           description: User unblocked successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-  /followers/{followerID}:
+
+  /users/{userID}/followers:
     parameters:
-      - name: followerID
+      - name: userID  
         in: path
-        description: User to be followed/unfollowed
+        description: User ID
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
-    put:
+    post:
       tags: ["follow"]
       summary: Follow a user
       description: |
-        Follow a user 
+        Adds the logged user to the followers list of the user with the given identifier 
       operationId: followUser
       responses:
-        "200":
+        "204":
           description: User followed successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -292,17 +342,17 @@ paths:
       summary: Unfollow a user
       tags: ["follow"]
       description: |
-        Unfollow a user 
+        Removes the logged user from the followers list of the user with the given identifier 
       operationId: unfollowUser
       responses:
-        "200":
+        "204":
           description: User unfollowed successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
 
-  /like/{photoID}:
+  /users/{userID}/photos/{photoID}/likes:
     parameters:
       - name: photoID
         in: path
@@ -310,14 +360,20 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
+      - name: userID  
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
     put:
       tags: ["photo"]
       summary: Like a photo
       description: |
-        Like a photo 
+        Adds the userID of the logged user to the likes list of the photo of the user with the given identifier
       operationId: likePhoto
       responses:
-        "200":
+        "204":
           description: Photo liked successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
@@ -327,21 +383,27 @@ paths:
       tags: ["photo"]
       summary: Unlike a photo
       description: |
-        Unlike a photo 
+        Removes the userID of the logged user from the likes list of the photo of the user with the given identifier
       operationId: unlikePhoto
       responses:
-        "200":
+        "204":
           description: Photo unliked successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
     
-  /comment/{photoID}:
+  /users/{userID}/photos/{photoID}/comments:
     parameters:
       - name: photoID
         in: path
         description: Photo to be commented
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+      - name: userID
+        in: path
+        description: User ID
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
@@ -353,53 +415,93 @@ paths:
       operationId: commentPhoto
       requestBody:
         description: comment
+        required: true
         content:
           application/json:
             schema:
+              description: Text of the comment
               type: string
-              example: Nice photo!
-              pattern: "ˆ.*?$"
+              example: Nice photo
+              pattern: "^[a-zA-Z0-9 ]*$"
               minLength: 3
               maxLength: 256
-        required: true
       responses:
-        "200":
+        "204":
           description: Photo commented successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-  /photos:
-    post:
+    delete:
+      requestBody:
+        description: comment to be deleted
+        content:
+            application/json:
+              schema:
+                type: string
+                pattern: "^[a-z0-9]"
+                description: comment identifier
+                example: "abcdef012345"
+                maxLength: 12
+                minLength: 12
+      tags: ["photo"]
+      summary: Delete a comment
+      description: |
+        Delete a comment 
+      operationId: uncommentPhoto
+      responses:
+        "204":
+          description: Comment deleted successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /users/{userID}/photos:
+    parameters:
+      - name: userID  
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+    put:
       tags: ["photo"]
       summary: Upload a photo
       description: |
-        Upload a photo 
+        Upload a photo to the user's profile if the userID matches the logged user
       operationId: uploadPhoto
       requestBody:
         description: photo
         content:
           image/png:
             schema:
+              description: Photo to be uploaded
               type: string
               format: binary
         required: true
       responses:
-        "200":
+        "204":
           description: Photo uploaded successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
-          $ref: "#/components/responses/NotFound"
-  /photos/{photoID}:
+          $ref: "#/components/responses/NotFound"  
     delete:
+      requestBody:
+        description: photo
+        content:
+            application/json:
+              schema:
+                type: integer
+                description: photo identifier
+        required: true
       tags: ["photo"]
       summary: Delete a photo
       description: |
-        Delete the photo with the given identifier 
+        Delete the photo with the given identifier if the logged user is the owner of the photo
       operationId: deletePhoto
       responses:
-        "200":
+        "204":
           description: Photo deleted successfully
         "401":
           $ref: "#/components/responses/Unauthorized"

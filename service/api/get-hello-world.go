@@ -10,8 +10,7 @@ import (
 // getHelloWorld is an example of HTTP endpoint that returns "Hello world!" as a plain text
 func (rt *_router) getHelloWorld(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	version, _ := database.AppDatabase.GetVersion(rt.db)
-	//Create a "WASA_Photo" table and put a fountain in it
-	database.AppDatabase.Initialize(rt.db)
+
 	w.Header().Set("content-type", "text/plain")
 	_, _ = w.Write([]byte("Hello World!"))
 	_, _ = w.Write([]byte("\nDatabase version: " + version))

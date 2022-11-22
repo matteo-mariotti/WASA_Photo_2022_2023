@@ -17,12 +17,14 @@ func (rt *_router) WASA_Photo(w http.ResponseWriter, r *http.Request, ps httprou
 	WASA_Photo, _ := database.AppDatabase.GetWASA_Photo(rt.db)
 
 	// Encode the WASA_Photo as JSON and write them to the response
-	jsonResp, err := json.Marshal(WASA_Photo)
+
+	err := json.NewEncoder(w).Encode(WASA_Photo)
+
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("Error enconding")
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	_, _ = w.Write(jsonResp)
 
 }

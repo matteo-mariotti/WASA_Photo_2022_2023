@@ -13,6 +13,9 @@ func (rt *_router) Handler() http.Handler {
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
 
+	//Session endpoint
+	rt.router.POST("/session", rt.wrap(rt.login))
+
 	rt.router.GET("/WASA_Photo", rt.WASA_Photo)
 	rt.router.POST("/WASA_Photo", rt.create_fountain)
 
