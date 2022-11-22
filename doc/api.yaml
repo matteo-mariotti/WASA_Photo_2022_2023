@@ -35,7 +35,7 @@ components:
   schemas:
     identifier:
       type: string
-      pattern: "^[a-z0-9-*$"
+      pattern: "^[a-z0-9-]*$"
       description: identifier
       example: "6d459789-1a3b-4f0e-a64e-3ebd8e2e8e0b"
       maxLength: 32
@@ -441,6 +441,33 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/commentID"
+    delete:
+      tags: ["photo"]
+      summary: Delete a comment
+      description: |
+        Delete the comment with the given identifier
+      operationId: uncommentPhoto
+      responses:
+        "204":
+          description: Comment deleted successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /users/{userID}/photos/{photoID}/comments:
+    parameters:
+      - name: photoID
+        in: path
+        description: Photo to be commented
+        required: true
+        schema:
+          type: integer
+      - name: userID
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
     post:
       tags: ["photo"]
       summary: Comment a photo
@@ -462,19 +489,6 @@ paths:
       responses:
         "204":
           description: Photo commented successfully
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-    delete:
-      tags: ["photo"]
-      summary: Delete a comment
-      description: |
-        Delete the comment with the given identifier
-      operationId: uncommentPhoto
-      responses:
-        "204":
-          description: Comment deleted successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
