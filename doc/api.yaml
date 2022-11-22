@@ -260,6 +260,14 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+  /users/{userID}/username:  
+    parameters:
+      - name: userID
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
     put:
       summary: Update the username
       tags: ["profile"]
