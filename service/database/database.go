@@ -31,7 +31,6 @@ Then you can initialize the AppDatabase and pass it to the api package.
 package database
 
 import (
-	"WASA_Photo/service/structs"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -39,18 +38,19 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	// Loggin functions
+	//Check token
+	ValidToken(token string) (bool, error)
+
+	// Login functions
 	RegisterUser(uuid string, username string) error // Insert a new user in the database
 	LoginUser(username string) (string, error)       // Login a user
 
 	// Ban functions
-	BlockUser(userA string, userB string) error // Block a user
+	BlockUser(userA string, userB string) error   // Block a user
+	UnblockUser(userA string, userB string) error // Unblock a user
+	IsBlocked(userA string, userB string) (bool, error)
 
-	InsertFountain(fountain structs.Fountain) error // Insert a fountain in the database
-	GetWASA_Photo() ([]structs.Fountain, error)     // Get all the WASA_Photo from the database
-	GetVersion() (string, error)                    // Get database version
-	GetName() (string, error)
-	SetName(name string) error
+	GetVersion() (string, error) // Get database version
 	Ping() error
 }
 

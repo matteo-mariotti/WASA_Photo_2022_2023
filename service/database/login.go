@@ -8,3 +8,9 @@ func (db *appdbimpl) LoginUser(username string) (string, error) {
 	err := row.Scan(&uuid)
 	return uuid, err
 }
+
+// SetName is an example that shows you how to execute insert/update
+func (db *appdbimpl) RegisterUser(uuid string, username string) error {
+	_, err := db.c.Exec("INSERT INTO Users (UserID, UserName) VALUES (?, ?)", uuid, username)
+	return err
+}
