@@ -46,9 +46,14 @@ type AppDatabase interface {
 	LoginUser(username string) (string, error)       // Login a user
 
 	// Ban functions
-	BlockUser(userA string, userB string) error         // Block a user
-	UnblockUser(userA string, userB string) error       // Unblock a user
-	IsBlocked(userA string, userB string) (bool, error) // Check if userB has been blocked by userA
+	BanUser(userA string, userB string) error          // Block a user
+	UnbanUser(userA string, userB string) error        // Unblock a user
+	IsBanned(userA string, userB string) (bool, error) // Check if userB has been blocked by userA
+
+	// Follow functions
+	FollowUser(userA string, userB string) error          // Follow a user
+	UnfollowUser(userA string, userB string) error        // Unfollow a user
+	IsFollowing(userA string, userB string) (bool, error) // Check if userA is following userB
 
 	GetVersion() (string, error) // Get database version
 	Ping() error

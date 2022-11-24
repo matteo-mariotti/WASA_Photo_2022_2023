@@ -34,6 +34,13 @@ func (rt *_router) wrapAuth(fn httpRouterHandler) func(http.ResponseWriter, *htt
 			rt.baseLogger.Warning("User is using an invalid token: ", ctx.Token)
 		}
 
+		//Check if the user is using a valid token in the authentication header (if not, the request is blocked)
+		if !ctx.Valid {
+			rt.baseLogger.Error("Token is not valid: " + ctx.Token)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
 		// Call the next handler in chain (usually, the handler function for the path)
 		fn(w, r, ps, ctx)
 	}

@@ -13,13 +13,16 @@ func (rt *_router) Handler() http.Handler {
 	// Special routes
 	rt.router.GET("/liveness", rt.liveness)
 
-	//Session endpoint
+	//Session routes
 	rt.router.POST("/session", rt.wrap(rt.login))
 
-	//Block/Unblock user endpoint
-	//rt.router.PUT("/users/:userID/bans/:blockedID", rt.wrapAuth(rt.blockUser))
-	rt.router.PUT("/users/:userID/bans/:blockedID", rt.wrap(rt.wrapAuth(rt.blockUser)))
-	//rt.router.DELETE("/users/:userID/bans/:blockedID", rt.wrapAuth(rt.blockUser))
+	//Block/Unblock routes
+	rt.router.PUT("/users/:userID/bans/:blockedID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.banUser))))
+	rt.router.DELETE("/users/:userID/bans/:blockedID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.unbanUser))))
+
+	//Follow/Unfollow route
+	rt.router.PUT("/users/:userID/followers/:followerID", rt.wrap(rt.wrapAuth(rt.followUser)))
+	rt.router.DELETE("/users/:userID/followers/:followerID", rt.wrap(rt.wrapAuth(rt.unfollowUser)))
 
 	//Testing function
 	rt.router.GET("/testing", rt.test)
