@@ -142,45 +142,14 @@ components:
           minItems: 0
           maxItems: 100 #Limit the size of the array to 100 elements per chuck
 
-    errorAuth:
-      description: Error message
-      type: object
-      properties:
-        error:
-          description: Error info
-          type: string
-          example: "Unauthorized"
-        message:
-          description: Error message
-          type: string
-          example: "You need login before accessing this resource"
-
     error:
       description: Error message
       type: object
       properties:
-        error:
-          description: Error info
-          type: string
-          example: "Not Found"
         message:
           description: Error message
           type: string
           example: "Unable to locate the requested resource"
-
-    errorForbidden:
-      description: Error message
-      type: object
-      properties:
-        error:
-          description: Error info
-          type: string
-          example: "Forbidden"
-        message:
-          description: Error message
-          type: string
-          example: "You can not access this resource"
-
 
     userDetails:
       type: object
@@ -201,7 +170,13 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/errorAuth"
+            $ref: "#/components/schemas/error"
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error"
 
 security:
   - BearerAuth: []
@@ -370,7 +345,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/errorForbidden"
+                $ref: "#/components/schemas/error"
         "404":
           $ref: "#/components/responses/NotFound"
 
@@ -397,11 +372,13 @@ paths:
       responses:
         "204":
           description: User blocked successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-    delete:
+    delete: 
       tags: ["ban"]
       summary: Unblocks a user
       description: |
@@ -410,6 +387,8 @@ paths:
       responses:
         "204":
           description: User unblocked successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
