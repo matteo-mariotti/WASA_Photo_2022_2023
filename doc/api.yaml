@@ -397,7 +397,10 @@ paths:
       responses:
         "204":
           description: User blocked successfully
-
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
     delete:
       tags: ["ban"]
       summary: Unblocks a user
@@ -576,7 +579,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-  /users/{userID}/photos/{photoID}:
+  /users/{userID}/photos:
     parameters:
       - name: userID
         in: path
@@ -584,12 +587,6 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
-      - name: photoID
-        in: path
-        description: PhotoID
-        required: true
-        schema:
-          type: integer
     put:
       tags: ["photo"]
       summary: Upload a photo
@@ -608,12 +605,30 @@ paths:
               maxLength: 83886080 # 10MB
         required: true
       responses:
-        "204":
+        "201":
           description: Photo uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/photoID"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+  /users/{userID}/photos/{photoID}:
+    parameters:
+      - name: userID
+        in: path
+        description: User ID
+        required: true
+        schema:
+          $ref: "#/components/schemas/identifier"
+      - name: photoID
+        in: path
+        description: PhotoID
+        required: true
+        schema:
+          type: integer
     delete:
       tags: ["photo"]
       summary: Delete a photo
