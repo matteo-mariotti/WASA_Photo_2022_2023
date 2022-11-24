@@ -2,19 +2,17 @@ package api
 
 import (
 	"WASA_Photo/service/api/reqcontext"
+	"database/sql"
 	"net/http"
+	"strings"
 
 	"github.com/gofrs/uuid"
 	"github.com/julienschmidt/httprouter"
 	"github.com/sirupsen/logrus"
 )
 
-// httpRouterHandler is the signature for functions that accepts a reqcontext.RequestContext in addition to those
-// required by the httprouter package.
-type httpRouterHandler func(http.ResponseWriter, *http.Request, httprouter.Params, reqcontext.RequestContext)
-
 // wrap parses the request and adds a reqcontext.RequestContext instance related to the request.
-func (rt *_router) wrap(fn httpRouterHandler) func(http.ResponseWriter, *http.Request, httprouter.Params) {
+func (rt *_router) wrapAuth(fn httpRouterHandler) func(http.ResponseWriter, *http.Request, httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		reqUUID, err := uuid.NewV4()
 		if err != nil {
@@ -31,6 +29,27 @@ func (rt *_router) wrap(fn httpRouterHandler) func(http.ResponseWriter, *http.Re
 			"reqid":     ctx.ReqUUID.String(),
 			"remote-ip": r.RemoteAddr,
 		})
+
+		//Check if the token is valid
+		token := r.Header.Get("Authorization")
+		splitToken := strings.Split(token, "Bearer ")
+		token = splitToken[1]
+		result, err := rt.db.ValidToken(token)
+
+		if err != nil && err != sql.ErrNoRows {
+			ctx.Logger.WithError(err).Error("Error while checking if the token is valid")
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		//Save the result in the context
+		ctx.Valid = result
+		ctx.Token = token
+
+		if result {
+			rt.baseLogger.Info("User is using a valid token: ", ctx.Token)
+		} else {
+			rt.baseLogger.Warning("User is using an invalid token: ", ctx.Token)
+		}
 
 		// Call the next handler in chain (usually, the handler function for the path)
 		fn(w, r, ps, ctx)

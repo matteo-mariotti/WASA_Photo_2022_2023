@@ -40,8 +40,14 @@ func (rt *_router) blockUser(w http.ResponseWriter, r *http.Request, ps httprout
 
 	// Need to check if the userB is already blocked by userA
 	// If not, block userB
+	res, err := rt.db.IsBlocked(userA, userB)
+	if res {
+		rt.baseLogger.WithError(err).Warning("userB was already blocked. userA: " + userA + " userB: " + userB)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
-	err := rt.db.BlockUser(userA, userB)
+	err = rt.db.BlockUser(userA, userB)
 
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("Error while blocking userB from userA")

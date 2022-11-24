@@ -17,14 +17,11 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/session", rt.wrap(rt.login))
 
 	//Block/Unblock user endpoint
-	rt.router.PUT("/users/:userID/bans/:blockedID", rt.wrap(rt.blockUser))
-	rt.router.DELETE("/users/.userID/bans/.blockedID", rt.wrap(rt.blockUser))
+	rt.router.PUT("/users/:userID/bans/:blockedID", rt.wrapAuth(rt.blockUser))
+	rt.router.DELETE("/users/:userID/bans/:blockedID", rt.wrapAuth(rt.blockUser))
 
 	//Testing function
 	rt.router.GET("/testing", rt.test)
-
-	rt.router.GET("/WASA_Photo", rt.WASA_Photo)
-	rt.router.POST("/WASA_Photo", rt.create_fountain)
 
 	return rt.router
 }
