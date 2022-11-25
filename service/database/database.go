@@ -38,6 +38,11 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
+	//Transaction
+	StartTransaction() error
+	Commit() error
+	Rollback() error
+
 	//Check token
 	ValidToken(token string) (bool, error)
 
@@ -54,6 +59,10 @@ type AppDatabase interface {
 	FollowUser(userA string, userB string) error          // Follow a user
 	UnfollowUser(userA string, userB string) error        // Unfollow a user
 	IsFollowing(userA string, userB string) (bool, error) // Check if userA is following userB
+
+	//Photo functions
+	UploadPhoto(owner string, filename string) error // Upload a photo
+	DeletePhoto(photoID string) (string, error)      // Delete a photo
 
 	GetVersion() (string, error) // Get database version
 	Ping() error

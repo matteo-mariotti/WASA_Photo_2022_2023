@@ -24,7 +24,8 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 	res, err := rt.db.IsBanned(userA, userB)
 
 	// ^Internal Server Error va aggiunto all'openapi come possibile risposta
-	if httpCheckError(rt, w, "Error while checking if"+userB+"was banned by"+userA, err, http.StatusInternalServerError) {
+	if err != nil {
+		errorLogger(rt, w, "Error while checking if user "+userA+" has already banned user "+userB, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
@@ -37,7 +38,8 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 	err = rt.db.BanUser(userA, userB)
 
 	//^Aggiungere InternalServerError come possibile risposta all'openapi
-	if httpCheckError(rt, w, "An error occured while banning userB "+userB+" from: "+userA, err, http.StatusInternalServerError) {
+	if err != nil {
+		errorLogger(rt, w, "Error while banning user "+userB+" from "+userA, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
@@ -68,7 +70,8 @@ func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprout
 	res, err := rt.db.IsBanned(userA, userB)
 
 	//^Aggiungere InternalServerError come possibile risposta all'openapi
-	if httpCheckError(rt, w, "Error while checking if"+userB+"was banned by"+userA, err, http.StatusInternalServerError) {
+	if err != nil {
+		errorLogger(rt, w, "An error occured while checking if userB "+userB+" was banned by userA "+userA, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
@@ -81,10 +84,10 @@ func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprout
 	err = rt.db.UnbanUser(userA, userB)
 
 	//^Aggiungere InternalServerError come possibile risposta all'openapi
-	if httpCheckError(rt, w, "An error occured while unbanning userB "+userB+" from: "+userA, err, http.StatusInternalServerError) {
+	if err != nil {
+		errorLogger(rt, w, "An error occured while unbanning userB "+userB+" from: "+userA, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-
 	// If the operation was successful return the status code 204 No Content
 	w.WriteHeader(http.StatusNoContent)
 	rt.baseLogger.Info("UserB unbanned from userA. userA: " + userA + " userB: " + userB)

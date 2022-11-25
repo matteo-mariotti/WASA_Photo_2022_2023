@@ -21,8 +21,12 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/users/:userID/bans/:blockedID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.unbanUser))))
 
 	//Follow/Unfollow route
-	rt.router.PUT("/users/:userID/followers/:followerID", rt.wrap(rt.wrapAuth(rt.followUser)))
-	rt.router.DELETE("/users/:userID/followers/:followerID", rt.wrap(rt.wrapAuth(rt.unfollowUser)))
+	rt.router.PUT("/users/:userID/followers/:followerID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.followUser))))
+	rt.router.DELETE("/users/:userID/followers/:followerID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.unfollowUser))))
+
+	//Upload/Delete photo route
+	rt.router.PUT("/users/:userID/photos", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.UploadPhoto))))
+	rt.router.DELETE("/users/:userID/photos/:photoID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.DeletePhoto))))
 
 	//Testing function
 	rt.router.GET("/testing", rt.test)

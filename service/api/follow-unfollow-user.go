@@ -19,7 +19,8 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	isBanned, err := rt.db.IsBanned(userB, userA)
 
 	// ^Internal Server Error va aggiunto all'openapi come possibile risposta
-	if httpCheckError(rt, w, "Error while checking if userB has banned userA", err, http.StatusInternalServerError) {
+	if err != nil {
+		errorLogger(rt, w, "Error while checking if user "+userB+" has blocked user "+userA, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
@@ -38,7 +39,8 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	// Check if userA is already following userB
 	isFollowing, err := rt.db.IsFollowing(userA, userB)
 
-	if httpCheckError(rt, w, "Error while checking if userA is already following userB", err, http.StatusInternalServerError) {
+	if err != nil {
+		errorLogger(rt, w, "Error while checking if user "+userA+" is already following user "+userB, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
@@ -49,7 +51,8 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 	err = rt.db.FollowUser(userA, userB)
 
-	if httpCheckError(rt, w, "An error occured while following userB "+userB+" from: "+userA, err, http.StatusInternalServerError) {
+	if err != nil {
+		errorLogger(rt, w, "Error while following user "+userB+" from "+userA, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
@@ -73,7 +76,8 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 	// Check if userA is already following userB
 	isFollowing, err := rt.db.IsFollowing(userA, userB)
 
-	if httpCheckError(rt, w, "Error while checking if userA is following userB", err, http.StatusInternalServerError) {
+	if err != nil {
+		errorLogger(rt, w, "Error while checking if user "+userA+" is following user "+userB, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
@@ -84,7 +88,8 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 
 	err = rt.db.UnfollowUser(userA, userB)
 
-	if httpCheckError(rt, w, "An error occured while unfollowing userB "+userB+" from: "+userA, err, http.StatusInternalServerError) {
+	if err != nil {
+		errorLogger(rt, w, "Error while unfollowing user "+userB+" from "+userA, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
