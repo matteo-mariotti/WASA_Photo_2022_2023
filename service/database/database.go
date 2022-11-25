@@ -63,6 +63,7 @@ type AppDatabase interface {
 	//Photo functions
 	UploadPhoto(owner string, filename string) error // Upload a photo
 	DeletePhoto(photoID string) (string, error)      // Delete a photo
+	GetPhotoOwner(photoID string) (string, error)    // Get the owner of a photo
 
 	GetVersion() (string, error) // Get database version
 	Ping() error

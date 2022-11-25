@@ -2,6 +2,7 @@ package api
 
 import (
 	"WASA_Photo/service/api/reqcontext"
+	"database/sql"
 	"io"
 	"net/http"
 	"os"
@@ -10,10 +11,11 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-var path string = "Photos/"
-
 // TODO Commentare la funzione
 func (rt *_router) UploadPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
+	// & Salva il file nella path /Photos
+	var path = rt.photoPath
 
 	// Inizia transazione
 	// ^Internal Server Error va aggiunto all'openapi come possibile risposta
@@ -60,6 +62,9 @@ func (rt *_router) UploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 // TODO Commentare la funzione
 func (rt *_router) DeletePhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
+	// & Salva il file nella path /Photos
+	var path = rt.photoPath
+
 	// Inizia transazione
 	// ^Internal Server Error va aggiunto all'openapi come possibile risposta
 	err := rt.db.StartTransaction()
@@ -68,10 +73,33 @@ func (rt *_router) DeletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
+	// Controlla se è il proprietario della foto
+	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
+
+	// ^Not Found va aggiunto all'openapi come possibile risposta
+	if err == sql.ErrNoRows {
+		errorLogger(rt, w, "Photo not found, user is using the wrong ID", "Not Found", http.StatusNotFound)
+		return
+	} else if err != nil {
+		errorLogger(rt, w, "Error while getting photo owner", "Internal Server Error", http.StatusInternalServerError)
+		rt.db.Rollback()
+		return
+	}
+
+	// ^Unauthorized va aggiunto all'openapi come possibile risposta
+	if owner != ctx.Token {
+		errorLogger(rt, w, "User is trying to delete someone else's photo", "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
 	// Rimuovi la riga dal db usando l'ID della foto
 	fileIdentifier, err := rt.db.DeletePhoto((ps.ByName("photoID")))
 
-	if err != nil {
+	// ^Not Found va aggiunto all'openapi come possibile risposta
+	if err == sql.ErrNoRows {
+		errorLogger(rt, w, "Photo not found, user is using the wrong ID", "Not Found", http.StatusNotFound)
+		return
+	} else if err != nil {
 		//Errore nella rimozione del file, rollback
 		rt.baseLogger.WithError(err).Error("Errore DB")
 		errorLogger(rt, w, "Error while deleting file", "Internal Server Error", http.StatusInternalServerError)

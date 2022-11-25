@@ -110,10 +110,13 @@ func run() error {
 	// buffered channel so the goroutine can exit if we don't collect this error.
 	serverErrors := make(chan error, 1)
 
+	photoPath := cfg.Photo.Path
+
 	// Create the API router
 	apirouter, err := api.New(api.Config{
-		Logger:   logger,
-		Database: db,
+		Logger:    logger,
+		Database:  db,
+		PhotoPath: photoPath,
 	})
 	if err != nil {
 		logger.WithError(err).Error("error creating the API server instance")

@@ -21,5 +21,6 @@ type RequestContext struct {
 
 	// Request user is using a valid token
 	Valid bool
+	// Request user ID
 	Token string
 }

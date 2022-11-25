@@ -566,7 +566,7 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
-    put:
+    post:
       tags: ["photo"]
       summary: Upload a photo
       description: |

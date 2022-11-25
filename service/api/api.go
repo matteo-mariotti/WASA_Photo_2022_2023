@@ -52,6 +52,9 @@ type Config struct {
 
 	// Database is the instance of database.AppDatabase where data are saved
 	Database database.AppDatabase
+
+	// PhotoPath is the path where photos are stored
+	PhotoPath string
 }
 
 // Router is the package API interface representing an API handler builder
@@ -83,6 +86,7 @@ func New(cfg Config) (Router, error) {
 		router:     router,
 		baseLogger: cfg.Logger,
 		db:         cfg.Database,
+		photoPath:  cfg.PhotoPath,
 	}, nil
 }
 
@@ -93,5 +97,9 @@ type _router struct {
 	// Use context logger if available (e.g., in requests) instead of this logger.
 	baseLogger logrus.FieldLogger
 
+	// db is the database instance
 	db database.AppDatabase
+
+	// photoPath is the path where photos are stored
+	photoPath string
 }

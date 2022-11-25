@@ -16,3 +16,9 @@ func (db *appdbimpl) DeletePhoto(photoID string) (string, error) {
 	_, err = db.c.Exec("DELETE FROM Photos WHERE PhotoID=?", photoID)
 	return fileIdentifier, err
 }
+
+func (db *appdbimpl) GetPhotoOwner(photoID string) (string, error) {
+	var owner string
+	err := db.c.QueryRow("SELECT Owner FROM Photos WHERE PhotoID = ?", photoID).Scan(&owner)
+	return owner, err
+}
