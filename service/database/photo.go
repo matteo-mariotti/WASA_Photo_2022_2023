@@ -1,24 +1,46 @@
 package database
 
-// FollowUser is a function that adds userB to the list of users that userA is following
+import "WASA_Photo/service/errorDefinition"
+
+// TODO Comment
 func (db *appdbimpl) UploadPhoto(owner string, filename string) error {
-	_, err := db.c.Exec("INSERT INTO Photos (Owner, Filename) VALUES (?, ?)", owner, filename)
+	result, err := db.c.Exec("INSERT INTO Photos (Owner, Filename) VALUES (?, ?)", owner, filename)
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	} else if affected == 0 {
+		// If no rows were affected, it means that the user was not banned
+		return errorDefinition.ErrNotAdded
+	}
 	return err
 }
 
-// FollowUser is a function that removes userB from the list of users userA is following
+// TODO Comment
 func (db *appdbimpl) DeletePhoto(photoID string) (string, error) {
 	var fileIdentifier string
 	err := db.c.QueryRow("SELECT Filename FROM Photos WHERE PhotoID = ?", photoID).Scan(&fileIdentifier)
 	if err != nil {
 		return "", err
 	}
-	_, err = db.c.Exec("DELETE FROM Photos WHERE PhotoID=?", photoID)
+	result, err := db.c.Exec("DELETE FROM Photos WHERE PhotoID=?", photoID)
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return "", err
+	} else if affected == 0 {
+		// If no rows were affected, it means that the user was not banned
+		return "", errorDefinition.ErrPhotoNotFound
+	}
 	return fileIdentifier, err
 }
 
+// TODO Comment
 func (db *appdbimpl) GetPhotoOwner(photoID string) (string, error) {
 	var owner string
 	err := db.c.QueryRow("SELECT Owner FROM Photos WHERE PhotoID = ?", photoID).Scan(&owner)
+	if err != nil {
+		return "", err
+	}
 	return owner, err
 }

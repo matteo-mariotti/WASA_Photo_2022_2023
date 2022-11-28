@@ -6,9 +6,7 @@ import (
 	"net/http"
 )
 
-func errorLogger(rt *_router, w http.ResponseWriter, logMessage string, responseMessage string, httpError int) {
-	// Log the error
-	rt.baseLogger.Error(logMessage)
+func httpErrorResponse(rt *_router, w http.ResponseWriter, responseMessage string, httpError int) {
 
 	// Return the error
 	w.Header().Set("Content-Type", "application/json")                        // Set content to JSON

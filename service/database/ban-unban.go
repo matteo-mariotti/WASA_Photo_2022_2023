@@ -1,15 +1,40 @@
 package database
 
+import "WASA_Photo/service/errorDefinition"
+
 // banUser is a function that adds userB to the list of blocked users of userA
 func (db *appdbimpl) BanUser(userA string, userB string) error {
-	_, err := db.c.Exec("INSERT INTO Bans (UserA, UserB) VALUES (?, ?)", userA, userB)
-	return err
+	result, err := db.c.Exec("INSERT INTO Bans (UserA, UserB) VALUES (?, ?)", userA, userB)
+	if err != nil {
+		return err
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	} else if affected == 0 {
+		// If no rows were affected, it means that the user was not banned
+		return errorDefinition.ErrUserNotFound
+	}
+	return nil
+
 }
 
 // UnbanUser is a function that removes userB from the list of blocked users of userA
 func (db *appdbimpl) UnbanUser(userA string, userB string) error {
-	_, err := db.c.Exec("DELETE FROM Bans WHERE UserA=? AND UserB=?", userA, userB)
-	return err
+	result, err := db.c.Exec("DELETE FROM Bans WHERE UserA=? AND UserB=?", userA, userB)
+	if err != nil {
+		return err
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	} else if affected == 0 {
+		// If no rows were affected, it means that the user was not banned
+		return errorDefinition.ErrUserNotFound
+	}
+	return nil
 }
 
 // IsBanned is a function that checks if userB is blocked by userA
