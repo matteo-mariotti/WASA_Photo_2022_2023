@@ -65,6 +65,10 @@ type AppDatabase interface {
 	DeletePhoto(photoID string) (string, error)      // Delete a photo
 	GetPhotoOwner(photoID string) (string, error)    // Get the owner of a photo
 
+	//Comment functions
+	Comment(photoID string, userID string, text string) error        // Comment a photo
+	Uncomment(photoID string, userID string, commentID string) error // Uncomment a photo
+
 	GetVersion() (string, error) // Get database version
 	Ping() error
 }

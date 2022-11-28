@@ -28,6 +28,10 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/users/:userID/photos", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.UploadPhoto))))
 	rt.router.DELETE("/users/:userID/photos/:photoID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.DeletePhoto))))
 
+	//Add/Delete comment route
+	rt.router.POST("/users/:userID/photos/:photoID/comments", rt.wrap(rt.wrapAuth(rt.comment)))
+	rt.router.DELETE("/users/:userID/photos/:photoID/comments/:commentID", rt.wrap(rt.wrapAuth(rt.unComment)))
+
 	//Testing function
 	rt.router.GET("/testing", rt.test)
 

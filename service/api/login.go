@@ -20,7 +20,6 @@ func (rt *_router) login(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	var userDetails structs.UserInfo
 
 	err := json.NewDecoder(r.Body).Decode(&userDetails)
-	_ = r.Body.Close()
 
 	username := userDetails.User
 
