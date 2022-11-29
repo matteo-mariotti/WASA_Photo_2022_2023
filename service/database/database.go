@@ -79,6 +79,13 @@ type AppDatabase interface {
 	Unlike(photoID string, userID string) error           //Unlike a photo
 	HasLiked(photoID string, userID string) (bool, error) //Check if userID has liked a photo with the given ID
 
+	//Profile functions
+	GetName(userID string) (string, error)              // Get the username from the user ID
+	GetFollowerNumber(userID string) (int, error)       // Get the number of followers of a user
+	GetFollowingNumber(userID string) (int, error)      // Get the number of users a user is following
+	GetPhotosNumber(userID string) (int, error)         // Get the number of photos a user has uploaded
+	GetPhotos(userID string, offset int) ([]int, error) // Get the photos of a user
+
 	GetVersion() (string, error) // Get database version
 	Ping() error
 }
@@ -112,24 +119,27 @@ func New(db *sql.DB) (AppDatabase, error) {
 		
 		create table Bans
 		(
-			UserA TEXT,
-			UserB TEXT,
+			UserA TEXT
+				constraint Bans_Users_UserID_fk
+					references Users,
+			UserB TEXT
+				constraint Bans_Users__fk2
+					references Users,
 			constraint Bans_pk
-				primary key (UserA, UserB),
-			constraint Bans_Users_null_null_fk
-				foreign key (UserA, UserB) references Users (UserID, UserID)
-					on update cascade on delete cascade
+				primary key (UserA, UserB)
 		);
 		
 		create table Followers
 		(
-			UserA TEXT,
-			UserB TEXT,
+			UserA TEXT
+				constraint Followers___fk1
+					references Users
+					on update cascade on delete cascade,
+			UserB TEXT
+				constraint Followers___fk2
+					references Users,
 			constraint Followers_pk
-				primary key (UserA, UserB),
-			constraint Followers_Users_null_null_fk
-				foreign key (UserA, UserB) references Users (UserID, UserID)
-					on update cascade on delete cascade
+				primary key (UserA, UserB)
 		);
 		
 		create table Photos
@@ -151,7 +161,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 					primary key autoincrement,
 			PhotoID   INTEGER not null
 				references Photos
-				on update cascade on delete cascade,
+					on update cascade on delete cascade,
 			UserID    TEXT
 				constraint Comments_Users
 					references Users
@@ -179,6 +189,7 @@ func New(db *sql.DB) (AppDatabase, error) {
 				primary key,
 			name TEXT
 		);
+				
 		
 		COMMIT;
 		`

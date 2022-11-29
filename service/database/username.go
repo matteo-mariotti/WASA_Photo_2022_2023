@@ -12,3 +12,10 @@ func (db *appdbimpl) ChangeUsername(userID string, newname string) error {
 	_, err := db.c.Exec("UPDATE Users SET UserName=? WHERE UserID=?", newname, userID)
 	return err
 }
+
+func (db *appdbimpl) GetName(userID string) (string, error) {
+	var username string
+	row := db.c.QueryRow("SELECT UserName FROM Users WHERE UserID=?", userID)
+	err := row.Scan(&username)
+	return username, err
+}

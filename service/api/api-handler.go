@@ -33,7 +33,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/users/:userID/photos/:photoID/comments/:commentID", rt.wrap(rt.wrapAuth(rt.unComment)))
 
 	//Get photo route
-	rt.router.GET("/photos/:photoID", rt.wrap(rt.getPhoto))
+	rt.router.GET("/photos/:photoID", rt.wrap(rt.wrapAuth(rt.getPhoto)))
 
 	// Add/Delete like route
 	rt.router.PUT("/users/:userID/photos/:photoID/likes/:likeID", rt.wrap(rt.wrapAuth(rt.like)))
@@ -43,7 +43,7 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/users/:userID/username", rt.wrap(rt.wrapAuth(rt.changeUsername)))
 
 	// Get user profile route
-	/* rt.router.GET("/users/:userID", rt.wrap(rt.getUserProfile)) */
+	rt.router.GET("/users/:userID", rt.wrap(rt.wrapAuth(rt.getUserProfile)))
 
 	//Testing function
 	rt.router.GET("/testing", rt.test)

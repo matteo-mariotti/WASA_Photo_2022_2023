@@ -65,7 +65,7 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 		return
 	} else if err != nil {
 		//^Aggiungere StatusInternalServerError come possibile risposta all'openapi
-		rt.baseLogger.Error("Error while following user. userA: " + userA + " userB: " + userB)
+		rt.baseLogger.WithError(err).Error("Error while following user. userA: " + userA + " userB: " + userB)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
