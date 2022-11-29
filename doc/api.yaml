@@ -310,7 +310,7 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-  /users/{userID}/username:
+  /users/{userID}/username: 
     parameters:
       - name: userID
         in: path

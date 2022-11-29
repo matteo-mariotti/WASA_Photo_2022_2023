@@ -42,6 +42,9 @@ func (rt *_router) Handler() http.Handler {
 	// Change username route
 	rt.router.PUT("/users/:userID/username", rt.wrap(rt.wrapAuth(rt.changeUsername)))
 
+	// Get user profile route
+	/* rt.router.GET("/users/:userID", rt.wrap(rt.getUserProfile)) */
+
 	//Testing function
 	rt.router.GET("/testing", rt.test)
 

@@ -2,6 +2,8 @@ package api
 
 import (
 	"WASA_Photo/service/api/reqcontext"
+	"WASA_Photo/service/structs"
+	"encoding/json"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -21,63 +23,57 @@ import (
 )
 */
 func (rt *_router) changeUsername(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-	/*
-		// Parsing the parameters from the request
-		userID := ps.ByName("userID")
+	// Parsing the parameters from the request
+	userID := ps.ByName("userID")
 
-		// Check if the user I'm trying to follow has blocked me
-		isBanned, err := rt.db.IsBanned(userID, ctx.Token)
+	var username = structs.Username{}
 
-		if err != nil {
-			//^Aggiungere InternalServerError come possibile risposta all'openapi
-			rt.baseLogger.Error("Error while checking if user " + userID + " had already banned user " + ctx.Token)
-			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		} else if isBanned {
-			//^Aggiungere Forbidden come possibile risposta all'openapi
-			rt.baseLogger.Error("Unable to follow: userB has banned userA. userA: " + userID + " userB: " + ctx.Token)
-			httpErrorResponse(rt, w, "You cannot unban a person which wasn't banned", http.StatusForbidden)
-			return
-		}
+	err := json.NewDecoder(r.Body).Decode(&username)
 
-		err = json.NewDecoder(r.Body).Decode(&textComment)
+	if err != nil {
+		// ^BadRequest va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.WithError(err).Error("Error while parsing the request body")
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
-		// Controlla se sto cercando di commentare una foto che non appartiene all'userID del path
-		owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
+	// Start a transaction
+	// ^Internal Server Error va aggiunto all'openapi come possibile risposta
+	err = rt.db.StartTransaction()
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error while starting transaction")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 
-		if err == sql.ErrNoRows {
-			// ^Not Found va aggiunto all'openapi come possibile risposta
-			rt.baseLogger.WithError(err).Error("Photo not found")
-			httpErrorResponse(rt, w, "Not Found, wrong ID", http.StatusNotFound)
-			return
-		} else if err != nil {
-			// ^Internal Server Error va aggiunto all'openapi come possibile risposta
-			rt.baseLogger.WithError(err).Error("Error while getting photo owner")
-			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-			rt.db.Rollback()
-			return
-		} else if owner != userID {
-			// ^Unauthorized va aggiunto all'openapi come possibile risposta
-			rt.baseLogger.Error("User is trying to comment a photo that doesn't belong to the user in the path")
-			httpErrorResponse(rt, w, "Bad Request", http.StatusBadRequest)
-			return
-		}
+	// Check if the username is already taken
+	result, err := rt.db.UserAvailable(username.Username)
+	if result {
+		// ^Forbidden va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.WithError(err).Error("Username already taken")
+		httpErrorResponse(rt, w, "Username already taken", http.StatusForbidden)
+		rt.db.Rollback()
+		return
+	}
 
-		err = rt.db.Comment(photoID, ctx.Token, textComment.Text)
+	// If is free, change the username
+	err = rt.db.ChangeUsername(userID, username.Username)
 
-		if err != nil {
-			// ^Internal Server Error va aggiunto all'openapi come possibile risposta
-			rt.baseLogger.WithError(err).Error("Error while commenting photo")
-			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
+	if err != nil {
+		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.WithError(err).Error("Error while changing username")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		rt.db.Rollback()
+		return
+	}
 
-		//^Aggiungere StatusNoContent come possibile risposta all'openapi
-		w.WriteHeader(http.StatusNoContent)
+	// Commit the transaction
+	err = rt.db.Commit()
 
-		// Log the action
-		rt.baseLogger.Info("Photo commented")
+	//^Aggiungere StatusNoContent come possibile risposta all'openapi
+	w.WriteHeader(http.StatusNoContent)
 
-	*/
+	// Log the action
+	rt.baseLogger.Info("Username changed")
 
 }

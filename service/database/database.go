@@ -50,6 +50,10 @@ type AppDatabase interface {
 	RegisterUser(uuid string, username string) error // Insert a new user in the database
 	LoginUser(username string) (string, error)       // Login a user
 
+	// User functions
+	UserAvailable(username string) (bool, error)          // Check if a username is available
+	ChangeUsername(usedname string, newname string) error // Change the username of a user
+
 	// Ban functions
 	BanUser(userA string, userB string) error          // Block a user
 	UnbanUser(userA string, userB string) error        // Unblock a user

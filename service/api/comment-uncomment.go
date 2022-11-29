@@ -38,6 +38,12 @@ func (rt *_router) comment(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	err = json.NewDecoder(r.Body).Decode(&textComment)
 
+	if err != nil {
+		//^Aggiungere BadRequest come possibile risposta all'openapi
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	// Controlla se sto cercando di commentare una foto che non appartiene all'userID del path
 	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
 
