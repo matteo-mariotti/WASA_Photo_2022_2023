@@ -3,9 +3,7 @@ package api
 import (
 	"WASA_Photo/service/api/reqcontext"
 	"WASA_Photo/service/errorDefinition"
-	"WASA_Photo/service/structs"
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -13,32 +11,29 @@ import (
 )
 
 // TODO Commentare la funzione
-func (rt *_router) comment(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
-
-	var textComment structs.TextComment
+func (rt *_router) like(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// Parsing the parameters from the request
 	photoID := ps.ByName("photoID")
-	userID := ps.ByName("userID")
+	photoOwner := ps.ByName("userID")
+	currentUser := ps.ByName("likeID")
 
-	// Check if the user I'm trying to follow has blocked me
-	isBanned, err := rt.db.IsBanned(userID, ctx.Token)
+	// Check if the user I'm trying to like a photo of a user who has blocked me
+	isBanned, err := rt.db.IsBanned(photoOwner, ctx.Token)
 
 	if err != nil {
 		//^Aggiungere InternalServerError come possibile risposta all'openapi
-		rt.baseLogger.Error("Error while checking if user " + userID + " had already banned user " + ctx.Token)
+		rt.baseLogger.Error("Error while checking if user " + photoOwner + " had already banned user " + ctx.Token)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	} else if isBanned {
 		//^Aggiungere Forbidden come possibile risposta all'openapi
-		rt.baseLogger.Error("Unable to follow: userB has banned userA. userA: " + userID + " userB: " + ctx.Token)
+		rt.baseLogger.Error("Unable to follow: userB has banned userA. userA: " + photoOwner + " userB: " + ctx.Token)
 		httpErrorResponse(rt, w, "You cannot unban a person which wasn't banned", http.StatusForbidden)
 		return
 	}
 
-	err = json.NewDecoder(r.Body).Decode(&textComment)
-
-	// Controlla se sto cercando di commentare una foto che non appartiene all'userID del path
+	// Controlla se sto cercando di mettere like ad una foto che non appartiene all'userID del path
 	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
 
 	if err == sql.ErrNoRows {
@@ -52,38 +47,48 @@ func (rt *_router) comment(w http.ResponseWriter, r *http.Request, ps httprouter
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		rt.db.Rollback()
 		return
-	} else if owner != userID {
-		// ^Unauthorized va aggiunto all'openapi come possibile risposta
+	} else if owner != photoOwner {
+		// ^StatusBadRequest va aggiunto all'openapi come possibile risposta
 		rt.baseLogger.Error("User is trying to comment a photo that doesn't belong to the user in the path")
 		httpErrorResponse(rt, w, "Bad Request", http.StatusBadRequest)
 		return
 	}
 
-	err = rt.db.Comment(photoID, ctx.Token, textComment.Text)
+	// Controlla se il likeID coincide con l'user che è loggato
+	if currentUser != ctx.Token {
+		// ^Unauthorized va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.Error("User is tying to impersonate someone else putting a like on a photo")
+		httpErrorResponse(rt, w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	err = rt.db.Like(photoID, ctx.Token)
 
 	if err != nil {
 		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
-		rt.baseLogger.WithError(err).Error("Error while commenting photo")
+		rt.baseLogger.WithError(err).Error("Error while liking a photo")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
+
+	// If everything went well
 
 	//^Aggiungere StatusNoContent come possibile risposta all'openapi
 	w.WriteHeader(http.StatusNoContent)
 
 	// Log the action
-	rt.baseLogger.Info("Photo commented")
+	rt.baseLogger.Info("Photo liked")
 }
 
 // TODO Finire di commentare la funzione
-func (rt *_router) unComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+func (rt *_router) unlike(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// Parsing the parameters from the request
 	photoOwner := ps.ByName("userID")
 	photoID := ps.ByName("photoID")
-	commentID := ps.ByName("commentID")
+	currentUser := ps.ByName("likeID")
 
-	// Controlla se sto cercando di commentare una foto che non appartiene all'userID del path
+	// Controlla se sto cercando di togliere il like ad una foto che non appartiene all'userID del path
 	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
 
 	if err == sql.ErrNoRows {
@@ -104,11 +109,19 @@ func (rt *_router) unComment(w http.ResponseWriter, r *http.Request, ps httprout
 		return
 	}
 
-	err = rt.db.Uncomment(photoID, ctx.Token, commentID)
+	// Controlla se il likeID coincide con l'user che è loggato
+	if currentUser != ctx.Token {
+		// ^Unauthorized va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.Error("User is tying to impersonate someone else putting a like on a photo")
+		httpErrorResponse(rt, w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
 
-	if errors.Is(err, errorDefinition.ErrCommmentNotFound) {
+	err = rt.db.Unlike(photoID, ctx.Token)
+
+	if errors.Is(err, errorDefinition.ErrLikeNotFound) {
 		// ^BadRequest va aggiunto all'openapi come possibile risposta
-		rt.baseLogger.WithError(err).Error("Comment not found")
+		rt.baseLogger.WithError(err).Error("Like not found")
 		httpErrorResponse(rt, w, "Not Found, wrong request", http.StatusBadRequest)
 		return
 	} else if err != nil {
@@ -119,7 +132,7 @@ func (rt *_router) unComment(w http.ResponseWriter, r *http.Request, ps httprout
 	}
 
 	// Log the action
-	rt.baseLogger.Info("Photo uncommented")
+	rt.baseLogger.Info("Photo unlike")
 
 	//^Aggiungere StatusNoContent come possibile risposta all'openapi
 	w.WriteHeader(http.StatusNoContent)

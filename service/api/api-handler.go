@@ -32,6 +32,13 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.POST("/users/:userID/photos/:photoID/comments", rt.wrap(rt.wrapAuth(rt.comment)))
 	rt.router.DELETE("/users/:userID/photos/:photoID/comments/:commentID", rt.wrap(rt.wrapAuth(rt.unComment)))
 
+	//Get photo route
+	rt.router.GET("/photos/:photoID", rt.wrap(rt.getPhoto))
+
+	// Add/Delete like route
+	rt.router.PUT("/users/:userID/photos/:photoID/likes/:likeID", rt.wrap(rt.wrapAuth(rt.like)))
+	rt.router.DELETE("/users/:userID/photos/:photoID/likes/:likeID", rt.wrap(rt.wrapAuth(rt.unlike)))
+
 	//Testing function
 	rt.router.GET("/testing", rt.test)
 

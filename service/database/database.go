@@ -64,10 +64,16 @@ type AppDatabase interface {
 	UploadPhoto(owner string, filename string) error // Upload a photo
 	DeletePhoto(photoID string) (string, error)      // Delete a photo
 	GetPhotoOwner(photoID string) (string, error)    // Get the owner of a photo
+	GetPhoto(photoID string) (string, error)         // Get the filename of a photo giver its ID
 
 	//Comment functions
 	Comment(photoID string, userID string, text string) error        // Comment a photo
 	Uncomment(photoID string, userID string, commentID string) error // Uncomment a photo
+
+	//Like functions
+	Like(photoID string, userID string) error             // Like a photo
+	Unlike(photoID string, userID string) error           //Unlike a photo
+	HasLiked(photoID string, userID string) (bool, error) //Check if userID has liked a photo with the given ID
 
 	GetVersion() (string, error) // Get database version
 	Ping() error

@@ -144,6 +144,7 @@ func (rt *_router) DeletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	err = os.Remove(path + fileIdentifier)
 
 	if err != nil {
+		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
 		//Errore nella eliminazione del file, rollback
 		rt.baseLogger.WithError(err).Error("Error while deleting photo on disk")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
@@ -157,4 +158,76 @@ func (rt *_router) DeletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	// Commit
 	rt.db.Commit()
 
+}
+
+// TODO Commentare la funzione
+func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
+	// Check if the owner of the photo has not banned the user who is trying to access it
+	owner, err := rt.db.GetPhotoOwner(ps.ByName("photoID"))
+	if err != nil {
+		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	if owner != ctx.Token {
+		banned, err := rt.db.IsBanned(owner, ctx.Token)
+		if err != nil {
+			// ^Internal Server Error va aggiunto all'openapi come possibile risposta
+			rt.baseLogger.WithError(err).Error("Error while checking if user is banned")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		if banned {
+			// ^Forbidden va aggiunto all'openapi come possibile risposta
+			rt.baseLogger.WithError(err).Error("User is banned")
+			httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
+			return
+		}
+	}
+
+	// Get the file from the path /Photos
+	filename, err := rt.db.GetPhoto(ps.ByName("photoID"))
+
+	if errors.Is(err, errorDefinition.ErrPhotoNotFound) {
+		// ^Not Found va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.WithError(err).Error("Photo not found")
+		httpErrorResponse(rt, w, "Not Found, wrong ID", http.StatusNotFound)
+		return
+	} else if err != nil {
+		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.WithError(err).Error("Error while getting photo")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	// Open the file
+	file, err := os.Open(rt.photoPath + filename)
+	if err != nil {
+		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.WithError(err).Error("Error while opening photo")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+
+	//Copy the file to the response
+	// Aggiorna l'api.yaml con il tipo image/*
+	_, err = io.Copy(w, file)
+	//Controllare se copy invia anche l'http status code
+	if err != nil {
+		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.WithError(err).Error("Error while copying photo")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	// Log the action
+	rt.baseLogger.Info("Photo sent")
+	// Set the response code
+	// ^ Forse è meglio un altro codice di risposta?
+	// ! Perchè dice che è superfluo? Copy aggiunge anche lo stato http?
+	//w.WriteHeader(http.StatusOK)
 }

@@ -1,6 +1,9 @@
 package database
 
-import "WASA_Photo/service/errorDefinition"
+import (
+	"WASA_Photo/service/errorDefinition"
+	"database/sql"
+)
 
 // TODO Comment
 func (db *appdbimpl) UploadPhoto(owner string, filename string) error {
@@ -43,4 +46,16 @@ func (db *appdbimpl) GetPhotoOwner(photoID string) (string, error) {
 		return "", err
 	}
 	return owner, err
+}
+
+// TODO Comment
+func (db *appdbimpl) GetPhoto(photoID string) (string, error) {
+	var filename string
+	err := db.c.QueryRow("SELECT Filename FROM Photos WHERE PhotoID = ?", photoID).Scan(&filename)
+	if err == sql.ErrNoRows {
+		return "", errorDefinition.ErrPhotoNotFound
+	} else if err != nil {
+		return "", err
+	}
+	return filename, err
 }
