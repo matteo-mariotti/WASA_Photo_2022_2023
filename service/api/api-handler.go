@@ -39,6 +39,9 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.PUT("/users/:userID/photos/:photoID/likes/:likeID", rt.wrap(rt.wrapAuth(rt.like)))
 	rt.router.DELETE("/users/:userID/photos/:photoID/likes/:likeID", rt.wrap(rt.wrapAuth(rt.unlike)))
 
+	// Change username route
+	rt.router.PUT("/users/:userID/username", rt.wrap(rt.wrapAuth(rt.changeUsername)))
+
 	//Testing function
 	rt.router.GET("/testing", rt.test)
 

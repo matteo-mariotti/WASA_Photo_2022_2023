@@ -92,10 +92,98 @@ func New(db *sql.DB) (AppDatabase, error) {
 
 	// Check if table exists. If not, the database is empty, and we need to create the structure
 	var tableName string
-	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='example_table';`).Scan(&tableName)
+	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='Users';`).Scan(&tableName)
 	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE example_table (id INTEGER NOT NULL PRIMARY KEY, name TEXT);`
+		sqlStmt := `PRAGMA foreign_keys = ON;
+
+		BEGIN TRANSACTION;
+		
+		create table Users
+		(
+			UserID   TEXT not null
+				constraint Users_pk
+					primary key,
+			UserName TEXT
+		);
+		
+		create table Bans
+		(
+			UserA TEXT,
+			UserB TEXT,
+			constraint Bans_pk
+				primary key (UserA, UserB),
+			constraint Bans_Users_null_null_fk
+				foreign key (UserA, UserB) references Users (UserID, UserID)
+					on update cascade on delete cascade
+		);
+		
+		create table Followers
+		(
+			UserA TEXT,
+			UserB TEXT,
+			constraint Followers_pk
+				primary key (UserA, UserB),
+			constraint Followers_Users_null_null_fk
+				foreign key (UserA, UserB) references Users (UserID, UserID)
+					on update cascade on delete cascade
+		);
+		
+		create table Photos
+		(
+			PhotoID  INTEGER
+				constraint Photos_pk
+					primary key autoincrement,
+			Owner    TEXT
+				constraint Photos_Users_UserID_fk
+					references Users
+					on update cascade on delete cascade,
+			Filename TEXT not null
+		);
+		
+		create table Comments
+		(
+			CommentID INTEGER
+				constraint Comments_pk
+					primary key autoincrement,
+			PhotoID   INTEGER not null
+				references Photos
+				on update cascade on delete cascade,
+			UserID    TEXT
+				constraint Comments_Users
+					references Users
+					on update cascade on delete cascade,
+			Text      TEXT    not null
+		);
+		
+		create table Likes
+		(
+			UserID  TEXT
+				constraint Likes_Users_UserID_fk
+					references Users
+					on update cascade on delete cascade,
+			PhotoID INTEGER
+				constraint Likes_Photos_PhotoID_fk
+					references Photos
+					on update cascade on delete cascade,
+			constraint Likes_pk
+				primary key (UserID, PhotoID)
+		);
+		
+		create table example_table
+		(
+			id   INTEGER not null
+				primary key,
+			name TEXT
+		);
+		
+		COMMIT;
+		`
 		_, err = db.Exec(sqlStmt)
+		if err != nil {
+			return nil, fmt.Errorf("error creating database structure: %w", err)
+		}
+	} else {
+		_, err := db.Exec("PRAGMA foreign_keys = ON")
 		if err != nil {
 			return nil, fmt.Errorf("error creating database structure: %w", err)
 		}
