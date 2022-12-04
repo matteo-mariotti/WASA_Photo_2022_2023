@@ -21,8 +21,8 @@ func (rt *_router) Handler() http.Handler {
 	rt.router.DELETE("/users/:userID/bans/:blockedID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.unbanUser))))
 
 	//Follow/Unfollow route
-	rt.router.PUT("/users/:userID/followers/:followerID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.followUser))))
-	rt.router.DELETE("/users/:userID/followers/:followerID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.unfollowUser))))
+	rt.router.PUT("/users/:userID/followers/:followerID", rt.wrap(rt.wrapAuth(rt.followUser)))
+	rt.router.DELETE("/users/:userID/followers/:followerID", rt.wrap(rt.wrapAuth(rt.unfollowUser)))
 
 	//Upload/Delete photo route
 	rt.router.POST("/users/:userID/photos", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.UploadPhoto))))
@@ -34,6 +34,8 @@ func (rt *_router) Handler() http.Handler {
 
 	//Get photo route
 	rt.router.GET("/photos/:photoID", rt.wrap(rt.wrapAuth(rt.getPhoto)))
+	rt.router.GET("/photos/:photoID/likes", rt.wrap(rt.wrapAuth(rt.getLikes)))
+	rt.router.GET("/photos/:photoID/comments", rt.wrap(rt.wrapAuth(rt.getComments)))
 
 	// Add/Delete like route
 	rt.router.PUT("/users/:userID/photos/:photoID/likes/:likeID", rt.wrap(rt.wrapAuth(rt.like)))

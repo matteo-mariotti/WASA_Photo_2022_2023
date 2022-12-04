@@ -84,10 +84,13 @@ components:
           $ref: "#/components/schemas/photoID"
         photoOwner:
           $ref: "#/components/schemas/identifier"
-        image/png:
+        datetime:
           type: string
-          format: binary
-          description: The photo
+          format: date-time
+          description: date and time of the upload
+          example: "2021-12-31 23:59:59"
+          maxLength: 20
+          minLength: 0
         likes:
           description: Number of likes
           type: integer
@@ -114,9 +117,12 @@ components:
           description: List of photos uploaded by the user
           type: array
           items:
-            $ref: "#/components/schemas/photoID"
+            $ref: "#/components/schemas/photo"
           maxItems: 30                                      #Limit the size of the array to 30 elements per chuck
           minItems: 0
+        photosCount:
+          description: Number of photos uploaded by the user
+          type: integer
         followers:
           description: Number of users following the user
           type: integer
@@ -190,6 +196,7 @@ paths:
                 $ref: "#/components/schemas/identifier"
 
   # TODO 1: Add the /home endpoint
+  # TODO Ancora da fare
   /home:
     get:
       description: Returns the photos of the users that the user is following (the stream)
@@ -207,7 +214,7 @@ paths:
                 items:
                   $ref: "#/components/schemas/photo"
                 minItems: 0
-                maxItems: 20 #The stream is limited to 20 photos per chunk of data
+                maxItems: 30 #The stream is limited to 20 photos per chunk of data
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
@@ -240,15 +247,98 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
 
+  /photos/{photoID}/likes:
+    get:
+      description: Returns the list of users that liked the photo with the specified identifier (photoID)
+      summary: Returns the list of users that liked the photo
+      tags: ["photo"]
+      operationId: getPhotoLikes
+      parameters:
+        - name: photoID
+          in: path
+          description: Photo identifier
+          required: true
+          schema:
+            $ref: "#/components/schemas/photoID"
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of users that liked the photo
+          content:
+            application/json:
+              schema:
+                description: List of users that liked the photo
+                type: array
+                items:
+                  $ref: "#/components/schemas/like"
+                minItems: 0
+                maxItems: 30 #The stream is limited to 30 likes per chuck of data
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /photos/{photoID}/comments:
+    get:
+      description: Returns the list of comments of the photo with the specified identifier (photoID)
+      summary: Returns the list of comments of the photo
+      tags: ["photo"]
+      operationId: getPhotoComments
+      parameters:
+        - name: photoID
+          in: path
+          description: Photo identifier
+          required: true
+          schema:
+            $ref: "#/components/schemas/photoID"
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: List of comments of the photo
+          content:
+            application/json:
+              schema:
+                description: List of comments of the photo
+                type: array
+                items:
+                  $ref: "#/components/schemas/comment"
+                minItems: 0
+                maxItems: 30 #The stream is limited to 30 comment per chuck of data
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
   #TODO Implement the /users like endpoint with pagination
 
   /users:
     get:
-      summary: Get the list of all users
+      summary: Get the list of all users that match the specified username (start with)
       tags: ["users"]
       description: |
-        Get all users
+        Get the list of all users that match the specified username (start with)
       operationId: getUsers
+      parameters:
+        - name: username
+          in: query
+          description: Username
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: Users list retrieved successfully
@@ -260,12 +350,12 @@ paths:
                 minItems: 0
                 maxItems: 100 #Limit the number of users returned in a single chunck to 100
                 items:
-                  $ref: "#/components/schemas/identifier"
+                  $ref: "#/components/schemas/username"
                 example:
                   [
-                    "6d459789-1a3b-4f0e-a64e-3ebd8e2e8e0b",
-                    "6d459789-1a3b-4f0e-a64e-3ebd8e2e8e1b",
-                    "6d459789-1a3b-4f0e-a64e-3ebd8e2e8e2b",
+                    "Maria",
+                    "Marc",
+                    "Elthon",
                   ]
 
         "401":
@@ -283,6 +373,14 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
+      - name: page
+        in: query
+        description: Photo's page number
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
     get:
       tags: ["users"]
       summary: Get the requested user profile

@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 )
@@ -17,6 +18,20 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	// Parsing the parameters from the request
 	userProfile := ps.ByName("userID")
+
+	// Get page number from query string
+	page := r.URL.Query().Get("page")
+
+	// Convert page number to int
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		// If the page number is not a number, set it to 1
+		pageInt = 0
+	}
+
+	if pageInt < 0 {
+		pageInt = 0
+	}
 
 	// Check if the user I'm trying to look at has blocked me
 	isBanned, err := rt.db.IsBanned(userProfile, ctx.Token)
@@ -88,33 +103,34 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	}
 
 	// Set the number of photos
-	profileResponse.PhotoNumber = photoNumber
-	/*
-		// Get the photos (using the offset)
-		photos, err := rt.db.GetPhotos(userProfile, 0)
+	profileResponse.PhotoCount = photoNumber
 
-		if err != nil {
-			//^Aggiungere InternalServerError come possibile risposta all'openapi
-			rt.baseLogger.Error("Error while getting the photos of user " + userProfile)
-			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
+	// Get the photos (using the offset)
+	photos, err := rt.db.GetPhotos(userProfile, pageInt*30)
 
-		// Set the photos
-		profileResponse.Photo = photos
-	*/
-	//Prepare the JSON
+	if err == sql.ErrNoRows {
+		//^Aggiungere NotFound come possibile risposta all'openapi
+		rt.baseLogger.Error("No more photos are available in this user profile:  " + userProfile)
+		httpErrorResponse(rt, w, "404 Not Found", http.StatusNotFound)
+		return
+	} else if err != nil {
+		//^Aggiungere InternalServerError come possibile risposta all'openapi
+		rt.baseLogger.Error("Error while getting the photos of user " + userProfile)
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	// Set the photos
+	profileResponse.Photo = photos
+
+	//Prepare the JSON (it also sends the response to the client with the correct status code)
 	err = json.NewEncoder(w).Encode(profileResponse)
 
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("Error enconding")
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-
-	//^Aggiungere StatusNoContent come possibile risposta all'openapi
-	// If everything went well, return 204
-	w.WriteHeader(http.StatusOK)
 
 	//Log the action
 	rt.baseLogger.Info("User " + ctx.Token + " has successfully got the profile of user " + userProfile)

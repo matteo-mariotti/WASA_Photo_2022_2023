@@ -11,7 +11,9 @@ type Comment struct {
 }
 
 type Photo struct {
-	PhotoID        string `json:"photoID"`
+	PhotoID        int    `json:"id"`
+	Owner          string `json:"photoOwner"`
+	Date           string `json:"date"`
 	LikesNumber    int    `json:"likes"`
 	CommentsNumber int    `json:"comments"`
 }

@@ -3,11 +3,14 @@ package api
 import (
 	"WASA_Photo/service/api/reqcontext"
 	"WASA_Photo/service/errorDefinition"
+	"WASA_Photo/service/structs"
 	"database/sql"
+	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/gofrs/uuid"
 	"github.com/julienschmidt/httprouter"
@@ -111,6 +114,7 @@ func (rt *_router) DeletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		// ^Not Found va aggiunto all'openapi come possibile risposta
 		rt.baseLogger.WithError(err).Error("Photo not found")
 		httpErrorResponse(rt, w, "Not Found, wrong ID", http.StatusNotFound)
+		rt.db.Rollback()
 		return
 	} else if err != nil {
 		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
@@ -230,4 +234,104 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 	// ^ Forse è meglio un altro codice di risposta?
 	// ! Perchè dice che è superfluo? Copy aggiunge anche lo stato http?
 	//w.WriteHeader(http.StatusOK)
+}
+
+func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+	var likesResponse []structs.Like
+
+	// Parsing the parameters from the request
+	photoID := ps.ByName("photoID")
+
+	// Get page number from query string
+	page := r.URL.Query().Get("page")
+
+	// Convert page number to int
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		// If the page number is not a number, set it to 1
+		pageInt = 0
+	}
+
+	if pageInt < 0 {
+		pageInt = 0
+	}
+
+	// If not, get the profile
+	likesResponse, err = rt.db.GetLikes(photoID, pageInt*30)
+
+	if err == sql.ErrNoRows {
+		//^Aggiungere NotFound come possibile risposta all'openapi
+		rt.baseLogger.Error("No more likes are available")
+		httpErrorResponse(rt, w, "No more likes", http.StatusNotFound)
+		return
+	} else if err != nil {
+		//^Aggiungere InternalServerError come possibile risposta all'openapi
+		rt.baseLogger.Error("Error while getting the likes")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	//Prepare the JSON (it also sends the response to the client with the correct status code)
+	err = json.NewEncoder(w).Encode(likesResponse)
+
+	if err != nil {
+		rt.baseLogger.WithError(err).Warning("Error enconding")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	//Log the action
+	rt.baseLogger.Info("User " + ctx.Token + " has successfully got the likes of photo " + photoID)
+	return
+}
+
+func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
+	var likesResponse []structs.Comment
+
+	// Parsing the parameters from the request
+	photoID := ps.ByName("photoID")
+
+	// Get page number from query string
+	page := r.URL.Query().Get("page")
+
+	// Convert page number to int
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		// If the page number is not a number, set it to 1
+		pageInt = 0
+	}
+
+	if pageInt < 0 {
+		pageInt = 0
+	}
+
+	// If not, get the profile
+	likesResponse, err = rt.db.GetComments(photoID, pageInt*30)
+
+	if err == sql.ErrNoRows {
+		//^Aggiungere NotFound come possibile risposta all'openapi
+		rt.baseLogger.Error("No more comments are available")
+		httpErrorResponse(rt, w, "No more comments", http.StatusNotFound)
+		return
+	} else if err != nil {
+		//^Aggiungere InternalServerError come possibile risposta all'openapi
+		rt.baseLogger.Error("Error while getting the comments")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	//Prepare the JSON (it also sends the response to the client with the correct status code)
+	err = json.NewEncoder(w).Encode(likesResponse)
+
+	if err != nil {
+		rt.baseLogger.WithError(err).Warning("Error enconding")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	//Log the action
+	rt.baseLogger.Info("User " + ctx.Token + " has successfully got the comments of photo " + photoID)
+	return
+
 }

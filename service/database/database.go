@@ -31,6 +31,7 @@ Then you can initialize the AppDatabase and pass it to the api package.
 package database
 
 import (
+	"WASA_Photo/service/structs"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -65,10 +66,12 @@ type AppDatabase interface {
 	IsFollowing(userA string, userB string) (bool, error) // Check if userA is following userB
 
 	//Photo functions
-	UploadPhoto(owner string, filename string) error // Upload a photo
-	DeletePhoto(photoID string) (string, error)      // Delete a photo
-	GetPhotoOwner(photoID string) (string, error)    // Get the owner of a photo
-	GetPhoto(photoID string) (string, error)         // Get the filename of a photo giver its ID
+	UploadPhoto(owner string, filename string) error                   // Upload a photo
+	DeletePhoto(photoID string) (string, error)                        // Delete a photo
+	GetPhotoOwner(photoID string) (string, error)                      // Get the owner of a photo
+	GetPhoto(photoID string) (string, error)                           // Get the filename of a photo giver its ID
+	GetLikes(photoID string, offset int) ([]structs.Like, error)       // Get the list of users that liked a photo
+	GetComments(photoID string, offset int) ([]structs.Comment, error) // Get the list of comments of a photo
 
 	//Comment functions
 	Comment(photoID string, userID string, text string) error        // Comment a photo
@@ -80,11 +83,11 @@ type AppDatabase interface {
 	HasLiked(photoID string, userID string) (bool, error) //Check if userID has liked a photo with the given ID
 
 	//Profile functions
-	GetName(userID string) (string, error)              // Get the username from the user ID
-	GetFollowerNumber(userID string) (int, error)       // Get the number of followers of a user
-	GetFollowingNumber(userID string) (int, error)      // Get the number of users a user is following
-	GetPhotosNumber(userID string) (int, error)         // Get the number of photos a user has uploaded
-	GetPhotos(userID string, offset int) ([]int, error) // Get the photos of a user
+	GetName(userID string) (string, error)                        // Get the username from the user ID
+	GetFollowerNumber(userID string) (int, error)                 // Get the number of followers of a user
+	GetFollowingNumber(userID string) (int, error)                // Get the number of users a user is following
+	GetPhotosNumber(userID string) (int, error)                   // Get the number of photos a user has uploaded
+	GetPhotos(userID string, offset int) ([]structs.Photo, error) // Get the photos of a user
 
 	GetVersion() (string, error) // Get database version
 	Ping() error

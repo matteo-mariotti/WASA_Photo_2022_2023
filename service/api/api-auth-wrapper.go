@@ -15,6 +15,12 @@ func (rt *_router) wrapAuth(fn httpRouterHandler) func(http.ResponseWriter, *htt
 
 		//Check if the token is valid
 		token := r.Header.Get("Authorization")
+		//Check if the token is not empty
+		if token == "" {
+			//^Aggiungere Unauthorized come possibile risposta all'openapi
+			httpErrorResponse(rt, w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
 		splitToken := strings.Split(token, "Bearer ")
 		token = splitToken[1]
 		result, err := rt.db.ValidToken(token)
