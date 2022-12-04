@@ -197,7 +197,7 @@ paths:
 
   # TODO 1: Add the /home endpoint
   # TODO Ancora da fare
-  /home:
+  /stream:
     get:
       description: Returns the photos of the users that the user is following (the stream)
       summary: Returns the stream

@@ -50,6 +50,9 @@ func (rt *_router) Handler() http.Handler {
 	// Get users filtered list
 	rt.router.GET("/users", rt.wrap(rt.wrapAuth(rt.getUsers)))
 
+	// Stream route
+	rt.router.GET("/stream", rt.wrap(rt.wrapAuth(rt.stream)))
+
 	//Testing function
 	rt.router.GET("/testing", rt.test)
 

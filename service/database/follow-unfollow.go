@@ -44,3 +44,23 @@ func (db *appdbimpl) IsFollowing(userA string, userB string) (bool, error) {
 	err := row.Scan(&count)
 	return count > 0, err
 }
+
+// GetFollowing is a function that returns a list of users that userID is following, internal use only, no pagination
+func (db *appdbimpl) GetFollowing(userID string) ([]string, error) {
+	var following []string
+	rows, err := db.c.Query("SELECT UserB FROM Followers WHERE UserA=?", userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var follow string
+		err := rows.Scan(&follow)
+		if err != nil {
+			return nil, err
+		}
+		following = append(following, follow)
+	}
+	return following, nil
+}
