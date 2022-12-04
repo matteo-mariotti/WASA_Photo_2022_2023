@@ -89,6 +89,9 @@ type AppDatabase interface {
 	GetPhotosNumber(userID string) (int, error)                   // Get the number of photos a user has uploaded
 	GetPhotos(userID string, offset int) ([]structs.Photo, error) // Get the photos of a user
 
+	// Search functions
+	GetUsers(start string, offset int) ([]string, error) // Get the list of users that start with the given string
+
 	GetVersion() (string, error) // Get database version
 	Ping() error
 }
