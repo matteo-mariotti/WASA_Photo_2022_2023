@@ -66,12 +66,12 @@ type AppDatabase interface {
 	IsFollowing(userA string, userB string) (bool, error) // Check if userA is following userB
 
 	//Photo functions
-	UploadPhoto(owner string, filename string) error                   // Upload a photo
-	DeletePhoto(photoID string) (string, error)                        // Delete a photo
-	GetPhotoOwner(photoID string) (string, error)                      // Get the owner of a photo
-	GetPhoto(photoID string) (string, error)                           // Get the filename of a photo giver its ID
-	GetLikes(photoID string, offset int) ([]structs.Like, error)       // Get the list of users that liked a photo
-	GetComments(photoID string, offset int) ([]structs.Comment, error) // Get the list of comments of a photo
+	UploadPhoto(owner string, filename string) error                                          // Upload a photo
+	DeletePhoto(photoID string) (string, error)                                               // Delete a photo
+	GetPhotoOwner(photoID string) (string, error)                                             // Get the owner of a photo
+	GetPhoto(photoID string) (string, error)                                                  // Get the filename of a photo giver its ID
+	GetLikes(photoID string, offset int, requestingUser string) ([]structs.Like, error)       // Get the list of users that liked a photo
+	GetComments(photoID string, offset int, requestingUser string) ([]structs.Comment, error) // Get the list of comments of a photo
 
 	//Comment functions
 	Comment(photoID string, userID string, text string) error        // Comment a photo

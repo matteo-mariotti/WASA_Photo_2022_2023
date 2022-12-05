@@ -26,13 +26,27 @@ func (rt *_router) comment(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	if err != nil {
 		//^Aggiungere InternalServerError come possibile risposta all'openapi
-		rt.baseLogger.Error("Error while checking if user " + userID + " had already banned user " + ctx.Token)
+		rt.baseLogger.Error("Error while checking if user " + userID + " has banned user " + ctx.Token)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	} else if isBanned {
 		//^Aggiungere Forbidden come possibile risposta all'openapi
-		rt.baseLogger.Error("Unable to follow: userB has banned userA. userA: " + userID + " userB: " + ctx.Token)
+		rt.baseLogger.Error("Unable to comment: userB has banned userA. userA: " + userID + " userB: " + ctx.Token)
 		httpErrorResponse(rt, w, "You cannot unban a person which wasn't banned", http.StatusForbidden)
+		return
+	}
+
+	isBanned, err = rt.db.IsBanned(ctx.Token, userID)
+
+	if err != nil {
+		//^Aggiungere InternalServerError come possibile risposta all'openapi
+		rt.baseLogger.Error("Error while checking if user " + userID + " has banned user " + ctx.Token)
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	} else if isBanned {
+		//^Aggiungere Forbidden come possibile risposta all'openapi
+		rt.baseLogger.Error("Unable to comment: userA has banned userB. userA: " + userID + " userB: " + ctx.Token)
+		httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
 		return
 	}
 

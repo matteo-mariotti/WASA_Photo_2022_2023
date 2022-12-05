@@ -33,7 +33,7 @@ func (rt *_router) stream(w http.ResponseWriter, r *http.Request, ps httprouter.
 
 	if err != nil {
 		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
-		rt.baseLogger.Error("Error while getting following")
+		rt.baseLogger.WithError(err).Error("Error while getting following")
 		httpErrorResponse(rt, w, "Internal Sever Error", http.StatusBadRequest)
 		return
 	}

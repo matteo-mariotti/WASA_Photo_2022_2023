@@ -178,13 +178,14 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 
 	if owner != ctx.Token {
 		banned, err := rt.db.IsBanned(owner, ctx.Token)
+		bannedViceversa, err := rt.db.IsBanned(ctx.Token, owner)
 		if err != nil {
 			// ^Internal Server Error va aggiunto all'openapi come possibile risposta
 			rt.baseLogger.WithError(err).Error("Error while checking if user is banned")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
-		if banned {
+		if banned || bannedViceversa {
 			// ^Forbidden va aggiunto all'openapi come possibile risposta
 			rt.baseLogger.WithError(err).Error("User is banned")
 			httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
@@ -237,6 +238,7 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 }
 
 func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
 	var likesResponse []structs.Like
 
 	// Parsing the parameters from the request
@@ -256,8 +258,35 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 		pageInt = 0
 	}
 
+	// Check if the owner of the photo has not banned the user who is trying to access it
+	owner, err := rt.db.GetPhotoOwner(ps.ByName("photoID"))
+	if err != nil {
+		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	if owner != ctx.Token {
+		banned, err := rt.db.IsBanned(owner, ctx.Token)
+		bannedViceversa, err := rt.db.IsBanned(ctx.Token, owner)
+
+		if err != nil {
+			// ^Internal Server Error va aggiunto all'openapi come possibile risposta
+			rt.baseLogger.WithError(err).Error("Error while checking if user is banned")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		if banned || bannedViceversa {
+			// ^Forbidden va aggiunto all'openapi come possibile risposta
+			rt.baseLogger.WithError(err).Error("User is banned")
+			httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
+			return
+		}
+	}
+
 	// If not, get the profile
-	likesResponse, err = rt.db.GetLikes(photoID, pageInt*30)
+	likesResponse, err = rt.db.GetLikes(photoID, pageInt*30, ctx.Token)
 
 	if err == sql.ErrNoRows {
 		//^Aggiungere NotFound come possibile risposta all'openapi
@@ -287,10 +316,37 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 
 func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	var likesResponse []structs.Comment
+	var commentsResponse []structs.Comment
 
 	// Parsing the parameters from the request
 	photoID := ps.ByName("photoID")
+
+	// Check if the owner of the photo has not banned the user who is trying to access it
+	owner, err := rt.db.GetPhotoOwner(ps.ByName("photoID"))
+	if err != nil {
+		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
+		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	if owner != ctx.Token {
+		banned, err := rt.db.IsBanned(owner, ctx.Token)
+		bannedViceversa, err := rt.db.IsBanned(ctx.Token, owner)
+
+		if err != nil {
+			// ^Internal Server Error va aggiunto all'openapi come possibile risposta
+			rt.baseLogger.WithError(err).Error("Error while checking if user is banned")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		if banned || bannedViceversa {
+			// ^Forbidden va aggiunto all'openapi come possibile risposta
+			rt.baseLogger.WithError(err).Error("User is banned")
+			httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
+			return
+		}
+	}
 
 	// Get page number from query string
 	page := r.URL.Query().Get("page")
@@ -307,7 +363,7 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// If not, get the profile
-	likesResponse, err = rt.db.GetComments(photoID, pageInt*30)
+	commentsResponse, err = rt.db.GetComments(photoID, pageInt*30, ctx.Token)
 
 	if err == sql.ErrNoRows {
 		//^Aggiungere NotFound come possibile risposta all'openapi
@@ -322,7 +378,7 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	//Prepare the JSON (it also sends the response to the client with the correct status code)
-	err = json.NewEncoder(w).Encode(likesResponse)
+	err = json.NewEncoder(w).Encode(commentsResponse)
 
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("Error enconding")

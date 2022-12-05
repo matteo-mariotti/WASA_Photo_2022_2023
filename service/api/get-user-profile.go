@@ -35,16 +35,17 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	// Check if the user I'm trying to look at has blocked me
 	isBanned, err := rt.db.IsBanned(userProfile, ctx.Token)
+	isBannedViceversa, err := rt.db.IsBanned(ctx.Token, userProfile)
 
 	if err != nil {
 		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while checking if user " + userProfile + " has banned user " + ctx.Token)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
-	} else if isBanned {
+	} else if isBanned || isBannedViceversa {
 		//^Aggiungere Forbidden come possibile risposta all'openapi
-		rt.baseLogger.Error("Unable to get the profile: userB has banned userA. userB: " + userProfile + " userA: " + ctx.Token)
-		httpErrorResponse(rt, w, "You cannot get the profile of a user that has blocked you", http.StatusForbidden)
+		rt.baseLogger.Error("Unable to get the profile: userB has banned userA. (or viceversa) userB: " + userProfile + " userA: " + ctx.Token)
+		httpErrorResponse(rt, w, "Fobidden", http.StatusForbidden)
 		return
 	}
 

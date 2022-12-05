@@ -29,7 +29,22 @@ func (rt *_router) like(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 	} else if isBanned {
 		//^Aggiungere Forbidden come possibile risposta all'openapi
 		rt.baseLogger.Error("Unable to follow: userB has banned userA. userA: " + photoOwner + " userB: " + ctx.Token)
-		httpErrorResponse(rt, w, "You cannot unban a person which wasn't banned", http.StatusForbidden)
+		httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
+		return
+	}
+
+	// Check if the user I'm trying to like a photo of a user who has blocked me
+	isBanned, err = rt.db.IsBanned(photoOwner, ctx.Token)
+
+	if err != nil {
+		//^Aggiungere InternalServerError come possibile risposta all'openapi
+		rt.baseLogger.Error("Error while checking if user " + photoOwner + " had already banned user " + ctx.Token)
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	} else if isBanned {
+		//^Aggiungere Forbidden come possibile risposta all'openapi
+		rt.baseLogger.Error("Unable to follow: userA has banned userB. userA: " + photoOwner + " userB: " + ctx.Token)
+		httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
 		return
 	}
 

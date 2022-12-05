@@ -36,11 +36,25 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	} else if isBanned {
 		//^Aggiungere Forbidden come possibile risposta all'openapi
 		rt.baseLogger.Error("Unable to follow: userID has banned followerID. userID: " + userID + " followerID: " + followerID)
-		httpErrorResponse(rt, w, "You cannot follow a person which has banned you", http.StatusForbidden)
+		httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
 		return
 	}
 
-	// Check if I am trying to unblock myself
+	isBanned, err = rt.db.IsBanned(followerID, userID)
+
+	if err != nil {
+		//^Aggiungere InternalServerError come possibile risposta all'openapi
+		rt.baseLogger.Error("Error while checking if user " + followerID + " has banned user " + userID)
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	} else if isBanned {
+		//^Aggiungere Forbidden come possibile risposta all'openapi
+		rt.baseLogger.Error("Unable to follow: followerID has banned userID. userID: " + userID + " followerID: " + followerID)
+		httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
+		return
+	}
+
+	// Check if I am trying to follow myself
 	if userID == followerID {
 		//^Aggiungere StatusBadRequest come possibile risposta all'openapi
 		rt.baseLogger.Error("User is trying to follow himself: " + ctx.Token)
@@ -101,7 +115,7 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	// Check if I am trying to unblock myself
+	// Check if I am trying to unfollow myself
 	if userID == followerID {
 		//^Aggiungere StatusBadRequest come possibile risposta all'openapi
 		rt.baseLogger.Error("User is trying to unfollow himself: " + ctx.Token)

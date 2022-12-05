@@ -62,7 +62,7 @@ func (db *appdbimpl) GetPhoto(photoID string) (string, error) {
 }
 
 // TODO Comment
-func (db *appdbimpl) GetLikes(photoID string, offset int) ([]structs.Like, error) {
+func (db *appdbimpl) GetLikes(photoID string, offset int, userRequesting string) ([]structs.Like, error) {
 	var likes []structs.Like
 
 	rows, err := db.c.Query("SELECT UserID FROM Likes WHERE PhotoID=? LIMIT 30 OFFSET ?", photoID, offset)
@@ -76,6 +76,16 @@ func (db *appdbimpl) GetLikes(photoID string, offset int) ([]structs.Like, error
 		if err != nil {
 			return nil, err
 		}
+
+		res, err := db.IsBanned(like.UserID, userRequesting)
+		res2, err := db.IsBanned(userRequesting, like.UserID)
+
+		if (res || res2) && err == nil {
+			continue
+		} else if err != nil {
+			return nil, err
+		}
+
 		likes = append(likes, like)
 	}
 	if len(likes) == 0 {
@@ -85,7 +95,7 @@ func (db *appdbimpl) GetLikes(photoID string, offset int) ([]structs.Like, error
 }
 
 // TODO Comment
-func (db *appdbimpl) GetComments(photoID string, offset int) ([]structs.Comment, error) {
+func (db *appdbimpl) GetComments(photoID string, offset int, userRequesting string) ([]structs.Comment, error) {
 	var comments []structs.Comment
 
 	rows, err := db.c.Query("SELECT CommentID,UserID,Text FROM Comments WHERE PhotoID=? LIMIT 30 OFFSET ?", photoID, offset)
@@ -97,6 +107,14 @@ func (db *appdbimpl) GetComments(photoID string, offset int) ([]structs.Comment,
 		var comment structs.Comment
 		err = rows.Scan(&comment.CommentID, &comment.UserID, &comment.Text)
 		if err != nil {
+			return nil, err
+		}
+		res, err := db.IsBanned(comment.UserID, userRequesting)
+		res2, err := db.IsBanned(userRequesting, comment.UserID)
+
+		if (res || res2) && err == nil {
+			continue
+		} else if err != nil {
 			return nil, err
 		}
 		comments = append(comments, comment)
