@@ -2,7 +2,7 @@ package database
 
 import "database/sql"
 
-// GetName is an example that shows you how to query data
+// GetUsers is a function that returns a list of users matching the given search string
 func (db *appdbimpl) GetUsers(start string, offset int) ([]string, error) {
 	var userNames []string
 	rows, err := db.c.Query("SELECT UserName From Users WHERE UserName LIKE ? LIMIT 30 OFFSET ?", start+"%", offset)

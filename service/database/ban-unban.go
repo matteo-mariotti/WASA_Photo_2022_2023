@@ -13,7 +13,7 @@ func (db *appdbimpl) BanUser(userA string, userB string) error {
 	if err != nil {
 		return err
 	} else if affected == 0 {
-		// If no rows were affected, it means that the user was not banned
+		// If no rows were affected, it means that I wansn't able to ban the user
 		return errorDefinition.ErrUserNotFound
 	}
 	return nil

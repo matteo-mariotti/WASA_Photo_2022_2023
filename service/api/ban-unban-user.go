@@ -9,7 +9,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-// TODO Commentare la funzione
+// banUser parses the request extracting the user id to ban and the user id of the user who is banning the user then,
+// after doing some checks, it bans the user
 func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// Parsing the parameters from the request
@@ -18,7 +19,6 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	// Check if I am trying to ban myself
 	if userA == userB {
-		// ^StatusBadRequest va aggiunto all'openapi come possibile risposta
 		rt.baseLogger.Error("User is trying to ban himself: " + ctx.Token)
 		httpErrorResponse(rt, w, "You cannot ban yourself", http.StatusBadRequest)
 		return
@@ -27,14 +27,11 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 	// Check if the userB is already banned by userA
 	isBanned, err := rt.db.IsBanned(userA, userB)
 
-	// ^Internal Server Error va aggiunto all'openapi come possibile risposta
 	if err != nil {
 		rt.baseLogger.Error("Error while checking if user " + userA + " has already banned user " + userB)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
-	}
-
-	if isBanned {
+	} else if isBanned {
 		rt.baseLogger.Error("User " + userA + " had already banned user " + userB)
 		httpErrorResponse(rt, w, "You cannot ban a person which was already banned", http.StatusBadRequest)
 		return
@@ -44,18 +41,15 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 	err = rt.db.BanUser(userA, userB)
 
 	if errors.Is(err, errorDefinition.ErrUserNotFound) {
-		//^Aggiungere StatusNotFound come possibile risposta all'openapi
 		rt.baseLogger.Error("User " + userA + " or " + userB + " not found")
 		httpErrorResponse(rt, w, "UserA or UserB not found", http.StatusNotFound)
 		return
 	} else if err != nil {
-		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while banning user " + userB + " from user " + userA)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
-	//^Aggiungere StatusNoContent come possibile risposta all'openapi
 	// If everything went well, return 204
 	w.WriteHeader(http.StatusNoContent)
 
@@ -65,8 +59,8 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 
 }
 
-// unbanUser parses the request extracting the user id to unban and the user id of the user who is unbaning the user then, after doing some checks, it unban the user
-// TODO Finire di commentare con cosa ritorna
+// unbanUser parses the request extracting the user id to unban and the user id of the user who is unbaning the user then,
+// after doing some checks, it unbans the user
 func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// Parsing the parameters from the request
@@ -85,12 +79,10 @@ func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprout
 	isBanned, err := rt.db.IsBanned(userA, userB)
 
 	if err != nil {
-		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while checking if user " + userA + " had already banned user " + userB)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	} else if !isBanned {
-		//^Aggiungere StatusBadRequest come possibile risposta all'openapi
 		rt.baseLogger.Error("User " + userA + " had not banned user " + userB)
 		httpErrorResponse(rt, w, "You cannot unban a person which wasn't banned", http.StatusBadRequest)
 		return
@@ -100,19 +92,16 @@ func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprout
 	err = rt.db.UnbanUser(userA, userB)
 
 	if errors.Is(err, errorDefinition.ErrUserNotFound) {
-		//^Aggiungere StatusNotFound come possibile risposta all'openapi
 		rt.baseLogger.Error("User " + userA + " or " + userB + " not found")
 		httpErrorResponse(rt, w, "User not found", http.StatusNotFound)
 		return
 	} else if err != nil {
-		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while unbanning user " + userB + " from user " + userA)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	// If the operation was successful return the status code 204 No Content
-	//^Aggiungere StatusNoContent come possibile risposta all'openapi
 	w.WriteHeader(http.StatusNoContent)
 
 	//Log the action

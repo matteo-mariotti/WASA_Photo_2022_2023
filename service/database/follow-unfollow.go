@@ -13,7 +13,7 @@ func (db *appdbimpl) FollowUser(userA string, userB string) error {
 	if err != nil {
 		return err
 	} else if affected == 0 {
-		// If no rows were affected, it means that the user was not banned
+		// If no rows were affected, it means that I wansn't able to insert the row
 		return errorDefinition.ErrUserNotFound
 	}
 	return nil
@@ -30,7 +30,6 @@ func (db *appdbimpl) UnfollowUser(userA string, userB string) error {
 	if err != nil {
 		return err
 	} else if affected == 0 {
-		// If no rows were affected, it means that the user was not banned
 		return errorDefinition.ErrUserNotFound
 	}
 	return nil

@@ -2,7 +2,7 @@ package database
 
 import "WASA_Photo/service/errorDefinition"
 
-// TODO Comment this function
+// Like is a function that adds a like to a photo
 func (db *appdbimpl) Like(photoID string, userID string) error {
 	_, err := db.c.Exec("INSERT INTO Likes (UserID, PhotoID) VALUES (?,?)", userID, photoID)
 	if err != nil {
@@ -11,7 +11,7 @@ func (db *appdbimpl) Like(photoID string, userID string) error {
 	return nil
 }
 
-// TODO Comment this function
+// Unlike is a function that removes a like from a photo
 func (db *appdbimpl) Unlike(photoID string, userID string) error {
 	result, err := db.c.Exec("DELETE FROM Likes WHERE UserID=? AND PhotoID=?", userID, photoID)
 	if err != nil {
@@ -22,12 +22,12 @@ func (db *appdbimpl) Unlike(photoID string, userID string) error {
 	if err != nil {
 		return err
 	} else if affected == 0 {
-		// If no rows were affected, it means that the request is wrong
 		return errorDefinition.ErrLikeNotFound
 	}
 	return nil
 }
 
+// HasLiked is a function that checks if a user has liked a photo
 func (db *appdbimpl) HasLiked(photoID string, userID string) (bool, error) {
 	var count int
 	row := db.c.QueryRow("SELECT COUNT(*) FROM Likes WHERE UserID=? AND PhotoID=?", userID, photoID)

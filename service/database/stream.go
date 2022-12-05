@@ -6,6 +6,7 @@ import (
 	"strconv"
 )
 
+// GetFollowingPhotosChrono is a function that returns the photos of the users that the user is following in reverse chronological order
 func (db *appdbimpl) GetFollowingPhotosChrono(following []string, offset int) ([]structs.Photo, error) {
 	type photoPartialInfo struct {
 		PhotoID int

@@ -11,7 +11,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-// TODO Commentare la funzione
+// getUserProfile parses the request extracting the user id, then, after checking the ban status of the user, it returns the user profile
 func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	var profileResponse structs.Profile
@@ -35,16 +35,26 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	// Check if the user I'm trying to look at has blocked me
 	isBanned, err := rt.db.IsBanned(userProfile, ctx.Token)
-	isBannedViceversa, err := rt.db.IsBanned(ctx.Token, userProfile)
 
 	if err != nil {
-		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while checking if user " + userProfile + " has banned user " + ctx.Token)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
-	} else if isBanned || isBannedViceversa {
-		//^Aggiungere Forbidden come possibile risposta all'openapi
+	} else if isBanned {
 		rt.baseLogger.Error("Unable to get the profile: userB has banned userA. (or viceversa) userB: " + userProfile + " userA: " + ctx.Token)
+		httpErrorResponse(rt, w, "Fobidden", http.StatusForbidden)
+		return
+	}
+
+	// Check if I have blocked the user I'm trying to look at
+	isBannedViceversa, err := rt.db.IsBanned(ctx.Token, userProfile)
+
+	if err != nil {
+		rt.baseLogger.Error("Error while checking if user " + ctx.Token + " has banned user " + userProfile)
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	} else if isBannedViceversa {
+		rt.baseLogger.Error("Unable to get the profile: userA has banned userB. (or viceversa) userB: " + ctx.Token + " userA: " + userProfile)
 		httpErrorResponse(rt, w, "Fobidden", http.StatusForbidden)
 		return
 	}
@@ -53,12 +63,10 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	username, err := rt.db.GetName(userProfile)
 
 	if err == sql.ErrNoRows {
-		//^Aggiungere NotFound come possibile risposta all'openapi
 		rt.baseLogger.Error("This user does not exist!" + userProfile)
 		httpErrorResponse(rt, w, "UserID is not valid", http.StatusNotFound)
 		return
 	} else if err != nil {
-		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while getting the username of user " + userProfile)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -71,7 +79,6 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	follower, err := rt.db.GetFollowerNumber(userProfile)
 
 	if err != nil {
-		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while getting the number of followers of user " + userProfile)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -84,7 +91,6 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	following, err := rt.db.GetFollowingNumber(userProfile)
 
 	if err != nil {
-		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while getting the number of following of user " + userProfile)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -97,7 +103,6 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	photoNumber, err := rt.db.GetPhotosNumber(userProfile)
 
 	if err != nil {
-		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while getting the number of photos of user " + userProfile)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -110,12 +115,10 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	photos, err := rt.db.GetPhotos(userProfile, pageInt*30)
 
 	if err == sql.ErrNoRows {
-		//^Aggiungere NotFound come possibile risposta all'openapi
 		rt.baseLogger.Error("No more photos are available in this user profile:  " + userProfile)
 		httpErrorResponse(rt, w, "404 Not Found", http.StatusNotFound)
 		return
 	} else if err != nil {
-		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while getting the photos of user " + userProfile)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return

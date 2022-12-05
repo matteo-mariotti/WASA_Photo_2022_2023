@@ -13,27 +13,33 @@ import (
 func (rt *_router) wrapAuth(fn httpRouterHandler) func(http.ResponseWriter, *http.Request, httprouter.Params, reqcontext.RequestContext) {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-		//Check if the token is valid
-		token := r.Header.Get("Authorization")
+		token := r.Header.Get("Authorization") // Get the authorization header
+
 		//Check if the token is not empty
 		if token == "" {
-			//^Aggiungere Unauthorized come possibile risposta all'openapi
+			rt.baseLogger.Error("Auth header is empty")
 			httpErrorResponse(rt, w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
+
+		// Parse the header
 		splitToken := strings.Split(token, "Bearer ")
 		token = splitToken[1]
 		result, err := rt.db.ValidToken(token)
 
+		//Check if the token is valid
 		if err != nil && err != sql.ErrNoRows {
-			ctx.Logger.WithError(err).Error("Error while checking if the token is valid")
-			w.WriteHeader(http.StatusInternalServerError)
+			// If there is any error in the database (exept NoRows), return a 500 error
+			rt.baseLogger.WithError(err).Error("Error while checking if the token is valid")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
+
 		//Save the result in the context
 		ctx.Valid = result
 		ctx.Token = token
 
+		// Log the output
 		if result {
 			rt.baseLogger.Info("User is using a valid token: ", ctx.Token)
 		} else {
@@ -43,11 +49,11 @@ func (rt *_router) wrapAuth(fn httpRouterHandler) func(http.ResponseWriter, *htt
 		//Check if the user is using a valid token in the authentication header (if not, the request is blocked)
 		if !ctx.Valid {
 			rt.baseLogger.Error("Token is not valid: " + ctx.Token)
-			w.WriteHeader(http.StatusBadRequest)
+			httpErrorResponse(rt, w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
 
-		// Call the next handler in chain (usually, the handler function for the path)
-		fn(w, r, ps, ctx)
+		fn(w, r, ps, ctx) // Call the next handler in chain
+
 	}
 }

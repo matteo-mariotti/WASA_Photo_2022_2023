@@ -9,15 +9,16 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-// TODO Commentare la funzione
+// followUser is the function that handles the follow user request
 func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	// followerID wants to follow useID
+	// Note: followerID wants to follow useID
 
 	// Parsing the parameters from the request
 	userID := ps.ByName("userID")
 	followerID := ps.ByName("followerID")
 
+	// Check that the user is not acting as someone else
 	if followerID != ctx.Token {
 		//^Aggiungere Forbidden come possibile risposta all'openapi
 		rt.baseLogger.Error("User id trying to fact as someone else: " + ctx.Token)
@@ -29,26 +30,23 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	isBanned, err := rt.db.IsBanned(userID, followerID)
 
 	if err != nil {
-		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while checking if user " + userID + " has banned user " + followerID)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	} else if isBanned {
-		//^Aggiungere Forbidden come possibile risposta all'openapi
 		rt.baseLogger.Error("Unable to follow: userID has banned followerID. userID: " + userID + " followerID: " + followerID)
 		httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
 		return
 	}
 
+	// Checking the viceversa
 	isBanned, err = rt.db.IsBanned(followerID, userID)
 
 	if err != nil {
-		//^Aggiungere InternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while checking if user " + followerID + " has banned user " + userID)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	} else if isBanned {
-		//^Aggiungere Forbidden come possibile risposta all'openapi
 		rt.baseLogger.Error("Unable to follow: followerID has banned userID. userID: " + userID + " followerID: " + followerID)
 		httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
 		return
@@ -66,33 +64,29 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	isFollowing, err := rt.db.IsFollowing(followerID, userID)
 
 	if err != nil {
-		//^Aggiungere StatusInternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while checking if user " + followerID + " is following user " + userID)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	} else if isFollowing {
-		//^Aggiungere StatusBadRequest come possibile risposta all'openapi
 		rt.baseLogger.Error("FollowerID is already following userID. FollowerID: " + followerID + " userID: " + userID)
-		httpErrorResponse(rt, w, "You cannot follow a person which you are already following", http.StatusBadRequest)
+		httpErrorResponse(rt, w, "You cannot follow a person which you are already following", http.StatusConflict)
 		return
 	}
 
+	// Follow the user
 	err = rt.db.FollowUser(followerID, userID)
 
 	if errors.Is(err, errorDefinition.ErrUserNotFound) {
-		//^Aggiungere StatusBadRequest come possibile risposta all'openapi
 		rt.baseLogger.Error("UserID or followerID not found. UserID: " + userID + " followerID: " + followerID)
 		httpErrorResponse(rt, w, "UserID or FollowerID not found", http.StatusBadRequest)
 		return
 	} else if err != nil {
-		//^Aggiungere StatusInternalServerError come possibile risposta all'openapi
 		rt.baseLogger.WithError(err).Error("Error while following user. userID: " + userID + " followerID: " + followerID)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	// If everything went well, return 204
-	//^Aggiungere StatusNoContent come possibile risposta all'openapi
 	w.WriteHeader(http.StatusNoContent)
 
 	// Log the action
@@ -100,14 +94,14 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 	return
 }
 
-// TODO Commentare la funzione
-
-// TODO RISCRIERE LA FUNZIONE CON LE VARIABILI CHIAMATE DIVERSAMENTE PER NON CONFONDERLE CON LE ALTRE
+// unfollowUser is the function that handles the unfollow user request
 func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
 	// Parsing the parameters from the request
 	userID := ps.ByName("userID")
 	followerID := ps.ByName("followerID")
 
+	// Check that the user is not acting as someone else
 	if followerID != ctx.Token {
 		//^Aggiungere Forbidden come possibile risposta all'openapi
 		rt.baseLogger.Error("User id trying to act as someone else: " + ctx.Token)
@@ -123,42 +117,37 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 		return
 	}
 
-	// Check if userA is already following userB
+	// Check if userA is following userB
 	isFollowing, err := rt.db.IsFollowing(followerID, userID)
 
 	if errors.Is(err, errorDefinition.ErrUserNotFound) {
-		//^Aggiungere StatusBadRequest come possibile risposta all'openapi
 		rt.baseLogger.Error("UserID or followerID not found. UserID: " + userID + " followerID: " + followerID)
 		httpErrorResponse(rt, w, "UserID or followerID not found", http.StatusBadRequest)
 		return
 	} else if err != nil {
-		//^Aggiungere StatusInternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while checking if " + followerID + " is following " + userID)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	} else if !isFollowing {
-		//^Aggiungere StatusBadRequest come possibile risposta all'openapi
 		rt.baseLogger.Error("FollowerID is not following userID. userID: " + userID + " followerID: " + followerID)
-		httpErrorResponse(rt, w, "You cannot unfollow a person which you are not following", http.StatusBadRequest)
+		httpErrorResponse(rt, w, "You cannot unfollow a person which you are not following", http.StatusConflict)
 		return
 	}
 
+	// Unfollow the user
 	err = rt.db.UnfollowUser(followerID, userID)
 
 	if errors.Is(err, errorDefinition.ErrUserNotFound) {
-		//^Aggiungere StatusBadRequest come possibile risposta all'openapi
 		rt.baseLogger.Error("UserID or followerID not found. userID: " + userID + " followerID: " + followerID)
-		httpErrorResponse(rt, w, "UserID or followerID not found", http.StatusBadRequest)
+		httpErrorResponse(rt, w, "UserID or followerID not found", http.StatusNotFound)
 		return
 	} else if err != nil {
-		//^Aggiungere StatusInternalServerError come possibile risposta all'openapi
 		rt.baseLogger.Error("Error while unfollowing user. userID: " + userID + " followerID: " + followerID)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	// If everything went well, return 204
-	//^Aggiungere StatusNoContent come possibile risposta all'openapi
 	w.WriteHeader(http.StatusNoContent)
 
 	// Log the action

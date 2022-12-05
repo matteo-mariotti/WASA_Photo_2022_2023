@@ -6,7 +6,7 @@ import (
 	"database/sql"
 )
 
-// TODO Comment
+// UploadPhoto is a function that uploads a photo to the database
 func (db *appdbimpl) UploadPhoto(owner string, filename string) error {
 	result, err := db.c.Exec("INSERT INTO Photos (Owner, Filename, Date) VALUES (?, ?, datetime())", owner, filename)
 
@@ -20,7 +20,7 @@ func (db *appdbimpl) UploadPhoto(owner string, filename string) error {
 	return err
 }
 
-// TODO Comment
+// DeletePhoto is a function that deletes a photo from the database
 func (db *appdbimpl) DeletePhoto(photoID string) (string, error) {
 	var fileIdentifier string
 	err := db.c.QueryRow("SELECT Filename FROM Photos WHERE PhotoID = ?", photoID).Scan(&fileIdentifier)
@@ -39,7 +39,7 @@ func (db *appdbimpl) DeletePhoto(photoID string) (string, error) {
 	return fileIdentifier, err
 }
 
-// TODO Comment
+// GetPhotoOwner is a function that returns the owner of a photo
 func (db *appdbimpl) GetPhotoOwner(photoID string) (string, error) {
 	var owner string
 	err := db.c.QueryRow("SELECT Owner FROM Photos WHERE PhotoID = ?", photoID).Scan(&owner)
@@ -49,7 +49,7 @@ func (db *appdbimpl) GetPhotoOwner(photoID string) (string, error) {
 	return owner, err
 }
 
-// TODO Comment
+// GetPhoto is a function that returns a photo name from the database
 func (db *appdbimpl) GetPhoto(photoID string) (string, error) {
 	var filename string
 	err := db.c.QueryRow("SELECT Filename FROM Photos WHERE PhotoID = ?", photoID).Scan(&filename)
@@ -61,11 +61,11 @@ func (db *appdbimpl) GetPhoto(photoID string) (string, error) {
 	return filename, err
 }
 
-// TODO Comment
+// GetLikes is a function that returns the likes of a photo
 func (db *appdbimpl) GetLikes(photoID string, offset int, userRequesting string) ([]structs.Like, error) {
 	var likes []structs.Like
 
-	rows, err := db.c.Query("SELECT UserID FROM Likes WHERE PhotoID=? LIMIT 30 OFFSET ?", photoID, offset)
+	rows, err := db.c.Query("SELECT UserID AS U FROM Likes WHERE PhotoID=? AND (U,?) NOT IN (SELECT * FROM Bans) AND (?,U) NOT IN (SELECT * FROM Bans) LIMIT 30 OFFSET ?", photoID, offset)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
@@ -77,15 +77,6 @@ func (db *appdbimpl) GetLikes(photoID string, offset int, userRequesting string)
 			return nil, err
 		}
 
-		res, err := db.IsBanned(like.UserID, userRequesting)
-		res2, err := db.IsBanned(userRequesting, like.UserID)
-
-		if (res || res2) && err == nil {
-			continue
-		} else if err != nil {
-			return nil, err
-		}
-
 		likes = append(likes, like)
 	}
 	if len(likes) == 0 {
@@ -94,11 +85,11 @@ func (db *appdbimpl) GetLikes(photoID string, offset int, userRequesting string)
 	return likes, nil
 }
 
-// TODO Comment
+// GetComments is a function that returns the comments of a photo
 func (db *appdbimpl) GetComments(photoID string, offset int, userRequesting string) ([]structs.Comment, error) {
 	var comments []structs.Comment
 
-	rows, err := db.c.Query("SELECT CommentID,UserID,Text FROM Comments WHERE PhotoID=? LIMIT 30 OFFSET ?", photoID, offset)
+	rows, err := db.c.Query("SELECT CommentID AS C, UserID AS U, Text AS T FROM Comments WHERE PhotoID=? AND (U,?) NOT IN (SELECT * FROM Bans) AND (?,U) NOT IN (SELECT * FROM Bans) LIMIT 30 OFFSET ?", photoID, userRequesting, userRequesting, offset)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
@@ -107,14 +98,6 @@ func (db *appdbimpl) GetComments(photoID string, offset int, userRequesting stri
 		var comment structs.Comment
 		err = rows.Scan(&comment.CommentID, &comment.UserID, &comment.Text)
 		if err != nil {
-			return nil, err
-		}
-		res, err := db.IsBanned(comment.UserID, userRequesting)
-		res2, err := db.IsBanned(userRequesting, comment.UserID)
-
-		if (res || res2) && err == nil {
-			continue
-		} else if err != nil {
 			return nil, err
 		}
 		comments = append(comments, comment)

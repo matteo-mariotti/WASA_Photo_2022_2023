@@ -2,7 +2,7 @@ package database
 
 import "WASA_Photo/service/errorDefinition"
 
-// TODO Comment this function
+// Comment is a function that adds a comment to a photo
 func (db *appdbimpl) Comment(photoID string, userID string, text string) error {
 	_, err := db.c.Exec("INSERT INTO Comments (PhotoID, UserID, Text) VALUES (?, ?, ?)", photoID, userID, text)
 	if err != nil {
@@ -11,7 +11,7 @@ func (db *appdbimpl) Comment(photoID string, userID string, text string) error {
 	return nil
 }
 
-// TODO Comment this function
+// Uncomment is a function that removes a comment from a photo
 func (db *appdbimpl) Uncomment(photoID string, userID string, commentID string) error {
 	result, err := db.c.Exec("DELETE FROM Comments WHERE CommentID=? AND UserID=? AND PhotoID=? ", commentID, userID, photoID)
 	if err != nil {

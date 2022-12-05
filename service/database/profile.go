@@ -5,6 +5,7 @@ import (
 	"database/sql"
 )
 
+// GetFollowerNumber is a function that returns the number of followers of a user
 func (db *appdbimpl) GetFollowerNumber(userID string) (int, error) {
 	var count int
 	row := db.c.QueryRow("SELECT COUNT(*) FROM Followers WHERE UserB=?", userID)
@@ -12,6 +13,8 @@ func (db *appdbimpl) GetFollowerNumber(userID string) (int, error) {
 	err := row.Scan(&count)
 	return count, err
 }
+
+// GetFollowingNumber is a function that returns the number of following of a user
 func (db *appdbimpl) GetFollowingNumber(userID string) (int, error) {
 	var count int
 	row := db.c.QueryRow("SELECT COUNT(*) FROM Followers WHERE UserA=?", userID)
@@ -19,6 +22,8 @@ func (db *appdbimpl) GetFollowingNumber(userID string) (int, error) {
 	err := row.Scan(&count)
 	return count, err
 }
+
+// GetPhotosNumber is a function that returns the number of photos of a user
 func (db *appdbimpl) GetPhotosNumber(userID string) (int, error) {
 	var count int
 	row := db.c.QueryRow("SELECT COUNT(*) FROM Photos WHERE Owner=?", userID)
@@ -27,6 +32,7 @@ func (db *appdbimpl) GetPhotosNumber(userID string) (int, error) {
 	return count, err
 }
 
+// GetPhoto is a function that returns the photo with the given ID
 func (db *appdbimpl) GetPhotos(userID string, offset int) ([]structs.Photo, error) {
 	type photoPartialInfo struct {
 		PhotoID int
@@ -80,6 +86,7 @@ func (db *appdbimpl) GetPhotos(userID string, offset int) ([]structs.Photo, erro
 	return photosInfo, nil
 }
 
+// GetLikesNumber is a function that returns the number of likes of a photo
 func (db *appdbimpl) getLikesNumber(photoID int) (int, error) {
 	var count int
 	row := db.c.QueryRow("SELECT COUNT(*) FROM Likes WHERE PhotoID=?", photoID)
@@ -88,6 +95,7 @@ func (db *appdbimpl) getLikesNumber(photoID int) (int, error) {
 	return count, err
 }
 
+// GetCommentsNumber is a function that returns the number of comments of a photo
 func (db *appdbimpl) getCommentsNumber(photoID int) (int, error) {
 	var count int
 	row := db.c.QueryRow("SELECT COUNT(*) FROM Comments WHERE PhotoID=?", photoID)

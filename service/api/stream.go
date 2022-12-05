@@ -11,6 +11,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// stream is the function that handles the request to get the stream of photos
 func (rt *_router) stream(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	var following []string
@@ -29,10 +30,10 @@ func (rt *_router) stream(w http.ResponseWriter, r *http.Request, ps httprouter.
 		pageInt = 0
 	}
 
+	// Get the list of users that the current user is following ()
 	following, err = rt.db.GetFollowing(ctx.Token)
 
 	if err != nil {
-		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
 		rt.baseLogger.WithError(err).Error("Error while getting following")
 		httpErrorResponse(rt, w, "Internal Sever Error", http.StatusBadRequest)
 		return
@@ -43,12 +44,10 @@ func (rt *_router) stream(w http.ResponseWriter, r *http.Request, ps httprouter.
 	photos, err = rt.db.GetFollowingPhotosChrono(following, pageInt*100)
 
 	if err == sql.ErrNoRows {
-		// ^404 va aggiunto all'openapi come possibile risposta
 		rt.baseLogger.Error("No more photos to show")
 		httpErrorResponse(rt, w, "NotFound", http.StatusNotFound)
 		return
 	} else if err != nil {
-		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
 		rt.baseLogger.Error("Error while getting photos")
 		httpErrorResponse(rt, w, "Internal Sever Error", http.StatusBadRequest)
 		return
@@ -58,7 +57,6 @@ func (rt *_router) stream(w http.ResponseWriter, r *http.Request, ps httprouter.
 	err = json.NewEncoder(w).Encode(photos)
 
 	if err != nil {
-		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
 		rt.baseLogger.Error("Error while encoding json")
 		httpErrorResponse(rt, w, "Internal Sever Error", http.StatusBadRequest)
 		return

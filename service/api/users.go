@@ -33,15 +33,14 @@ func (rt *_router) getUsers(w http.ResponseWriter, r *http.Request, ps httproute
 		pageInt = 0
 	}
 
+	// Get the list of users
 	userList, err = rt.db.GetUsers(username, pageInt*30)
 
 	if err == sql.ErrNoRows {
-		//^Aggiungere NotFound come possibile risposta all'openapi
 		rt.baseLogger.Error("No more users are available with this prefix: " + username)
 		httpErrorResponse(rt, w, "404 Not Found", http.StatusNotFound)
 		return
 	} else if err != nil {
-		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
 		rt.baseLogger.Error("Error while getting users")
 		httpErrorResponse(rt, w, "Internal Sever Error", http.StatusBadRequest)
 		return
@@ -50,7 +49,6 @@ func (rt *_router) getUsers(w http.ResponseWriter, r *http.Request, ps httproute
 	err = json.NewEncoder(w).Encode(userList)
 
 	if err != nil {
-		// ^Internal Server Error va aggiunto all'openapi come possibile risposta
 		rt.baseLogger.Error("Error while encoding the response")
 		httpErrorResponse(rt, w, "Internal Sever Error", http.StatusBadRequest)
 		return

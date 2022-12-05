@@ -1,6 +1,6 @@
 package database
 
-// SetName is an example that shows you how to execute insert/update
+// LoginUser get the userID from the database
 func (db *appdbimpl) LoginUser(username string) (string, error) {
 	var uuid string
 
@@ -9,7 +9,7 @@ func (db *appdbimpl) LoginUser(username string) (string, error) {
 	return uuid, err
 }
 
-// SetName is an example that shows you how to execute insert/update
+// RegisterUser adds a new user to the database
 func (db *appdbimpl) RegisterUser(uuid string, username string) error {
 	_, err := db.c.Exec("INSERT INTO Users (UserID, UserName) VALUES (?, ?)", uuid, username)
 	return err

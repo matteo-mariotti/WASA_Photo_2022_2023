@@ -137,7 +137,7 @@ components:
         message:
           description: Error message
           type: string
-          example: "Unable to locate the requested resource"
+          example: "Message error!"
 
     userDetails:
       type: object
@@ -161,6 +161,24 @@ components:
             $ref: "#/components/schemas/error"
     BadRequest:
       description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error"
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error"
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/error"
+    Conflict:
+      description: Conflict
       content:
         application/json:
           schema:
@@ -194,9 +212,9 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/identifier"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
-  # TODO 1: Add the /home endpoint
-  # TODO Ancora da fare
   /stream:
     get:
       description: Returns the photos of the users that the user is following (the stream)
@@ -214,17 +232,17 @@ paths:
                 items:
                   $ref: "#/components/schemas/photo"
                 minItems: 0
-                maxItems: 30 #The stream is limited to 20 photos per chunk of data
+                maxItems: 100 #The stream is limited to 100 photos per chunk of data
         "401":
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       
-  #TODO Fix the return value of the /photos/{photoID} endpoint
-
   /photos/{photoID}:
     get:
-      description: Returns the photo with the specified identifier (photoID)
+      description: Returns the photo (binary value) with the specified identifier (photoID)
       summary: Returns the photo
       tags: ["photo"]
       operationId: getPhoto
@@ -241,11 +259,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/photo"
+                type: string
+                format: binary
+                minLength: 8388608 # 1MB
+                maxLength: 83886080 # 10MB
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"          
 
   /photos/{photoID}/likes:
     get:
@@ -284,6 +309,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"          
 
   /photos/{photoID}/comments:
     get:
@@ -320,10 +347,12 @@ paths:
                 maxItems: 30 #The stream is limited to 30 comment per chuck of data
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
-
-  #TODO Implement the /users like endpoint with pagination
+        "500":
+          $ref: "#/components/responses/InternalServerError"          
 
   /users:
     get:
@@ -348,7 +377,7 @@ paths:
                 description: Users list
                 type: array
                 minItems: 0
-                maxItems: 100 #Limit the number of users returned in a single chunck to 100
+                maxItems: 30 #Limit the number of users returned in a single chunck to 30
                 items:
                   $ref: "#/components/schemas/username"
                 example:
@@ -362,8 +391,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-
-  #TODO Implement the /users/{userID} endpoint with pagination
+        "500":
+          $ref: "#/components/responses/InternalServerError"        
 
   /users/{userID}:
     parameters:
@@ -396,11 +425,13 @@ paths:
                 $ref: "#/components/schemas/profile"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"          
 
-  #TODO Almeno questo l'ho fatto 
-  
   /users/{userID}/username:
     parameters:
       - name: userID
@@ -413,7 +444,7 @@ paths:
       summary: Update the username
       tags: ["profile"]
       description: |
-        Update the username profile (if available) and userID matches the logged user
+        Update the username profile (if available)
       operationId: setMyUserName
       requestBody:
         description: newUserName
@@ -423,24 +454,18 @@ paths:
               $ref: "#/components/schemas/username"
         required: true
       responses:
-        "201":
+        "204":
           description: User profile updated successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/profile"
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          description: Username already taken
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/error"
+          $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
-
-  #TODO Questo è stato implementato
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalServerError"          
 
   /users/{userID}/bans/{blockedID}:
     parameters:
@@ -471,6 +496,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"          
     delete: 
       tags: ["ban"]
       summary: Unblocks a user
@@ -486,8 +513,9 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"          
 
-  # TODO Questo è stato implementato
 
   /users/{userID}/followers/{followerID}:
     parameters:
@@ -511,11 +539,17 @@ paths:
       operationId: followUser
       responses:
         "204":
-          description: User followed successfully
+          description: User unfollowed successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalServerError"            
     delete:
       summary: Unfollow a user
       tags: ["follow"]
@@ -527,10 +561,14 @@ paths:
           description: User unfollowed successfully
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
-
-  #TODO Questo è stato implementato, devo fare la paginazione su un'altra path
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalServerError"          
 
   /users/{userID}/photos/{photoID}/likes/{likeID}:
     parameters:
@@ -561,10 +599,16 @@ paths:
       responses:
         "204":
           description: Photo liked successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"          
     delete:
       tags: ["photo"]
       summary: Unlike a photo
@@ -573,13 +617,17 @@ paths:
       operationId: unlikePhoto
       responses:
         "204":
-          description: Photo unliked successfully
+          description: Photo liked successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
-
-  #TODO Questo è stato implementato
+        "500":
+          $ref: "#/components/responses/InternalServerError"           
 
   /users/{userID}/photos/{photoID}/comments/{commentID}:
     parameters:
@@ -614,8 +662,9 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"          
 
-  #TODO Questo è stato implementato, devo aggiungere la pagination 
 
   /users/{userID}/photos/{photoID}/comments:
     parameters:
@@ -650,18 +699,20 @@ paths:
               minLength: 3
               maxLength: 256
       responses:
-        "201":
-          description: Photo commented successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/photo" #Returning the image so that it can be updated in the client
+        "204":
+          description: Comment added successfully
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
-
-  #TODO Questo è stato implementato
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/photos:
     parameters:
@@ -699,8 +750,8 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
-
-  #TODO Questo è stato implementato
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /users/{userID}/photos/{photoID}:
     parameters:
@@ -729,3 +780,5 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "404":
           $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"          
