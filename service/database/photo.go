@@ -4,6 +4,7 @@ import (
 	"WASA_Photo/service/errorDefinition"
 	"WASA_Photo/service/structs"
 	"database/sql"
+	"errors"
 )
 
 // UploadPhoto is a function that uploads a photo to the database

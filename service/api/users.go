@@ -4,6 +4,7 @@ import (
 	"WASA_Photo/service/api/reqcontext"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"strconv"
 

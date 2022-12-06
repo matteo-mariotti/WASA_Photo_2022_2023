@@ -1,6 +1,9 @@
 package database
 
-import "database/sql"
+import (
+	"database/sql"
+	"errors"
+)
 
 // ValidToken checks if a token is valid
 func (db *appdbimpl) ValidToken(token string) (bool, error) {

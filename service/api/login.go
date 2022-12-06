@@ -5,6 +5,7 @@ import (
 	"WASA_Photo/service/structs"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/gofrs/uuid"
