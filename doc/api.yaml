@@ -45,8 +45,6 @@ components:
       type: integer
       description: comment identifier
       example: 1
-      maxLength: 12
-      minLength: 12
 
     comment:
       type: object
@@ -57,7 +55,7 @@ components:
           $ref: "#/components/schemas/identifier"
         text:
           type: string
-          pattern: 'ˆ.*?$'
+          pattern: '.*'
           description: comment
           example: "This is a comment"
           minLength: 1
@@ -73,8 +71,6 @@ components:
       type: integer
       description: photo identifier
       example: 1
-      maxLength: 12
-      minLength: 12
 
     photo:
       description: A photo
@@ -100,9 +96,9 @@ components:
 
     username:
       type: string
-      pattern: 'ˆ.*?$'
+      pattern: '.*'
       description: username
-      example: "Maria"
+      example: "Luke Skywalker"
       maxLength: 16
       minLength: 3
 
@@ -257,8 +253,9 @@ paths:
         "200":
           description: Photo with the specified identifier
           content:
-            application/json:
+            image/*:
               schema:
+                description: Photo with the specified identifier
                 type: string
                 format: binary
                 minLength: 8388608 # 1MB
@@ -367,7 +364,7 @@ paths:
           description: Username
           required: true
           schema:
-            type: string
+            $ref: "#/components/schemas/username"
       responses:
         "200":
           description: Users list retrieved successfully
@@ -699,7 +696,7 @@ paths:
               minLength: 3
               maxLength: 256
       responses:
-        "204":
+        "201":
           description: Comment added successfully
         "400":
           $ref: "#/components/responses/BadRequest"
