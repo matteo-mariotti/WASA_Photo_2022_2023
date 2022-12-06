@@ -106,15 +106,23 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	// Controlla se è il proprietario della foto
 	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
 
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.WithError(err).Error("Photo not found")
 		httpErrorResponse(rt, w, "Not Found, wrong ID", http.StatusNotFound)
 		rt.db.Rollback()
+		if err != nil{
+			rt.baseLogger.WithError(err).Error("Unable to rollback")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		}
 		return
 	} else if err != nil {
 		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		rt.db.Rollback()
+		if err != nil{
+			rt.baseLogger.WithError(err).Error("Unable to rollback")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		}
 		return
 	} else if owner != ctx.Token {
 		rt.baseLogger.Error("User is trying to delete someone else's photo")
@@ -133,6 +141,10 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		rt.baseLogger.WithError(err).Error("Error while deleting photo on DB")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		rt.db.Rollback()
+		if err != nil{
+			rt.baseLogger.WithError(err).Error("Unable to rollback")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		}
 		return
 	}
 
@@ -144,6 +156,10 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		rt.baseLogger.WithError(err).Error("Error while deleting photo on disk")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		rt.db.Rollback()
+		if err != nil{
+			rt.baseLogger.WithError(err).Error("Unable to rollback")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		}
 		return
 	}
 
@@ -151,7 +167,11 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	rt.baseLogger.Info("Photo deleted")
 
 	// Commit
-	rt.db.Commit()
+	err = rt.db.Commit()
+	if err != nil{
+		rt.baseLogger.WithError(err).Error("Unable to rollback")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+	}
 
 }
 
@@ -284,7 +304,7 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 	// If not, get the likes
 	likesResponse, err = rt.db.GetLikes(photoID, pageInt*30, ctx.Token)
 
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("No more likes are available")
 		httpErrorResponse(rt, w, "No more likes", http.StatusNotFound)
 		return
@@ -357,7 +377,7 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	// If not, get the profile
 	commentsResponse, err = rt.db.GetComments(photoID, pageInt*30, ctx.Token)
 
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("No more comments are available")
 		httpErrorResponse(rt, w, "No more comments", http.StatusNotFound)
 		return

@@ -43,7 +43,7 @@ func (rt *_router) stream(w http.ResponseWriter, r *http.Request, ps httprouter.
 
 	photos, err = rt.db.GetFollowingPhotosChrono(following, pageInt*100)
 
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("No more photos to show")
 		httpErrorResponse(rt, w, "NotFound", http.StatusNotFound)
 		return

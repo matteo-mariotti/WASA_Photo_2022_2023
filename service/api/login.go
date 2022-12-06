@@ -16,25 +16,25 @@ import (
 // If there's and error during the deconding of the request body, it replies with a 400 Bad Request, if there is an error while adding the user to the database or while encoding the response, it replies with a 500 Internal Server Error.
 func (rt *_router) login(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	//Parsing the json input into a string
+	// Parsing the json input into a string
 	var userDetails structs.UserInfo
 
 	err := json.NewDecoder(r.Body).Decode(&userDetails)
 
 	username := userDetails.User
 
-	//Checking for errors during the deconding process
+	// Checking for errors during the deconding process
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("Wrong JSON received")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	//Trying to login the user
+	// Trying to login the user
 	userID, err := rt.db.LoginUser(username)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 
-		//If the user's not registered add it to the database
+		// If the user's not registered add it to the database
 		newUserID, err := uuid.NewV4()
 		userID = newUserID.String()
 		if err != nil {
@@ -56,7 +56,7 @@ func (rt *_router) login(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	// Set the content type to JSON
 	w.Header().Set("content-type", "application/json; charset=UTF-8")
 
-	//Prepare the JSON
+	// Prepare the JSON
 	err = json.NewEncoder(w).Encode(structs.AuthToken{Token: userID})
 
 	if err != nil {

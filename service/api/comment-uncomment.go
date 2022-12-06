@@ -60,7 +60,7 @@ func (rt *_router) comment(w http.ResponseWriter, r *http.Request, ps httprouter
 	// Check if I'm trying to comment a photo that doesn't belong to the user in the path
 	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
 
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.WithError(err).Error("Photo not found")
 		httpErrorResponse(rt, w, "Not Found, wrong ID", http.StatusNotFound)
 		return
@@ -68,6 +68,10 @@ func (rt *_router) comment(w http.ResponseWriter, r *http.Request, ps httprouter
 		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		rt.db.Rollback()
+		if err != nil{
+			rt.baseLogger.WithError(err).Error("Unable to rollback")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		}
 		return
 	} else if owner != userID {
 		rt.baseLogger.Error("User is trying to comment a photo that doesn't belong to the user in the path")
@@ -102,7 +106,7 @@ func (rt *_router) unComment(w http.ResponseWriter, r *http.Request, ps httprout
 	// Controlla se sto cercando di commentare una foto che non appartiene all'userID del path
 	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
 
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.WithError(err).Error("Photo not found")
 		httpErrorResponse(rt, w, "Not Found, wrong ID", http.StatusNotFound)
 		return
@@ -110,6 +114,10 @@ func (rt *_router) unComment(w http.ResponseWriter, r *http.Request, ps httprout
 		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		rt.db.Rollback()
+		if err != nil{
+			rt.baseLogger.WithError(err).Error("Unable to rollback")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		}
 		return
 	} else if owner != photoOwner {
 		rt.baseLogger.Error("User is trying to uncomment a photo that doesn't belong to the user in the path")

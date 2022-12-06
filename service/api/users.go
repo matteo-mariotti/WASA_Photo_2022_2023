@@ -36,7 +36,7 @@ func (rt *_router) getUsers(w http.ResponseWriter, r *http.Request, ps httproute
 	// Get the list of users
 	userList, err = rt.db.GetUsers(username, pageInt*30)
 
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("No more users are available with this prefix: " + username)
 		httpErrorResponse(rt, w, "404 Not Found", http.StatusNotFound)
 		return

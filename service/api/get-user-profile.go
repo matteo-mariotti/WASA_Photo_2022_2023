@@ -62,7 +62,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	// If not, get the profile
 	username, err := rt.db.GetName(userProfile)
 
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("This user does not exist!" + userProfile)
 		httpErrorResponse(rt, w, "UserID is not valid", http.StatusNotFound)
 		return
@@ -114,7 +114,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	// Get the photos (using the offset)
 	photos, err := rt.db.GetPhotos(userProfile, pageInt*30)
 
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("No more photos are available in this user profile:  " + userProfile)
 		httpErrorResponse(rt, w, "404 Not Found", http.StatusNotFound)
 		return

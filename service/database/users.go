@@ -6,7 +6,7 @@ import "database/sql"
 func (db *appdbimpl) GetUsers(start string, offset int) ([]string, error) {
 	var userNames []string
 	rows, err := db.c.Query("SELECT UserName From Users WHERE UserName LIKE ? LIMIT 30 OFFSET ?", start+"%", offset)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}
 	for rows.Next() {

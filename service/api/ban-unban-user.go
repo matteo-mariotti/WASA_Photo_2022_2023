@@ -53,7 +53,7 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 	// If everything went well, return 204
 	w.WriteHeader(http.StatusNoContent)
 
-	//Log the action
+	// Log the action
 	rt.baseLogger.Info("UserB banned from userA. userA: " + userA + " userB: " + userB)
 	return
 

@@ -53,7 +53,7 @@ func (db *appdbimpl) GetPhotoOwner(photoID string) (string, error) {
 func (db *appdbimpl) GetPhoto(photoID string) (string, error) {
 	var filename string
 	err := db.c.QueryRow("SELECT Filename FROM Photos WHERE PhotoID = ?", photoID).Scan(&filename)
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		return "", errorDefinition.ErrPhotoNotFound
 	} else if err != nil {
 		return "", err

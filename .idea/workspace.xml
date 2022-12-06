@@ -4,7 +4,24 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="" />
+    <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/api-auth-wrapper.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/api-auth-wrapper.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/api-handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/api-handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/ban-unban-user.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/ban-unban-user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/change-username.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/change-username.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/comment-uncomment.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/comment-uncomment.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/errorLogger.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/errorLogger.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/get-user-profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/get-user-profile.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/like-unlike.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/like-unlike.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/login.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/photo.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/photo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/stream.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/stream.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/users.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/users.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/database/photo.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/photo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/database/users.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/users.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/database/validToken.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/validToken.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -22,21 +39,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "RunOnceActivity.go.vendoring.notification.had.been.shown": "true",
-    "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "go.import.settings.migrated": "true",
-    "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/matteo"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.vendoring.notification.had.been.shown&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/matteo&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />

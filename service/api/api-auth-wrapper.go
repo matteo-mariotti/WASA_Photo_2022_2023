@@ -15,7 +15,7 @@ func (rt *_router) wrapAuth(fn httpRouterHandler) func(http.ResponseWriter, *htt
 
 		token := r.Header.Get("Authorization") // Get the authorization header
 
-		//Check if the token is not empty
+		// Check if the token is not empty
 		if token == "" {
 			rt.baseLogger.Error("Auth header is empty")
 			httpErrorResponse(rt, w, "Unauthorized", http.StatusUnauthorized)
