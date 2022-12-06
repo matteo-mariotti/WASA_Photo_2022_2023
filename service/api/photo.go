@@ -57,7 +57,6 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		if err != nil {
 			rt.baseLogger.WithError(err).Error("Error while rolling back")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-			return
 		}
 		return
 	}
@@ -80,7 +79,6 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		if err != nil {
 			rt.baseLogger.WithError(err).Error("Error while removing photo from disk")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-			return
 		}
 		return
 	}
