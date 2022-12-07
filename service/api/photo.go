@@ -47,7 +47,6 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Create the physical file in  ../../Photos
 	f, err := os.Create(path + newUuid.String())
-	defer f.Close()
 
 	if err != nil {
 		// Error, rollback
@@ -60,6 +59,8 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		}
 		return
 	}
+
+	defer f.Close()
 
 	// Copy the photo in the new file
 	_, err = io.Copy(f, r.Body)
@@ -84,8 +85,15 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	}
 
 	// Commit
+	err = rt.db.Commit()
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error while committing")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
 	rt.baseLogger.Info("Photo uploaded")
-	rt.db.Commit()
+
 }
 
 // DeletePhoto deletes a photo from the DB and from the disk
@@ -107,8 +115,8 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.WithError(err).Error("Photo not found")
 		httpErrorResponse(rt, w, "Not Found, wrong ID", http.StatusNotFound)
-		rt.db.Rollback()
-		if err != nil{
+		err = rt.db.Rollback()
+		if err != nil {
 			rt.baseLogger.WithError(err).Error("Unable to rollback")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		}
@@ -116,8 +124,8 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	} else if err != nil {
 		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-		rt.db.Rollback()
-		if err != nil{
+		err = rt.db.Rollback()
+		if err != nil {
 			rt.baseLogger.WithError(err).Error("Unable to rollback")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		}
@@ -138,8 +146,8 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	} else if err != nil {
 		rt.baseLogger.WithError(err).Error("Error while deleting photo on DB")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-		rt.db.Rollback()
-		if err != nil{
+		err = rt.db.Rollback()
+		if err != nil {
 			rt.baseLogger.WithError(err).Error("Unable to rollback")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		}
@@ -153,8 +161,8 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		// Error, rollback
 		rt.baseLogger.WithError(err).Error("Error while deleting photo on disk")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-		rt.db.Rollback()
-		if err != nil{
+		err = rt.db.Rollback()
+		if err != nil {
 			rt.baseLogger.WithError(err).Error("Unable to rollback")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		}
@@ -166,7 +174,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Commit
 	err = rt.db.Commit()
-	if err != nil{
+	if err != nil {
 		rt.baseLogger.WithError(err).Error("Unable to rollback")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 	}
@@ -323,7 +331,6 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 
 	//Log the action
 	rt.baseLogger.Info("User " + ctx.Token + " has successfully got the likes of photo " + photoID)
-	return
 }
 
 // getComments returns the comments of the photo with the given ID
@@ -344,18 +351,30 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 
 	if owner != ctx.Token {
 		banned, err := rt.db.IsBanned(owner, ctx.Token)
-		bannedViceversa, err := rt.db.IsBanned(ctx.Token, owner)
 
 		if err != nil {
 			rt.baseLogger.WithError(err).Error("Error while checking if user is banned")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
-		if banned || bannedViceversa {
+		if banned {
 			rt.baseLogger.WithError(err).Error("User is banned")
 			httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
 			return
 		}
+
+		banned, err = rt.db.IsBanned(ctx.Token, owner)
+		if err != nil {
+			rt.baseLogger.WithError(err).Error("Error while checking if user is banned")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		if banned {
+			rt.baseLogger.WithError(err).Error("User is banned")
+			httpErrorResponse(rt, w, "Forbidden", http.StatusForbidden)
+			return
+		}
+
 	}
 
 	// Get page number from query string
@@ -396,6 +415,4 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 
 	//Log the action
 	rt.baseLogger.Info("User " + ctx.Token + " has successfully got the comments of photo " + photoID)
-	return
-
 }

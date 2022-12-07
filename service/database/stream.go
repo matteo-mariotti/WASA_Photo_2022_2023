@@ -27,10 +27,12 @@ func (db *appdbimpl) GetFollowingPhotosChrono(following []string, offset int) ([
 	var photos []photoPartialInfo
 	query := "SELECT PhotoID, Owner, Date FROM Photos WHERE Owner IN (" + followingString + ") ORDER BY Date DESC LIMIT 30 OFFSET " + strconv.Itoa(offset)
 	rows, err := db.c.Query(query)
-	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
+
+	defer rows.Close()
+
 	for rows.Next() {
 		var photo photoPartialInfo
 		err = rows.Scan(&photo.PhotoID, &photo.Owner, &photo.Date)

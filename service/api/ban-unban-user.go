@@ -55,8 +55,6 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	// Log the action
 	rt.baseLogger.Info("UserB banned from userA. userA: " + userA + " userB: " + userB)
-	return
-
 }
 
 // unbanUser parses the request extracting the user id to unban and the user id of the user who is unbaning the user then,
@@ -106,5 +104,4 @@ func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprout
 
 	//Log the action
 	rt.baseLogger.Info("UserB unbanned from userA. userA: " + userA + " userB: " + userB)
-	return
 }

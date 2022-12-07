@@ -139,6 +139,4 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	//Log the action
 	rt.baseLogger.Info("User " + ctx.Token + " has successfully got the profile of user " + userProfile)
-	return
-
 }

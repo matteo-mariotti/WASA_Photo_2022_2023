@@ -91,7 +91,6 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Log the action
 	rt.baseLogger.Info("FollowerID is now following userID. FollowerID: " + followerID + " userID: " + userID)
-	return
 }
 
 // unfollowUser is the function that handles the unfollow user request
@@ -152,5 +151,4 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 
 	// Log the action
 	rt.baseLogger.Info("FollowerID has unfollowed userID. userID: " + userID + " followerID: " + followerID)
-	return
 }

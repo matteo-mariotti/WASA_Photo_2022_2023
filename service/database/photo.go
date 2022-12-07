@@ -10,7 +10,9 @@ import (
 // UploadPhoto is a function that uploads a photo to the database
 func (db *appdbimpl) UploadPhoto(owner string, filename string) error {
 	result, err := db.c.Exec("INSERT INTO Photos (Owner, Filename, Date) VALUES (?, ?, datetime())", owner, filename)
-
+	if err != nil {
+		return err
+	}
 	affected, err := result.RowsAffected()
 	if err != nil {
 		return err
@@ -29,7 +31,9 @@ func (db *appdbimpl) DeletePhoto(photoID string) (string, error) {
 		return "", err
 	}
 	result, err := db.c.Exec("DELETE FROM Photos WHERE PhotoID=?", photoID)
-
+	if err != nil {
+		return "", err
+	}
 	affected, err := result.RowsAffected()
 	if err != nil {
 		return "", err
@@ -67,10 +71,12 @@ func (db *appdbimpl) GetLikes(photoID string, offset int, userRequesting string)
 	var likes []structs.Like
 
 	rows, err := db.c.Query("SELECT UserID AS U FROM Likes WHERE PhotoID=? AND (U,?) NOT IN (SELECT * FROM Bans) AND (?,U) NOT IN (SELECT * FROM Bans) LIMIT 30 OFFSET ?", photoID, offset)
-	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
+
+	defer rows.Close()
+
 	for rows.Next() {
 		var like structs.Like
 		err = rows.Scan(&like.UserID)
@@ -91,10 +97,12 @@ func (db *appdbimpl) GetComments(photoID string, offset int, userRequesting stri
 	var comments []structs.Comment
 
 	rows, err := db.c.Query("SELECT CommentID AS C, UserID AS U, Text AS T FROM Comments WHERE PhotoID=? AND (U,?) NOT IN (SELECT * FROM Bans) AND (?,U) NOT IN (SELECT * FROM Bans) LIMIT 30 OFFSET ?", photoID, userRequesting, userRequesting, offset)
-	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
+
+	defer rows.Close()
+
 	for rows.Next() {
 		var comment structs.Comment
 		err = rows.Scan(&comment.CommentID, &comment.UserID, &comment.Text)

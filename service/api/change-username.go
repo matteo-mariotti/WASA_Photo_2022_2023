@@ -38,8 +38,8 @@ func (rt *_router) changeUsername(w http.ResponseWriter, r *http.Request, ps htt
 	if result {
 		rt.baseLogger.WithError(err).Error("Username already taken")
 		httpErrorResponse(rt, w, "Username already taken", http.StatusConflict)
-		rt.db.Rollback()
-		if err != nil{
+		err = rt.db.Rollback()
+		if err != nil {
 			rt.baseLogger.WithError(err).Error("Unable to rollback")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		}
@@ -52,8 +52,8 @@ func (rt *_router) changeUsername(w http.ResponseWriter, r *http.Request, ps htt
 	if err != nil {
 		rt.baseLogger.WithError(err).Error("Error while changing username")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-		rt.db.Rollback()
-		if err != nil{
+		err = rt.db.Rollback()
+		if err != nil {
 			rt.baseLogger.WithError(err).Error("Unable to rollback")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		}
@@ -63,7 +63,7 @@ func (rt *_router) changeUsername(w http.ResponseWriter, r *http.Request, ps htt
 	// Commit the transaction
 	err = rt.db.Commit()
 
-	if err != nil{
+	if err != nil {
 		rt.baseLogger.WithError(err).Error("Unable to commit")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 	}
