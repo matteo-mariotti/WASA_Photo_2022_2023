@@ -17,5 +17,4 @@ func httpErrorResponse(rt *_router, w http.ResponseWriter, responseMessage strin
 		w.WriteHeader(http.StatusInternalServerError) // Set status to the correct error
 
 	}
-	return
 }

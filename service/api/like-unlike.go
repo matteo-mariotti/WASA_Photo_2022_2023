@@ -47,7 +47,7 @@ func (rt *_router) like(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 	// Check if I'm trying to like a photo that doesn't belong to the userID in the path
 	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
 
-	if 	errors.Is(err, sql.ErrNoRows) {
+	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.WithError(err).Error("Photo not found")
 		httpErrorResponse(rt, w, "Not Found, wrong ID", http.StatusNotFound)
 		return
@@ -55,7 +55,7 @@ func (rt *_router) like(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		err = rt.db.Rollback()
-		if err != nil{
+		if err != nil {
 			rt.baseLogger.WithError(err).Error("Unable to rollback")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		}
@@ -100,15 +100,15 @@ func (rt *_router) unlike(w http.ResponseWriter, r *http.Request, ps httprouter.
 	// Check if the user I'm trying to unlike a photo is the same as the one in the path
 	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
 
-	if 	errors.Is(err, sql.ErrNoRows) {
+	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.WithError(err).Error("Photo not found")
 		httpErrorResponse(rt, w, "Not Found, wrong ID", http.StatusNotFound)
 		return
 	} else if err != nil {
 		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-		rt.db.Rollback()
-		if err != nil{
+		err = rt.db.Rollback()
+		if err != nil {
 			rt.baseLogger.WithError(err).Error("Unable to rollback")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		}
@@ -144,6 +144,4 @@ func (rt *_router) unlike(w http.ResponseWriter, r *http.Request, ps httprouter.
 
 	// If everything went well, return a 204
 	w.WriteHeader(http.StatusNoContent)
-
-	return
 }

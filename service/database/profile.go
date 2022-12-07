@@ -42,10 +42,12 @@ func (db *appdbimpl) GetPhotos(userID string, offset int) ([]structs.Photo, erro
 
 	var photos []photoPartialInfo
 	rows, err := db.c.Query("SELECT PhotoID, Owner, Date FROM Photos WHERE Owner=? ORDER BY PhotoID DESC LIMIT 30 OFFSET ?", userID, offset)
-	defer rows.Close()
 	if err != nil {
 		return nil, err
 	}
+
+	defer rows.Close()
+
 	for rows.Next() {
 		var photo photoPartialInfo
 		err = rows.Scan(&photo.PhotoID, &photo.Owner, &photo.Date)

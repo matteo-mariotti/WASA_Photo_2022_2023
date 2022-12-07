@@ -67,8 +67,8 @@ func (rt *_router) comment(w http.ResponseWriter, r *http.Request, ps httprouter
 	} else if err != nil {
 		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-		rt.db.Rollback()
-		if err != nil{
+		err = rt.db.Rollback()
+		if err != nil {
 			rt.baseLogger.WithError(err).Error("Unable to rollback")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		}
@@ -113,8 +113,8 @@ func (rt *_router) unComment(w http.ResponseWriter, r *http.Request, ps httprout
 	} else if err != nil {
 		rt.baseLogger.WithError(err).Error("Error while getting photo owner")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
-		rt.db.Rollback()
-		if err != nil{
+		err = rt.db.Rollback()
+		if err != nil {
 			rt.baseLogger.WithError(err).Error("Unable to rollback")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		}
@@ -142,6 +142,4 @@ func (rt *_router) unComment(w http.ResponseWriter, r *http.Request, ps httprout
 	rt.baseLogger.Info("Photo uncommented")
 
 	w.WriteHeader(http.StatusNoContent)
-
-	return
 }
