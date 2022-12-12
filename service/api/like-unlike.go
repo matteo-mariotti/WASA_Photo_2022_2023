@@ -45,7 +45,7 @@ func (rt *_router) like(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 	}
 
 	// Check if I'm trying to like a photo that doesn't belong to the userID in the path
-	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
+	owner, err := rt.db.GetPhotoOwner(ps.ByName("photoID"))
 
 	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.WithError(err).Error("Photo not found")
@@ -98,7 +98,7 @@ func (rt *_router) unlike(w http.ResponseWriter, r *http.Request, ps httprouter.
 	currentUser := ps.ByName("likeID")
 
 	// Check if the user I'm trying to unlike a photo is the same as the one in the path
-	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))
+	owner, err := rt.db.GetPhotoOwner(ps.ByName("photoID"))
 
 	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.WithError(err).Error("Photo not found")

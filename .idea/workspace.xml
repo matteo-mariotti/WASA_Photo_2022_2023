@@ -4,35 +4,137 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="9ffbd068-6aa6-450b-ab2e-f8a7024c3d85" name="Changes" comment="Switching to Goland">
+      <change afterPath="$PROJECT_DIR$/.idea/WasaPhotoV3.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/AUTHORS" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/CONTRIBUTORS" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/WASA_Photo_2022_2023.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/17a294de-9573-486f-aaea-efe644ef4a16.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WASA_photo.db" beforeDir="false" afterPath="$PROJECT_DIR$/WASA_photo.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/login.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/services/axios.js" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/services/axios.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/views/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/HomeView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FATTE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WASA_photo_original.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/like-unlike.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/like-unlike.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/mkall.sh" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/mkall.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/mkerrors.sh" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/mkerrors.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/syscall_aix.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/syscall_aix.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/syscall_bsd.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/syscall_bsd.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/syscall_linux.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/syscall_linux.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_386.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_386.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_amd64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_amd64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_arm.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_arm.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_arm64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_arm64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_loong64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_loong64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_mips.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_mips.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_mips64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_mips64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_mips64le.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_mips64le.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_mipsle.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_mipsle.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_ppc.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_ppc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_ppc64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_ppc64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_ppc64le.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_ppc64le.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_riscv64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_riscv64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_s390x.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_s390x.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_sparc64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zerrors_linux_sparc64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsyscall_darwin_amd64.1_13.s" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsyscall_darwin_amd64.1_13.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsyscall_darwin_amd64.s" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsyscall_darwin_amd64.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsyscall_darwin_arm64.1_13.s" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsyscall_darwin_arm64.1_13.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsyscall_darwin_arm64.s" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsyscall_darwin_arm64.s" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_386.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_386.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_amd64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_amd64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_arm.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_arm.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_arm64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_arm64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_loong64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_loong64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_mips.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_mips.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_mips64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_mips64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_mips64le.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_mips64le.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_mipsle.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_mipsle.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_ppc.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_ppc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_ppc64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_ppc64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_ppc64le.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_ppc64le.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_riscv64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_riscv64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_s390x.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_s390x.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_sparc64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/zsysnum_linux_sparc64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_386.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_386.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_amd64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_amd64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_arm.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_arm.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_arm64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_arm64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_loong64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_loong64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_mips.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_mips.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_mips64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_mips64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_mips64le.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_mips64le.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_mipsle.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_mipsle.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_ppc.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_ppc.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_ppc64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_ppc64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_ppc64le.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_ppc64le.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_riscv64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_riscv64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_s390x.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_s390x.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_sparc64.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/unix/ztypes_linux_sparc64.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/windows/syscall_windows.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/windows/syscall_windows.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/golang.org/x/sys/windows/zsyscall_windows.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/golang.org/x/sys/windows/zsyscall_windows.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/.travis.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/LICENSE.libyaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/NOTICE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/apic.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/decode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/emitterc.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/encode.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/parserc.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/readerc.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/resolve.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/scannerc.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/sorter.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/writerc.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/yaml.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/yamlh.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/gopkg.in/yaml.v2/yamlprivateh.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/vendor/modules.txt" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/modules.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/node_modules/.bin/esbuild" beforeDir="false" afterPath="$PROJECT_DIR$/webui/node_modules/.bin/esbuild" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/node_modules/.bin/nanoid" beforeDir="false" afterPath="$PROJECT_DIR$/webui/node_modules/.bin/nanoid" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/node_modules/.bin/parser" beforeDir="false" afterPath="$PROJECT_DIR$/webui/node_modules/.bin/parser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/node_modules/.bin/resolve" beforeDir="false" afterPath="$PROJECT_DIR$/webui/node_modules/.bin/resolve" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/node_modules/.bin/rollup" beforeDir="false" afterPath="$PROJECT_DIR$/webui/node_modules/.bin/rollup" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/node_modules/.bin/vite" beforeDir="false" afterPath="$PROJECT_DIR$/webui/node_modules/.bin/vite" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" url="file:///opt/homebrew/Cellar/go/1.19.3/libexec" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoDepProject">
+    <integration-enabled>true</integration-enabled>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="2HxAkAj3C5P5IPTAcHCkP3nChxI" />
+  <component name="ProjectId" id="2Ip8SnNo0mTIsjzQvWtY3Xwzdcw" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
@@ -42,11 +144,19 @@
     "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
     "WebServerToolWindowFactoryState": "false",
     "go.import.settings.migrated": "true",
-    "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/matteo/Documents/Università/Programmazione Web/WASA_Photo_2022_2023",
+    "last_opened_file_path": "/Users/matteo/go/src/WASA_Photo",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
@@ -56,13 +166,30 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="dev" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
     </option>
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Switching to Goland" />
+    <option name="LAST_COMMIT_MESSAGE" value="Switching to Goland" />
+  </component>
   <component name="VgoProject">
+    <integration-enabled>false</integration-enabled>
     <settings-migrated>true</settings-migrated>
   </component>
 </project>
