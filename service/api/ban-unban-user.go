@@ -102,6 +102,6 @@ func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprout
 	// If the operation was successful return the status code 204 No Content
 	w.WriteHeader(http.StatusNoContent)
 
-	//Log the action
+	// Log the action
 	rt.baseLogger.Info("UserB unbanned from userA. userA: " + userA + " userB: " + userB)
 }

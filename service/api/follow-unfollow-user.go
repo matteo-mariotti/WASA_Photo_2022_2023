@@ -20,7 +20,6 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Check that the user is not acting as someone else
 	if followerID != ctx.Token {
-		//^Aggiungere Forbidden come possibile risposta all'openapi
 		rt.baseLogger.Error("User id trying to fact as someone else: " + ctx.Token)
 		httpErrorResponse(rt, w, "You cannot impersonate someone else", http.StatusForbidden)
 		return
@@ -54,7 +53,6 @@ func (rt *_router) followUser(w http.ResponseWriter, r *http.Request, ps httprou
 
 	// Check if I am trying to follow myself
 	if userID == followerID {
-		//^Aggiungere StatusBadRequest come possibile risposta all'openapi
 		rt.baseLogger.Error("User is trying to follow himself: " + ctx.Token)
 		httpErrorResponse(rt, w, "You cannot follow yourself", http.StatusBadRequest)
 		return
@@ -102,7 +100,6 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 
 	// Check that the user is not acting as someone else
 	if followerID != ctx.Token {
-		//^Aggiungere Forbidden come possibile risposta all'openapi
 		rt.baseLogger.Error("User id trying to act as someone else: " + ctx.Token)
 		httpErrorResponse(rt, w, "You cannot impersonate someone else", http.StatusForbidden)
 		return
@@ -110,7 +107,6 @@ func (rt *_router) unfollowUser(w http.ResponseWriter, r *http.Request, ps httpr
 
 	// Check if I am trying to unfollow myself
 	if userID == followerID {
-		//^Aggiungere StatusBadRequest come possibile risposta all'openapi
 		rt.baseLogger.Error("User is trying to unfollow himself: " + ctx.Token)
 		httpErrorResponse(rt, w, "You cannot unfollow yourself", http.StatusBadRequest)
 		return

@@ -3,6 +3,7 @@ package api
 import (
 	"WASA_Photo/service/api/reqcontext"
 	"database/sql"
+	"errors"
 	"net/http"
 	"strings"
 
@@ -27,15 +28,15 @@ func (rt *_router) wrapAuth(fn httpRouterHandler) func(http.ResponseWriter, *htt
 		token = splitToken[1]
 		result, err := rt.db.ValidToken(token)
 
-		//Check if the token is valid
-		if err != nil && err != sql.ErrNoRows {
+		// Check if the token is valid
+		if err != nil && !(errors.Is(err, sql.ErrNoRows)) {
 			// If there is any error in the database (exept NoRows), return a 500 error
 			rt.baseLogger.WithError(err).Error("Error while checking if the token is valid")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 			return
 		}
 
-		//Save the result in the context
+		// Save the result in the context
 		ctx.Valid = result
 		ctx.Token = token
 
@@ -46,7 +47,7 @@ func (rt *_router) wrapAuth(fn httpRouterHandler) func(http.ResponseWriter, *htt
 			rt.baseLogger.Warning("User is using an invalid token: ", ctx.Token)
 		}
 
-		//Check if the user is using a valid token in the authentication header (if not, the request is blocked)
+		// Check if the user is using a valid token in the authentication header (if not, the request is blocked)
 		if !ctx.Valid {
 			rt.baseLogger.Error("Token is not valid: " + ctx.Token)
 			httpErrorResponse(rt, w, "Unauthorized", http.StatusUnauthorized)

@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/17a294de-9573-486f-aaea-efe644ef4a16.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/17a294de-9573-486f-aaea-efe644ef4a16.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/photo.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/photo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/webapi/cors.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/webapi/cors.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/webapi/load-configuration.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/webapi/load-configuration.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/api-auth-wrapper.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/api-auth-wrapper.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
