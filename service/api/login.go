@@ -31,6 +31,12 @@ func (rt *_router) login(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		return
 	}
 
+	if username == "" {
+		rt.baseLogger.Warning("No username received")
+		httpErrorResponse(rt, w, "No username received", http.StatusBadRequest)
+		return
+	}
+
 	// Trying to login the user
 	userID, err := rt.db.LoginUser(username)
 	if errors.Is(err, sql.ErrNoRows) {
@@ -65,5 +71,7 @@ func (rt *_router) login(w http.ResponseWriter, r *http.Request, ps httprouter.P
 		httpErrorResponse(rt, w, "Error enconding", http.StatusInternalServerError)
 		return
 	}
+
+	w.WriteHeader(http.StatusOK)
 
 }
