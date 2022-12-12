@@ -39,12 +39,12 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	//Transaction
+	// Transaction
 	StartTransaction() error
 	Commit() error
 	Rollback() error
 
-	//Check token
+	// Check token
 	ValidToken(token string) (bool, error)
 
 	// Login functions
@@ -65,7 +65,7 @@ type AppDatabase interface {
 	UnfollowUser(userA string, userB string) error        // Unfollow a user
 	IsFollowing(userA string, userB string) (bool, error) // Check if userA is following userB
 
-	//Photo functions
+	// Photo functions
 	UploadPhoto(owner string, filename string) error                                          // Upload a photo
 	DeletePhoto(photoID string) (string, error)                                               // Delete a photo
 	GetPhotoOwner(photoID string) (string, error)                                             // Get the owner of a photo
@@ -73,16 +73,16 @@ type AppDatabase interface {
 	GetLikes(photoID string, offset int, requestingUser string) ([]structs.Like, error)       // Get the list of users that liked a photo
 	GetComments(photoID string, offset int, requestingUser string) ([]structs.Comment, error) // Get the list of comments of a photo
 
-	//Comment functions
+	// Comment functions
 	Comment(photoID string, userID string, text string) error        // Comment a photo
 	Uncomment(photoID string, userID string, commentID string) error // Uncomment a photo
 
-	//Like functions
+	// Like functions
 	Like(photoID string, userID string) error             // Like a photo
-	Unlike(photoID string, userID string) error           //Unlike a photo
-	HasLiked(photoID string, userID string) (bool, error) //Check if userID has liked a photo with the given ID
+	Unlike(photoID string, userID string) error           // Unlike a photo
+	HasLiked(photoID string, userID string) (bool, error) // Check if userID has liked a photo with the given ID
 
-	//Profile functions
+	// Profile functions
 	GetName(userID string) (string, error)                        // Get the username from the user ID
 	GetFollowerNumber(userID string) (int, error)                 // Get the number of followers of a user
 	GetFollowingNumber(userID string) (int, error)                // Get the number of users a user is following

@@ -240,7 +240,7 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 	defer file.Close()
 
-	//Copy the file to the response
+	// Copy the file to the response
 	_, err = io.Copy(w, file)
 	if err != nil {
 		rt.baseLogger.WithError(err).Error("Error while copying photo")
@@ -320,7 +320,7 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 		return
 	}
 
-	//Prepare the JSON (it also sends the response to the client with the correct status code)
+	// Prepare the JSON (it also sends the response to the client with the correct status code)
 	err = json.NewEncoder(w).Encode(likesResponse)
 
 	if err != nil {
@@ -329,7 +329,7 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 		return
 	}
 
-	//Log the action
+	// Log the action
 	rt.baseLogger.Info("User " + ctx.Token + " has successfully got the likes of photo " + photoID)
 }
 
@@ -404,7 +404,7 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	//Prepare the JSON (it also sends the response to the client with the correct status code)
+	// Prepare the JSON (it also sends the response to the client with the correct status code)
 	err = json.NewEncoder(w).Encode(commentsResponse)
 
 	if err != nil {
@@ -413,6 +413,6 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	//Log the action
+	// Log the action
 	rt.baseLogger.Info("User " + ctx.Token + " has successfully got the comments of photo " + photoID)
 }

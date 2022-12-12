@@ -128,7 +128,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	// Set the photos
 	profileResponse.Photo = photos
 
-	//Prepare the JSON (it also sends the response to the client with the correct status code)
+	// Prepare the JSON (it also sends the response to the client with the correct status code)
 	err = json.NewEncoder(w).Encode(profileResponse)
 
 	if err != nil {
@@ -137,6 +137,6 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
-	//Log the action
+	// Log the action
 	rt.baseLogger.Info("User " + ctx.Token + " has successfully got the profile of user " + userProfile)
 }
