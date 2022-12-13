@@ -12,7 +12,7 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			try {
-				let response = await this.$axios.get("/liveness");
+				let response = await this.$axios.get("/stream");
 				this.some_data = response.data;
 				console.log(response)
 			} catch (e) {
