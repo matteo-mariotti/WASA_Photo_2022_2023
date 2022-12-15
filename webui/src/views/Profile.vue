@@ -2,9 +2,10 @@
 import backend from "@/services/axios";
 import ErrorMsg from "@/components/ErrorMsg.vue";
 import SuccessMsg from "@/components/SuccessMsg.vue";
+import PhotoBox from "@/components/PhotoBox.vue";
 
 export default {
-  components: {SuccessMsg, ErrorMsg},
+  components: {PhotoBox, SuccessMsg, ErrorMsg},
   data: function () {
     return {
       errormsg: null,
@@ -50,6 +51,8 @@ export default {
 
 
   <div class="container mt-5">
+
+
     <div class="row">
       <div class="col-3"></div>
       <div class="col-6">
@@ -59,7 +62,7 @@ export default {
         <div class="row" style="text-align: center">
           <!--TODO Rendere clickable le label qui sotto per aprire la lista dei followers e dei seguiti -->
 
-          <div class="col-4" style="border-color: black">
+          <div class="col-4">
             <label v-if="ready">Photo:{{ userData.photoNumber }}</label>
           </div>
           <div class="col-4">
@@ -68,15 +71,35 @@ export default {
           <div class="col-4">
             <label v-if="ready"> Following: {{ userData.following }}</label>
           </div>
+
         </div>
 
 
         <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
         <SuccessMsg v-if="successmsg" :msg="successmsg"></SuccessMsg>
-
       </div>
 
     </div>
+
+    <div class="row" style="background-color: red; align-content: center">
+      <div class="col-3"></div>
+      <div class="col-6 align-items-center d-grid gap-5">
+
+        <div v-if="ready" v-for="image in userData.photos" id="photoList">
+          <PhotoBox v-bind:image-data="image.id"></PhotoBox>
+        </div>
+
+        <br>
+      </div>
+
+
+      <div class="col-3"></div>
+
+
+    </div>
+
+
+
   </div>
 </template>
 
