@@ -3,6 +3,7 @@ package database
 import (
 	"WASA_Photo/service/structs"
 	"database/sql"
+	"strconv"
 )
 
 // GetFollowerNumber is a function that returns the number of followers of a user
@@ -33,7 +34,7 @@ func (db *appdbimpl) GetPhotosNumber(userID string) (int, error) {
 }
 
 // GetPhoto is a function that returns the photo with the given ID
-func (db *appdbimpl) GetPhotos(userID string, offset int) ([]structs.Photo, error) {
+func (db *appdbimpl) GetPhotos(userID string, reqUser string, offset int) ([]structs.Photo, error) {
 	type photoPartialInfo struct {
 		PhotoID int
 		Owner   string
@@ -74,6 +75,10 @@ func (db *appdbimpl) GetPhotos(userID string, offset int) ([]structs.Photo, erro
 		if err != nil {
 			return nil, err
 		}
+		userLike, err := db.HasLiked(strconv.Itoa(photos[i].PhotoID), reqUser)
+		if err != nil {
+			return nil, err
+		}
 
 		// Append photo info to photosInfo
 		photosInfo = append(photosInfo, structs.Photo{
@@ -82,6 +87,7 @@ func (db *appdbimpl) GetPhotos(userID string, offset int) ([]structs.Photo, erro
 			Date:           photos[i].Date,
 			LikesNumber:    likes,
 			CommentsNumber: comments,
+			LoggedLike:     userLike,
 		})
 
 	}

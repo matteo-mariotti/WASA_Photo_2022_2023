@@ -9,7 +9,11 @@
       <change afterPath="$PROJECT_DIR$/webapi" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WASA_photo.db" beforeDir="false" afterPath="$PROJECT_DIR$/WASA_photo.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/photo.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/photo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/doc/api.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/get-user-profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/get-user-profile.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/database/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/database.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/database/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/profile.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/structs/image.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/structs/image.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webui/src/components/PhotoBox.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/PhotoBox.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webui/src/views/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Profile.vue" afterDir="false" />
     </list>

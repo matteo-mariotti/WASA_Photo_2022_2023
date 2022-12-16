@@ -83,11 +83,11 @@ type AppDatabase interface {
 	HasLiked(photoID string, userID string) (bool, error) // Check if userID has liked a photo with the given ID
 
 	// Profile functions
-	GetName(userID string) (string, error)                        // Get the username from the user ID
-	GetFollowerNumber(userID string) (int, error)                 // Get the number of followers of a user
-	GetFollowingNumber(userID string) (int, error)                // Get the number of users a user is following
-	GetPhotosNumber(userID string) (int, error)                   // Get the number of photos a user has uploaded
-	GetPhotos(userID string, offset int) ([]structs.Photo, error) // Get the photos of a user
+	GetName(userID string) (string, error)                                        // Get the username from the user ID
+	GetFollowerNumber(userID string) (int, error)                                 // Get the number of followers of a user
+	GetFollowingNumber(userID string) (int, error)                                // Get the number of users a user is following
+	GetPhotosNumber(userID string) (int, error)                                   // Get the number of photos a user has uploaded
+	GetPhotos(userID string, reqUser string, offset int) ([]structs.Photo, error) // Get the photos of a user
 
 	// Search functions
 	GetUsers(start string, offset int) ([]string, error) // Get the list of users that start with the given string

@@ -16,4 +16,5 @@ type Photo struct {
 	Date           string `json:"date"`
 	LikesNumber    int    `json:"likes"`
 	CommentsNumber int    `json:"comments"`
+	LoggedLike     bool   `json:"loggedLike"`
 }

@@ -113,7 +113,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	profileResponse.PhotoCount = photoNumber
 
 	// Get the photos (using the offset)
-	photos, err := rt.db.GetPhotos(userProfile, pageInt*30)
+	photos, err := rt.db.GetPhotos(userProfile, ctx.Token, pageInt*30)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("No more photos are available in this user profile:  " + userProfile)

@@ -86,10 +86,8 @@ export default {
       <div class="col-6 align-items-center d-grid gap-5">
 
         <div v-if="ready" v-for="image in userData.photos" id="photoList">
-          <PhotoBox v-bind:image-data="image.id"></PhotoBox>
+          <PhotoBox v-bind:imageData="image"></PhotoBox>
         </div>
-
-        <br>
       </div>
 
 

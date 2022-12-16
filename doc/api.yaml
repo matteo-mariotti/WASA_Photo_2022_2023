@@ -93,6 +93,9 @@ components:
         comments:
           description: number of comments
           type: integer
+        loggedLike:
+          description: True if the logged user has liked this photo
+          type: boolean
 
     username:
       type: string
