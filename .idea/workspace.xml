@@ -4,17 +4,21 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ffbd068-6aa6-450b-ab2e-f8a7024c3d85" name="Changes" comment="Profile page updated">
+    <list default="true" id="9ffbd068-6aa6-450b-ab2e-f8a7024c3d85" name="Changes" comment="You can now view you profile page and delete photos">
+      <change afterPath="$PROJECT_DIR$/Photos/225e67bc-3ba3-4317-a0a5-2c0354fc6c25" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/webapi" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webui/src/components/Card.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webui/src/components/Modal.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Photos/22ce683c-f961-4a9a-b426-5e3c6a33219c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Photos/9e31b14b-804c-484e-b2d5-bacaa2b84f06" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/WASA_photo.db" beforeDir="false" afterPath="$PROJECT_DIR$/WASA_photo.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/doc/api.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/get-user-profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/get-user-profile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/database/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/database.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/database/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/profile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/structs/image.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/structs/image.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/components/PhotoBox.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/PhotoBox.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/components/PhotoBox.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webui/src/views/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Profile.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -110,7 +114,9 @@
     <MESSAGE value="Login component" />
     <MESSAGE value="Profile page started" />
     <MESSAGE value="Profile page updated" />
-    <option name="LAST_COMMIT_MESSAGE" value="Profile page updated" />
+    <MESSAGE value="Likes are now working, layout progress" />
+    <MESSAGE value="You can now view you profile page and delete photos" />
+    <option name="LAST_COMMIT_MESSAGE" value="You can now view you profile page and delete photos" />
   </component>
   <component name="VgoProject">
     <integration-enabled>false</integration-enabled>

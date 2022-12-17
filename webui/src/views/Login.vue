@@ -19,8 +19,10 @@ export default {
         let response = await backend.post("/session", {
           identifier: this.identifier,
         });
+        console.log(response)
         this.handleResponse(response);
       } catch (error) {
+        console.log(error)
         this.handleError(error);
       }
     },
@@ -40,13 +42,8 @@ export default {
       this.$router.push("/");
     },
     handleError(error) {
-
       // Print the error from the server (for debugging)
       this.errormsg = error.response.data.message
-
-      // Log the error on console
-      console.log(error)
-
     },
   },
 }
@@ -57,25 +54,19 @@ export default {
 
   <div class="container mt-5">
     <div class="row">
-      <div class="col-3"></div>
-      <div class="col-6">
+      <div class="col-sm-3"></div>
+      <div class="col-sm-6">
 
 
         <div style="text-align: center">
-          <label>Inserisci il tuo username per accedere</label>
+          <h2>Inserisci il tuo username per accedere</h2>
           <br>
         </div>
 
-        <form>
-          <div class="form-group">
-            <input type="text" v-model="identifier" class="form-control" placeholder="username">
-          </div>
-          <br>
+         <input type="text" v-model="identifier" class="form-control" placeholder="username">
           <div style="text-align: center">
-            <button @click="sendData()" type="submit" class="btn btn-primary">Sign in</button>
+            <button @click="sendData()" type="submit" class="btn btn-primary m-3">Sign in</button>
           </div>
-        </form>
-
         <br>
 
         <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
@@ -83,10 +74,15 @@ export default {
 
       </div>
 
+      <div class="col-sm-3"></div>
+
     </div>
 
   </div>
 </template>
 
 <style>
+::placeholder {
+  text-align: center;
+}
 </style>

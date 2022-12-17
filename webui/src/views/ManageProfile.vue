@@ -20,7 +20,7 @@ export default {
     async loadContent() {
       try {
         this.ready = false
-        let response = await backend.get(`/users/${this.$route.params.userID}`); // TODO Sitemare i parametri
+        let response = await backend.get(`/users/${sessionStorage.getItem("token")}`); // TODO Sitemare i parametri
         this.handleResponse(response);
         this.ready = true
 
@@ -42,10 +42,10 @@ export default {
       console.log(error)
     },
     loadPhotos(offset){
-        // TODO Fare la chiamata per ottenere le foto a partire da un certo offset
+      // TODO Fare la chiamata per ottenere le foto a partire da un certo offset
 
     },
-    },
+  },
   mounted() {
     this.loadContent();
   }
@@ -60,8 +60,12 @@ export default {
   <div class="justify-content-center align-items-center">
 
     <!-- Username of the user -->
-    <h1 class="h2 d-flex justify-content-around" v-if="ready" style="font-size:3.5vw;">{{userData.username}}</h1>
+    <div class="h2 d-flex justify-content-evenly mt-4" v-if="ready" style="font-size:3.5vw;">
 
+      {{userData.username}}
+      <button class="btn btn-outline-primary btn-sm"> Change my username</button>
+
+    </div>
     <!-- Profile stats -->
     <div class="d-flex justify-content-around p-2" style="font-size: 2vw;background-color: rgba(137,137,137,0.2);border-radius: 2vw;">
       <div v-if="ready">Photo: {{ userData.photoNumber }}</div>
@@ -74,7 +78,7 @@ export default {
       <Card v-bind:imageData="image" v-if="ready" v-for="image in userData.photos"></Card>
     </div>
     <div class="d-grid justify-content-center">
-    <button @click="loadPhotos(this.currentOffset)" type="button" class="btn btn-outline-dark m-3">Load More</button>
+      <button @click="loadPhotos(this.currentOffset)" type="button" class="btn btn-outline-dark m-3">Load More</button>
     </div>
 
 
