@@ -3,17 +3,23 @@ import backend from "@/services/axios";
 import ErrorMsg from "@/components/ErrorMsg.vue";
 import SuccessMsg from "@/components/SuccessMsg.vue";
 import Card from "@/components/Card.vue";
+import ModalV2 from "@/components/ModalV2.vue";
+import {ref} from "vue";
 
 export default {
-  components: {Card, SuccessMsg, ErrorMsg},
+  components: {ModalV2, Card, SuccessMsg, ErrorMsg},
   data: function () {
     return {
       errormsg: null,
       ready: false,
       userData: null,
       successmsg: null,
+      Modalsuccessmsg : null,
+      Modalerrormsg: null,
       userToken: this.$route.params.userID,
-      currPage: 0
+      currPage: 0,
+      isOpen: ref(false),
+      newUsername: null,
     }
   },
   methods: {
@@ -41,10 +47,27 @@ export default {
       // Log the error on console
       console.log(error)
     },
-    loadPhotos(offset){
+    loadPhotos(offset) {
       // TODO Fare la chiamata per ottenere le foto a partire da un certo offset
 
     },
+    async changeUsername(){
+      try {
+        let response = await backend.put(`/users/${sessionStorage.getItem("token")}/username`,{
+          username : this.newUsername
+        });
+        this.handleResponse(response);
+        this.Modalerrormsg = null
+        this.Modalsuccessmsg = "Username updated"
+        setTimeout(this.reloadPage, 1000);
+      } catch (error) {
+        this.Modalerrormsg = error.response.data.message
+        console.log(error)
+      }
+    },
+    reloadPage() {
+      location.reload();
+    }
   },
   mounted() {
     this.loadContent();
@@ -62,12 +85,22 @@ export default {
     <!-- Username of the user -->
     <div class="h2 d-flex justify-content-evenly mt-4" v-if="ready" style="font-size:3.5vw;">
 
-      {{userData.username}}
-      <button class="btn btn-outline-primary btn-sm"> Change my username</button>
+      {{ userData.username }}
+      <button @click="isOpen = true" class="btn btn-outline-primary btn-sm"> Change my username</button>
+
+      <ModalV2 :open="isOpen" @close="isOpen=!isOpen">
+        <SuccessMsg v-if="Modalsuccessmsg" :msg="Modalsuccessmsg"></SuccessMsg>
+        <ErrorMsg v-if="Modalerrormsg" :msg="Modalerrormsg"></ErrorMsg>
+        <div class="d-flex">
+          <input type="text" v-model="newUsername" class="form-control" placeholder="New username">
+          <button @click="changeUsername()" class="btn btn-sm btn-outline-primary">Change</button>
+        </div>
+      </ModalV2>
 
     </div>
     <!-- Profile stats -->
-    <div class="d-flex justify-content-around p-2" style="font-size: 2vw;background-color: rgba(137,137,137,0.2);border-radius: 2vw;">
+    <div class="d-flex justify-content-around p-2"
+         style="font-size: 2vw;background-color: rgba(137,137,137,0.2);border-radius: 2vw;">
       <div v-if="ready">Photo: {{ userData.photoNumber }}</div>
       <div v-if="ready">Follower: {{ userData.follower }}</div>
       <div v-if="ready">Following: {{ userData.following }}</div>

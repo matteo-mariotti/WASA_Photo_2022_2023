@@ -8,18 +8,12 @@
       <change afterPath="$PROJECT_DIR$/Photos/225e67bc-3ba3-4317-a0a5-2c0354fc6c25" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/webapi" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webui/src/components/Card.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webui/src/components/Modal.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webui/src/components/ModalV2.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Photos/22ce683c-f961-4a9a-b426-5e3c6a33219c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Photos/9e31b14b-804c-484e-b2d5-bacaa2b84f06" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/WASA_photo.db" beforeDir="false" afterPath="$PROJECT_DIR$/WASA_photo.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/components/PhotoBox.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Login.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/views/Profile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Profile.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/components/ErrorMsg.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/ErrorMsg.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/components/SuccessMsg.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/SuccessMsg.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
