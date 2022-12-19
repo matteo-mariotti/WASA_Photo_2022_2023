@@ -13,7 +13,7 @@ import (
 func (rt *_router) changeUsername(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// Parsing the parameters from the request
-	userID := ps.ByName("userID")
+	userID := ps.ByName("username")
 
 	var username = structs.Username{}
 

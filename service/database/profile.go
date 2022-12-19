@@ -55,6 +55,10 @@ func (db *appdbimpl) GetPhotos(userID string, reqUser string, offset int) ([]str
 		if err != nil {
 			return nil, err
 		}
+		// Get UserName instead of tokenID
+		user := db.c.QueryRow("SELECT UserName FROM Users WHERE UserID=?", photo.Owner)
+		err = user.Scan(&photo.Owner)
+
 		photos = append(photos, photo)
 	}
 	if len(photos) == 0 {
@@ -71,7 +75,7 @@ func (db *appdbimpl) GetPhotos(userID string, reqUser string, offset int) ([]str
 			return nil, err
 		}
 		// Get number of comments
-		comments, err := db.getCommentsNumber(photos[i].PhotoID)
+		comments, err := db.getCommentsNumber(photos[i].PhotoID, reqUser)
 		if err != nil {
 			return nil, err
 		}
@@ -104,9 +108,9 @@ func (db *appdbimpl) getLikesNumber(photoID int) (int, error) {
 }
 
 // GetCommentsNumber is a function that returns the number of comments of a photo
-func (db *appdbimpl) getCommentsNumber(photoID int) (int, error) {
+func (db *appdbimpl) getCommentsNumber(photoID int, userID string) (int, error) {
 	var count int
-	row := db.c.QueryRow("SELECT COUNT(*) FROM Comments WHERE PhotoID=?", photoID)
+	row := db.c.QueryRow("SELECT COUNT(*) FROM Comments WHERE PhotoID=? AND (UserID,?) NOT IN (SELECT * FROM Bans) AND (?,UserID) NOT IN (SELECT * FROM Bans)", photoID, userID, userID)
 	// Note that we are not checking for sql.ErrNoRows here because we are using count(*) and it will always return a row
 	err := row.Scan(&count)
 	return count, err

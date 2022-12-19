@@ -7,7 +7,7 @@ import (
 )
 
 // GetFollowingPhotosChrono is a function that returns the photos of the users that the user is following in reverse chronological order
-func (db *appdbimpl) GetFollowingPhotosChrono(following []string, offset int) ([]structs.Photo, error) {
+func (db *appdbimpl) GetFollowingPhotosChrono(following []string, offset int, reqUser string) ([]structs.Photo, error) {
 	type photoPartialInfo struct {
 		PhotoID int
 		Owner   string
@@ -55,7 +55,7 @@ func (db *appdbimpl) GetFollowingPhotosChrono(following []string, offset int) ([
 			return nil, err
 		}
 		// Get number of comments
-		comments, err := db.getCommentsNumber(photos[i].PhotoID)
+		comments, err := db.getCommentsNumber(photos[i].PhotoID, reqUser)
 		if err != nil {
 			return nil, err
 		}

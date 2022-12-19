@@ -15,7 +15,7 @@ func (rt *_router) like(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 
 	// Parsing the parameters from the request
 	photoID := ps.ByName("photoID")
-	photoOwner := ps.ByName("userID")
+	photoOwner := ps.ByName("username")
 	currentUser := ps.ByName("likeID")
 
 	// Check if the user I'm trying to like a photo of a user who has blocked me
@@ -44,6 +44,13 @@ func (rt *_router) like(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 		return
 	}
 
+	photoOwner, err = rt.db.GetToken(photoOwner)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting user token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
 	// Check if I'm trying to like a photo that doesn't belong to the userID in the path
 	owner, err := rt.db.GetPhotoOwner(ps.ByName("photoID"))
 
@@ -61,7 +68,9 @@ func (rt *_router) like(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 		}
 		return
 	} else if owner != photoOwner {
-		rt.baseLogger.Error("User is trying to comment a photo that doesn't belong to the user in the path")
+		rt.baseLogger.Error("User is trying to like a photo that doesn't belong to the user in the path")
+		rt.baseLogger.Info(owner)
+		rt.baseLogger.Info(photoOwner)
 		httpErrorResponse(rt, w, "Bad Request", http.StatusBadRequest)
 		return
 	}
@@ -93,9 +102,16 @@ func (rt *_router) like(w http.ResponseWriter, r *http.Request, ps httprouter.Pa
 func (rt *_router) unlike(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// Parsing the parameters from the request
-	photoOwner := ps.ByName("userID")
+	photoOwner := ps.ByName("username")
 	photoID := ps.ByName("photoID")
 	currentUser := ps.ByName("likeID")
+
+	photoOwner, err := rt.db.GetToken(photoOwner)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting user token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 
 	// Check if the user I'm trying to unlike a photo is the same as the one in the path
 	owner, err := rt.db.GetPhotoOwner(ps.ByName("photoID"))
@@ -114,7 +130,7 @@ func (rt *_router) unlike(w http.ResponseWriter, r *http.Request, ps httprouter.
 		}
 		return
 	} else if owner != photoOwner {
-		rt.baseLogger.Error("User is trying to uncomment a photo that doesn't belong to the user in the path")
+		rt.baseLogger.Error("User is trying to unlike a photo that doesn't belong to the user in the path")
 		httpErrorResponse(rt, w, "Bad Request", http.StatusBadRequest)
 		return
 	}

@@ -11,11 +11,11 @@ export default {
   data: function () {
     return {
       errormsg: null,
-      ready: false,
-      userData: null,
       successmsg: null,
       Modalsuccessmsg : null,
       Modalerrormsg: null,
+      ready: false,
+      userData: null,
       userToken: this.$route.params.userID,
       currPage: 0,
       isOpen: ref(false),
@@ -108,7 +108,7 @@ export default {
 
     <!-- Images -->
     <div class="d-grid justify-content-center" id="imageList">
-      <Card v-bind:imageData="image" v-if="ready" v-for="image in userData.photos"></Card>
+      <Card v-bind:imageData="image" v-if="ready" v-for="image in userData.photos" v-bind:username="this.userData.username"></Card>
     </div>
     <div class="d-grid justify-content-center">
       <button @click="loadPhotos(this.currentOffset)" type="button" class="btn btn-outline-dark m-3">Load More</button>

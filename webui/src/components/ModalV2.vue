@@ -12,8 +12,9 @@ props: ['open'],
       <div class="vue-modal-content">
         <slot />
         <br>
+        <div class="modal-footer--sticky">
         <button class="btn btn-dark" @click="$emit('close')"> Close </button>
-
+        </div>
       </div>
     </div>
   </div>
@@ -28,6 +29,16 @@ props: ['open'],
     padding: 0;
     box-sizing: border-box;
   }
+
+  /* Footer fixed to the bottom of the modal */
+  .modal-footer--sticky {
+    position: sticky;
+    bottom: 0;
+    padding: 0.5rem;
+    background-color: white; /* [1] */
+    z-index: 1055; /* [2] */
+  }
+
 
   .vue-modal{
     position: fixed;

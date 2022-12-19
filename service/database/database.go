@@ -84,6 +84,7 @@ type AppDatabase interface {
 
 	// Profile functions
 	GetName(userID string) (string, error)                                        // Get the username from the user ID
+	GetToken(userID string) (string, error)                                       // Get the toke from the userName
 	GetFollowerNumber(userID string) (int, error)                                 // Get the number of followers of a user
 	GetFollowingNumber(userID string) (int, error)                                // Get the number of users a user is following
 	GetPhotosNumber(userID string) (int, error)                                   // Get the number of photos a user has uploaded
@@ -93,8 +94,8 @@ type AppDatabase interface {
 	GetUsers(start string, offset int) ([]string, error) // Get the list of users that start with the given string
 
 	// Stream
-	GetFollowing(userID string) ([]string, error)                                     // Get the list of users that a user is following
-	GetFollowingPhotosChrono(following []string, offset int) ([]structs.Photo, error) // Get the photos of the users that a user is following
+	GetFollowing(userID string) ([]string, error)                                                     // Get the list of users that a user is following
+	GetFollowingPhotosChrono(following []string, offset int, reqUser string) ([]structs.Photo, error) // Get the photos of the users that a user is following
 
 	GetVersion() (string, error) // Get database version
 	Ping() error

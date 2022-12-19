@@ -42,7 +42,7 @@ func (rt *_router) stream(w http.ResponseWriter, r *http.Request, ps httprouter.
 
 	var photos []structs.Photo
 
-	photos, err = rt.db.GetFollowingPhotosChrono(following, pageInt*100)
+	photos, err = rt.db.GetFollowingPhotosChrono(following, pageInt*100, ctx.Token)
 
 	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("No more photos to show")

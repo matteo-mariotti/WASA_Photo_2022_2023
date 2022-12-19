@@ -32,6 +32,7 @@ export default {
         // If the response is 200, then the user is logged in
         // We can redirect him to the home page
         sessionStorage.setItem("token", response.data.token);
+        sessionStorage.setItem("username", this.identifier);
         this.errormsg = null
         this.successmsg = "Login successful"
         this.loading = true

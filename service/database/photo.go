@@ -47,7 +47,7 @@ func (db *appdbimpl) DeletePhoto(photoID string) (string, error) {
 // GetPhotoOwner is a function that returns the owner of a photo
 func (db *appdbimpl) GetPhotoOwner(photoID string) (string, error) {
 	var owner string
-	err := db.c.QueryRow("SELECT Owner FROM Photos WHERE PhotoID = ?", photoID).Scan(&owner)
+	err := db.c.QueryRow("SELECT Owner FROM Photos WHERE PhotoID = ? ", photoID).Scan(&owner)
 	if err != nil {
 		return "", err
 	}
@@ -96,7 +96,7 @@ func (db *appdbimpl) GetLikes(photoID string, offset int, userRequesting string)
 func (db *appdbimpl) GetComments(photoID string, offset int, userRequesting string) ([]structs.Comment, error) {
 	var comments []structs.Comment
 
-	rows, err := db.c.Query("SELECT CommentID AS C, UserID AS U, Text AS T FROM Comments WHERE PhotoID=? AND (U,?) NOT IN (SELECT * FROM Bans) AND (?,U) NOT IN (SELECT * FROM Bans) LIMIT 30 OFFSET ?", photoID, userRequesting, userRequesting, offset)
+	rows, err := db.c.Query("SELECT CommentID AS C, UserName AS U, Text AS T FROM Comments, Users WHERE Users.UserID = Comments.UserID AND PhotoID=? AND (U,?) NOT IN (SELECT * FROM Bans) AND (?,U) NOT IN (SELECT * FROM Bans) ORDER BY CommentID DESC LIMIT 30 OFFSET ?", photoID, userRequesting, userRequesting, offset)
 	if err != nil {
 		return nil, err
 	}

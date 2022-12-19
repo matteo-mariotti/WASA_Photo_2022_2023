@@ -18,7 +18,15 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	var profileResponse structs.Profile
 
 	// Parsing the parameters from the request
-	userProfile := ps.ByName("userID")
+	userProfile := ps.ByName("username")
+
+	userProfile, err := rt.db.GetToken(userProfile)
+
+	if err != nil {
+		rt.baseLogger.Error("Error getting token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 
 	// Get page number from query string
 	page := r.URL.Query().Get("page")
@@ -117,10 +125,10 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("No more photos are available in this user profile:  " + userProfile)
-		httpErrorResponse(rt, w, "404 Not Found", http.StatusNotFound)
+		httpErrorResponse(rt, w, "200 OK, no more photos", http.StatusOK)
 		return
 	} else if err != nil {
-		rt.baseLogger.Error("Error while getting the photos of user " + userProfile)
+		rt.baseLogger.WithError(err).Error("Error while getting the photos of user " + userProfile)
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
