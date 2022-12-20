@@ -115,6 +115,8 @@ export default {
           response.data.forEach(comment => {
             this.commentList.push(comment)
           })
+        }else{
+          this.more = false
         }
         this.isOpen = true
         this.commentPage = this.commentPage + 1

@@ -36,6 +36,7 @@ export default {
         this.errormsg = null
         this.successmsg = "Login successful"
         this.loading = true
+        this.$emit("logging")
         setTimeout(this.redirect, 1500)
       }
     },
@@ -60,13 +61,13 @@ export default {
 
 
         <div style="text-align: center">
-          <h2>Inserisci il tuo username per accedere</h2>
+          <h2>Welcome to WASA Photo</h2>
           <br>
         </div>
 
          <input type="text" v-model="identifier" class="form-control" placeholder="username">
           <div style="text-align: center">
-            <button @click="sendData()" type="submit" class="btn btn-primary m-3">Sign in</button>
+            <button @click="sendData()" type="submit" class="btn btn-primary m-3">Sign in/up</button>
           </div>
         <br>
 

@@ -46,6 +46,12 @@ func (rt *_router) changeUsername(w http.ResponseWriter, r *http.Request, ps htt
 		return
 	}
 
+	userID, err = rt.db.GetToken(userID)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+	}
+
 	// If is free, change the username
 	err = rt.db.ChangeUsername(userID, username.Username)
 

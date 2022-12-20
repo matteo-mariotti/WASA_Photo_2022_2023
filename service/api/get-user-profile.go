@@ -20,10 +20,16 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	// Parsing the parameters from the request
 	userProfile := ps.ByName("username")
 
+	rt.baseLogger.Info(userProfile)
+
 	userProfile, err := rt.db.GetToken(userProfile)
 
-	if err != nil {
-		rt.baseLogger.Error("Error getting token")
+	if errors.Is(err, sql.ErrNoRows) {
+		rt.baseLogger.WithError(err).Error("User not found")
+		httpErrorResponse(rt, w, "User not found", http.StatusNotFound)
+		return
+	} else if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting token")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -125,7 +131,7 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 
 	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("No more photos are available in this user profile:  " + userProfile)
-		httpErrorResponse(rt, w, "200 OK, no more photos", http.StatusOK)
+		httpErrorResponse(rt, w, "204 No Content, no more photos", http.StatusNoContent)
 		return
 	} else if err != nil {
 		rt.baseLogger.WithError(err).Error("Error while getting the photos of user " + userProfile)
