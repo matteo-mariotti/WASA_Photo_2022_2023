@@ -84,8 +84,22 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 	defer f.Close()
 
+	err = r.ParseMultipartForm(32 << 20)
+	if err != nil {
+		rt.baseLogger.Info("Form cose 1")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	file, _, err := r.FormFile("file")
+	if err != nil {
+		rt.baseLogger.Info("Form cose 2")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer f.Close()
+
 	// Copy the photo in the new file
-	_, err = io.Copy(f, r.Body)
+	_, err = io.Copy(f, file)
 	if err != nil {
 
 		// Error, rollback

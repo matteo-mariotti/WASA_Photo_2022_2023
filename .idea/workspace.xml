@@ -4,20 +4,21 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ffbd068-6aa6-450b-ab2e-f8a7024c3d85" name="Changes" comment="Comment/Uncomment functionality is now working">
+    <list default="true" id="9ffbd068-6aa6-450b-ab2e-f8a7024c3d85" name="Changes" comment="Photo pagination added">
       <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/webapi" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webui/src/components/UploadBox.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webui/src/views/Upload.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Photos/880bedef-4356-4b01-9416-7534fa1a63dd" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/WASA_photo.db" beforeDir="false" afterPath="$PROJECT_DIR$/WASA_photo.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/change-username.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/change-username.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/doc/api.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/api-handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/api-handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/api-self-check-wrapper.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/api-self-check-wrapper.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/api/get-user-profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/get-user-profile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/components/Card.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/Card.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/photo.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/photo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/structs/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/structs/profile.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webui/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/views/Profile.vue" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +80,24 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
+  <component name="RunManager">
+    <configuration default="true" type="SwaggerCodegen">
+      <option name="activeConfigurationType" value="FILE" />
+      <option name="configurationPath" value="" />
+      <option name="customJreEnabled" value="false" />
+      <option name="customTemplatesPath" value="" />
+      <option name="enableDebugLogging" value="false" />
+      <option name="generateToPath" value="$PROJECT_DIR$/gen" />
+      <option name="generationParameters">
+        <list />
+      </option>
+      <option name="generatorPath" value="https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/5.0.0/openapi-generator-cli-5.0.0.jar" />
+      <option name="jdkPath" value="" />
+      <option name="language" value="java" />
+      <option name="specificationPath" value="$PROJECT_DIR$/doc/api.yaml" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
@@ -121,7 +140,8 @@
     <MESSAGE value="You can now view you profile page and delete photos" />
     <MESSAGE value="You can now change your username" />
     <MESSAGE value="Comment/Uncomment functionality is now working" />
-    <option name="LAST_COMMIT_MESSAGE" value="Comment/Uncomment functionality is now working" />
+    <MESSAGE value="Photo pagination added" />
+    <option name="LAST_COMMIT_MESSAGE" value="Photo pagination added" />
   </component>
   <component name="VgoProject">
     <integration-enabled>false</integration-enabled>

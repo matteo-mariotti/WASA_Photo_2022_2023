@@ -14,6 +14,7 @@ func (rt *_router) wrapSelf(fn httpRouterHandler) func(http.ResponseWriter, *htt
 		userID := ps.ByName("username")
 
 		userID, err := rt.db.GetToken(userID)
+
 		if err != nil {
 			rt.baseLogger.WithError(err).Error("Error getting user token")
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)

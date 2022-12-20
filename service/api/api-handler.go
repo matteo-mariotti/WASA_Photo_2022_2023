@@ -42,6 +42,7 @@ func (rt *_router) Handler() http.Handler {
 
 	// Get user profile route
 	rt.router.GET("/users/:username", rt.wrap(rt.wrapAuth(rt.getUserProfile)))
+	rt.router.GET("/users/:username/photos", rt.wrap(rt.wrapAuth(rt.getPhotos)))
 
 	// Get users filtered list
 	rt.router.GET("/users", rt.wrap(rt.wrapAuth(rt.getUsers)))

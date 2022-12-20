@@ -17,6 +17,7 @@ export default {
       Modalerrormsg: null,
       ready: false,
       userData: null,
+      photos: [],
       username: sessionStorage.getItem('username'),
       isOwner: null,
       page: 0,
@@ -42,7 +43,6 @@ export default {
       this.userData = response.data
 
       this.isOwner = this.userData.username === sessionStorage.getItem("username")
-      this.page = this.page + 1
       this.moreButton = true
       console.log(response)
     },
@@ -62,11 +62,11 @@ export default {
     async loadMorePhotos(offset) {
       // TODO Fare la chiamata per ottenere le foto a partire da un certo offset
       try {
-        let response = await backend.get(`/users/${this.$route.params.user}?page=${this.page}`);
+        let response = await backend.get(`/users/${this.$route.params.user}/photos?page=${offset}`);
         console.log(response)
         if (response.status == 200) {
-          response.data.photos.forEach(photo => {
-            this.userData.photos.push(photo)
+          response.data.forEach(photo => {
+            this.photos.push(photo)
           })
         }
         this.page = this.page + 1
@@ -88,18 +88,20 @@ export default {
         sessionStorage.setItem("username", this.newUsername)
         this.Modalerrormsg = null
         this.Modalsuccessmsg = "Username updated"
-        setTimeout(this.reloadPage, 1000);
+        setTimeout(this.reloadNewUser, 1000);
       } catch (error) {
         this.Modalerrormsg = error.response.data.message
         console.log(error)
       }
     },
-    reloadPage() {
-      location.reload();
+    reloadNewUser() {
+      this.$router.push(`/users/${this.newUsername}`)
+      this.$emit("logging")
     }
   },
   mounted() {
     this.loadContent();
+    this.loadMorePhotos(this.page)
   }
 }
 </script>
@@ -137,7 +139,7 @@ export default {
 
     <!-- Images -->
     <div class="d-grid justify-content-center" id="imageList">
-      <Card v-bind:imageData="image" v-if="ready" v-for="image in userData.photos"
+      <Card v-bind:imageData="image" v-if="ready" v-for="image in photos"
             v-bind:username="this.username"></Card>
     </div>
     <div class="d-grid justify-content-center">
