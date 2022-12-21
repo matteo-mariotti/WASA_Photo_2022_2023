@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-	<div class="alert alert-danger" role="alert">
+	<div class="alert alert-danger text-center" role="alert">
 		{{ msg }}
 	</div>
 </template>

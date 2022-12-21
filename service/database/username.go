@@ -21,3 +21,10 @@ func (db *appdbimpl) GetName(userID string) (string, error) {
 	err := row.Scan(&username)
 	return username, err
 }
+
+func (db *appdbimpl) GetToken(userName string) (string, error) {
+	var token string
+	row := db.c.QueryRow("SELECT UserID FROM Users WHERE UserName=?", userName)
+	err := row.Scan(&token)
+	return token, err
+}

@@ -13,6 +13,8 @@ func applyCORSHandler(h http.Handler) http.Handler {
 	return handlers.CORS(
 		handlers.AllowedHeaders([]string{
 			"Content-Type", // I think this is the only one we need
+			"Access-Control-Allow-Origin",
+			"Authorization",
 		}),
 		handlers.AllowedMethods([]string{"GET", "POST", "OPTIONS", "DELETE", "PUT"}),
 		handlers.AllowedOrigins([]string{"*"}),

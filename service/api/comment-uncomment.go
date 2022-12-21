@@ -18,9 +18,18 @@ func (rt *_router) comment(w http.ResponseWriter, r *http.Request, ps httprouter
 
 	var textComment structs.TextComment
 
+	rt.baseLogger.Info("User token is: ", ctx.Token)
+
 	// Parsing the parameters from the request
 	photoID := ps.ByName("photoID")
-	userID := ps.ByName("userID")
+	userID := ps.ByName("username")
+
+	userID, err := rt.db.GetToken(userID)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting token")
+		httpErrorResponse(rt, w, "Internal Server error", http.StatusInternalServerError)
+		return
+	}
 
 	// Check if the user I'm trying to comment the photo of a user that has blocked me
 	isBanned, err := rt.db.IsBanned(userID, ctx.Token)
@@ -99,9 +108,16 @@ func (rt *_router) comment(w http.ResponseWriter, r *http.Request, ps httprouter
 func (rt *_router) unComment(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// Parsing the parameters from the request
-	photoOwner := ps.ByName("userID")
+	photoOwner := ps.ByName("username")
 	photoID := ps.ByName("photoID")
 	commentID := ps.ByName("commentID")
+
+	photoOwner, err := rt.db.GetToken(photoOwner)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting user token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 
 	// Controlla se sto cercando di commentare una foto che non appartiene all'userID del path
 	owner, err := rt.db.GetPhotoOwner((ps.ByName("photoID")))

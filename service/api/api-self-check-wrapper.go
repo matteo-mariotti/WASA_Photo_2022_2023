@@ -11,10 +11,18 @@ import (
 func (rt *_router) wrapSelf(fn httpRouterHandler) func(http.ResponseWriter, *http.Request, httprouter.Params, reqcontext.RequestContext) {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-		userA := ps.ByName("userID")
+		userID := ps.ByName("username")
+
+		userID, err := rt.db.GetToken(userID)
+
+		if err != nil {
+			rt.baseLogger.WithError(err).Error("Error getting user token")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
 
 		// Check if the user is acting on his own account
-		if ctx.Token != userA {
+		if ctx.Token != userID {
 			// Log the error
 			rt.baseLogger.Error("User id trying to modify someone else's profile: " + ctx.Token)
 

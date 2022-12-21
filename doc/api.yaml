@@ -47,9 +47,10 @@ components:
       example: 1
 
     comment:
+      description: Comment
       type: object
       properties:
-        id:
+        commentID:
           $ref: "#/components/schemas/commentID"
         userID:
           $ref: "#/components/schemas/identifier"
@@ -93,6 +94,9 @@ components:
         comments:
           description: number of comments
           type: integer
+        loggedLike:
+          description: True if the logged user has liked this photo
+          type: boolean
 
     username:
       type: string
@@ -102,20 +106,12 @@ components:
       maxLength: 16
       minLength: 3
 
-
     profile:
       description: user profile
       type: object
       properties:
         username:
           $ref: "#/components/schemas/username"
-        photos:
-          description: List of photos uploaded by the user
-          type: array
-          items:
-            $ref: "#/components/schemas/photo"
-          maxItems: 30                                      #Limit the size of the array to 30 elements per chuck
-          minItems: 0
         photosCount:
           description: Number of photos uploaded by the user
           type: integer
@@ -399,14 +395,6 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
-      - name: page
-        in: query
-        description: Photo's page number
-        required: false
-        schema:
-          type: integer
-          minimum: 0
-          default: 0
     get:
       tags: ["users"]
       summary: Get the requested user profile
@@ -511,8 +499,30 @@ paths:
         "404":
           $ref: "#/components/responses/NotFound"
         "500":
+          $ref: "#/components/responses/InternalServerError"
+    get:
+      tags: ["ban"]
+      summary: Check if a user is blocked (both ways)
+      description: |
+        Check if a user is blocked
+      operationId: isUserBanned
+      responses:
+        "200":
+          description: Status of the ban
+          content:
+            application/json:
+              schema:
+                description: Status of the ban
+                type: boolean
+                example: true
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
           $ref: "#/components/responses/InternalServerError"          
-
 
   /users/{userID}/followers/{followerID}:
     parameters:
@@ -565,7 +575,30 @@ paths:
         "409":
           $ref: "#/components/responses/Conflict"
         "500":
-          $ref: "#/components/responses/InternalServerError"          
+          $ref: "#/components/responses/InternalServerError"   
+    get:
+      tags: ["ban"]
+      summary: Check follow
+      description: |
+        Check if a userID is following followerID
+      operationId: isFollowing
+      responses:
+        "200":
+          description: Status of the ban
+          content:
+            application/json:
+              schema:
+                description: Status of following
+                type: boolean
+                example: true
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"           
 
   /users/{userID}/photos/{photoID}/likes/{likeID}:
     parameters:
@@ -698,6 +731,10 @@ paths:
       responses:
         "201":
           description: Comment added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/comment"
         "400":
           $ref: "#/components/responses/BadRequest"
         "401":
@@ -719,6 +756,40 @@ paths:
         required: true
         schema:
           $ref: "#/components/schemas/identifier"
+    get:
+      parameters:
+        - name: page
+          in: query
+          description: Photo's page number
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      tags: ["photo"]
+      summary: Get the list of photo of the user in the path
+      description: Get a list of the photo of the user in path (paginated in arrays of 30 elements)
+      operationId: getPhotos
+      responses:
+        "200":
+          description: Photos retrieved successfully
+          content:
+            application/json:
+              schema:
+                description: Photos of the user
+                type: array
+                minItems: 0
+                maxItems: 30
+                items:
+                  $ref: "#/components/schemas/photo"
+        "204":
+          description: No photos found
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
     post:
       tags: ["photo"]
       summary: Upload a photo
@@ -728,7 +799,7 @@ paths:
       requestBody:
         description: photo
         content:
-          image/png:
+          multipart/form-data:
             schema:
               description: Photo to be uploaded
               type: string

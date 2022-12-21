@@ -13,7 +13,7 @@ import (
 func (rt *_router) changeUsername(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// Parsing the parameters from the request
-	userID := ps.ByName("userID")
+	userID := ps.ByName("username")
 
 	var username = structs.Username{}
 
@@ -44,6 +44,12 @@ func (rt *_router) changeUsername(w http.ResponseWriter, r *http.Request, ps htt
 			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		}
 		return
+	}
+
+	userID, err = rt.db.GetToken(userID)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 	}
 
 	// If is free, change the username

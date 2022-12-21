@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="WASA_photo" uuid="17a294de-9573-486f-aaea-efe644ef4a16">
+    <data-source source="LOCAL" name="WASA_photo.db" uuid="b7f2767d-7809-4316-bfaa-95f059efae29">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

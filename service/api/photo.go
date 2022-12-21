@@ -32,14 +32,36 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 	// Insert the photo in the DB
 	newUuid, err := uuid.NewV4()
 	if err != nil {
+		err1 := rt.db.Rollback()
+		if err1 != nil {
+			rt.baseLogger.WithError(err).Error("Error while rolling back")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		}
 		rt.baseLogger.WithError(err).Error("Error while generating UUID")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
-	err = rt.db.UploadPhoto(ps.ByName("userID"), newUuid.String())
+	token, err := rt.db.GetToken(ps.ByName("username"))
+	if err != nil {
+		// Error, rollback
+		rt.baseLogger.WithError(err).Error("Error while getting token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		err = rt.db.Rollback()
+		if err != nil {
+			rt.baseLogger.WithError(err).Error("Error while rolling back")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		}
+		return
+	}
+	err = rt.db.UploadPhoto(token, newUuid.String())
 
 	if err != nil {
+		err1 := rt.db.Rollback()
+		if err1 != nil {
+			rt.baseLogger.WithError(err).Error("Error while rolling back")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		}
 		rt.baseLogger.WithError(err).Error("Error while uploading photo")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -62,8 +84,22 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 
 	defer f.Close()
 
+	err = r.ParseMultipartForm(32 << 20)
+	if err != nil {
+		rt.baseLogger.Info("Form cose 1")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	file, _, err := r.FormFile("file")
+	if err != nil {
+		rt.baseLogger.Info("Form cose 2")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	defer f.Close()
+
 	// Copy the photo in the new file
-	_, err = io.Copy(f, r.Body)
+	_, err = io.Copy(f, file)
 	if err != nil {
 
 		// Error, rollback
@@ -240,6 +276,8 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 	defer file.Close()
 
+	//http.ServeFile(w, r, rt.photoPath+filename)
+
 	// Copy the file to the response
 	_, err = io.Copy(w, file)
 	if err != nil {
@@ -395,8 +433,8 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 	commentsResponse, err = rt.db.GetComments(photoID, pageInt*30, ctx.Token)
 
 	if errors.Is(err, sql.ErrNoRows) {
-		rt.baseLogger.Error("No more comments are available")
-		httpErrorResponse(rt, w, "No more comments", http.StatusNotFound)
+		rt.baseLogger.Info("No more comments are available")
+		w.WriteHeader(http.StatusNoContent)
 		return
 	} else if err != nil {
 		rt.baseLogger.Error("Error while getting the comments")

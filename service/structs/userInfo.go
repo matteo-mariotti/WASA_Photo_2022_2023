@@ -7,3 +7,7 @@ type UserInfo struct {
 type Username struct {
 	Username string `json:"username"`
 }
+
+type Status struct {
+	StatusRes bool `json:"status"`
+}

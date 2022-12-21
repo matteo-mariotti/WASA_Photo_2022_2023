@@ -3,6 +3,7 @@ package database
 import (
 	"WASA_Photo/service/structs"
 	"database/sql"
+	"strconv"
 )
 
 // GetFollowerNumber is a function that returns the number of followers of a user
@@ -33,7 +34,7 @@ func (db *appdbimpl) GetPhotosNumber(userID string) (int, error) {
 }
 
 // GetPhoto is a function that returns the photo with the given ID
-func (db *appdbimpl) GetPhotos(userID string, offset int) ([]structs.Photo, error) {
+func (db *appdbimpl) GetPhotos(userID string, reqUser string, offset int) ([]structs.Photo, error) {
 	type photoPartialInfo struct {
 		PhotoID int
 		Owner   string
@@ -54,6 +55,10 @@ func (db *appdbimpl) GetPhotos(userID string, offset int) ([]structs.Photo, erro
 		if err != nil {
 			return nil, err
 		}
+		// Get UserName instead of tokenID
+		user := db.c.QueryRow("SELECT UserName FROM Users WHERE UserID=?", photo.Owner)
+		err = user.Scan(&photo.Owner)
+
 		photos = append(photos, photo)
 	}
 	if len(photos) == 0 {
@@ -65,12 +70,16 @@ func (db *appdbimpl) GetPhotos(userID string, offset int) ([]structs.Photo, erro
 	// Get number of likes and comments for each photo
 	for i := range photos {
 		// Get number of likes
-		likes, err := db.getLikesNumber(photos[i].PhotoID)
+		likes, err := db.getLikesNumber(photos[i].PhotoID, reqUser)
 		if err != nil {
 			return nil, err
 		}
 		// Get number of comments
-		comments, err := db.getCommentsNumber(photos[i].PhotoID)
+		comments, err := db.getCommentsNumber(photos[i].PhotoID, reqUser)
+		if err != nil {
+			return nil, err
+		}
+		userLike, err := db.HasLiked(strconv.Itoa(photos[i].PhotoID), reqUser)
 		if err != nil {
 			return nil, err
 		}
@@ -82,6 +91,7 @@ func (db *appdbimpl) GetPhotos(userID string, offset int) ([]structs.Photo, erro
 			Date:           photos[i].Date,
 			LikesNumber:    likes,
 			CommentsNumber: comments,
+			LoggedLike:     userLike,
 		})
 
 	}
@@ -89,18 +99,18 @@ func (db *appdbimpl) GetPhotos(userID string, offset int) ([]structs.Photo, erro
 }
 
 // GetLikesNumber is a function that returns the number of likes of a photo
-func (db *appdbimpl) getLikesNumber(photoID int) (int, error) {
+func (db *appdbimpl) getLikesNumber(photoID int, userID string) (int, error) {
 	var count int
-	row := db.c.QueryRow("SELECT COUNT(*) FROM Likes WHERE PhotoID=?", photoID)
+	row := db.c.QueryRow("SELECT COUNT(*) FROM Likes WHERE PhotoID=? AND (UserID,?) NOT IN (SELECT * FROM Bans) AND (?,UserID) NOT IN (SELECT * FROM Bans)", photoID, userID, userID)
 	// Note that we are not checking for sql.ErrNoRows here because we are using count(*) and it will always return a row
 	err := row.Scan(&count)
 	return count, err
 }
 
 // GetCommentsNumber is a function that returns the number of comments of a photo
-func (db *appdbimpl) getCommentsNumber(photoID int) (int, error) {
+func (db *appdbimpl) getCommentsNumber(photoID int, userID string) (int, error) {
 	var count int
-	row := db.c.QueryRow("SELECT COUNT(*) FROM Comments WHERE PhotoID=?", photoID)
+	row := db.c.QueryRow("SELECT COUNT(*) FROM Comments WHERE PhotoID=? AND (UserID,?) NOT IN (SELECT * FROM Bans) AND (?,UserID) NOT IN (SELECT * FROM Bans)", photoID, userID, userID)
 	// Note that we are not checking for sql.ErrNoRows here because we are using count(*) and it will always return a row
 	err := row.Scan(&count)
 	return count, err
