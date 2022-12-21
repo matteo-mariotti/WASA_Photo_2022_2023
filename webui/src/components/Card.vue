@@ -31,7 +31,6 @@ export default {
       try {
         this.ready = false
         let response = await backend.get(`/photos/${this.imageData.id}`, {responseType: 'arraybuffer'});
-        console.log("Request executed");
         this.handleResponse(response);
 
         this.ready = true
@@ -49,8 +48,6 @@ export default {
       let img = document.getElementById(this.imageData.id)
       let blob = new Blob([response.data])
       img.src = URL.createObjectURL(blob)
-
-      console.log("Blob created successfully")
 
     },
     handleError(error) {
@@ -111,7 +108,7 @@ export default {
         this.Modalinfomsg = null
 
         let response = await backend.get(`/photos/${this.imageData.id}/comments?page=${this.commentPage}`);
-        if (response.status == 200) {
+        if (response.status === 200) {
           response.data.forEach(comment => {
             this.commentList.push(comment)
           })
@@ -127,13 +124,13 @@ export default {
     async loadMoreComments(){
       try {
         let response = await backend.get(`/photos/${this.imageData.id}/comments?page=${this.commentPage}`);
-        if (response.status == 200) {
+        if (response.status === 200) {
           response.data.forEach(comment => {
             this.commentList.push(comment)
           })
         }
         this.commentPage = this.commentPage + 1
-        if (response.status == 204){
+        if (response.status === 204){
           this.more = false;
           this.Modalinfomsg = "No more comments are available"
         }

@@ -70,7 +70,7 @@ func (db *appdbimpl) GetPhotos(userID string, reqUser string, offset int) ([]str
 	// Get number of likes and comments for each photo
 	for i := range photos {
 		// Get number of likes
-		likes, err := db.getLikesNumber(photos[i].PhotoID)
+		likes, err := db.getLikesNumber(photos[i].PhotoID, reqUser)
 		if err != nil {
 			return nil, err
 		}
@@ -99,9 +99,9 @@ func (db *appdbimpl) GetPhotos(userID string, reqUser string, offset int) ([]str
 }
 
 // GetLikesNumber is a function that returns the number of likes of a photo
-func (db *appdbimpl) getLikesNumber(photoID int) (int, error) {
+func (db *appdbimpl) getLikesNumber(photoID int, userID string) (int, error) {
 	var count int
-	row := db.c.QueryRow("SELECT COUNT(*) FROM Likes WHERE PhotoID=?", photoID)
+	row := db.c.QueryRow("SELECT COUNT(*) FROM Likes WHERE PhotoID=? AND (UserID,?) NOT IN (SELECT * FROM Bans) AND (?,UserID) NOT IN (SELECT * FROM Bans)", photoID, userID, userID)
 	// Note that we are not checking for sql.ErrNoRows here because we are using count(*) and it will always return a row
 	err := row.Scan(&count)
 	return count, err

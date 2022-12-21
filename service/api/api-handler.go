@@ -15,10 +15,12 @@ func (rt *_router) Handler() http.Handler {
 	// Block/Unblock routes
 	rt.router.PUT("/users/:username/bans/:blockedID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.banUser))))
 	rt.router.DELETE("/users/:username/bans/:blockedID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.unbanUser))))
+	rt.router.GET("/users/:username/bans/:blockedID", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.banStatus))))
 
 	// Follow/Unfollow route
 	rt.router.PUT("/users/:username/followers/:followerID", rt.wrap(rt.wrapAuth(rt.followUser)))
 	rt.router.DELETE("/users/:username/followers/:followerID", rt.wrap(rt.wrapAuth(rt.unfollowUser)))
+	rt.router.GET("/users/:username/followers/:followerID", rt.wrap(rt.wrapAuth(rt.followStatus)))
 
 	// Upload/Delete photo route
 	rt.router.POST("/users/:username/photos", rt.wrap(rt.wrapAuth(rt.wrapSelf(rt.uploadPhoto))))

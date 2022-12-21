@@ -4,12 +4,31 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9ffbd068-6aa6-450b-ab2e-f8a7024c3d85" name="Changes" comment="Photo upload core functionality added">
+    <list default="true" id="9ffbd068-6aa6-450b-ab2e-f8a7024c3d85" name="Changes" comment="Photo upload completed">
       <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/webapi" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/webui/src/views/Search.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Photos/03304cab-0c45-47cc-b278-b6dcf70f5f35" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/WASA_photo.db" beforeDir="false" afterPath="$PROJECT_DIR$/WASA_photo.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/doc/api.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/api-handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/api-handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/ban-unban-user.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/ban-unban-user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/follow-unfollow-user.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/follow-unfollow-user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/stream.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/stream.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/database/follow-unfollow.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/follow-unfollow.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/database/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/profile.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/database/stream.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/stream.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/structs/userInfo.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/structs/userInfo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/webui/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/components/Card.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/Card.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webui/src/components/UploadBox.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/UploadBox.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/views/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/HomeView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +152,8 @@
     <MESSAGE value="Comment/Uncomment functionality is now working" />
     <MESSAGE value="Photo pagination added" />
     <MESSAGE value="Photo upload core functionality added" />
-    <option name="LAST_COMMIT_MESSAGE" value="Photo upload core functionality added" />
+    <MESSAGE value="Photo upload completed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Photo upload completed" />
   </component>
   <component name="VgoProject">
     <integration-enabled>false</integration-enabled>

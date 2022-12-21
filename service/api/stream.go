@@ -46,7 +46,7 @@ func (rt *_router) stream(w http.ResponseWriter, r *http.Request, ps httprouter.
 
 	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("No more photos to show")
-		httpErrorResponse(rt, w, "NotFound", http.StatusNotFound)
+		w.WriteHeader(http.StatusNoContent)
 		return
 	} else if err != nil {
 		rt.baseLogger.Error("Error while getting photos")

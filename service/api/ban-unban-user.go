@@ -3,6 +3,8 @@ package api
 import (
 	"WASA_Photo/service/api/reqcontext"
 	"WASA_Photo/service/errorDefinition"
+	"WASA_Photo/service/structs"
+	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -14,8 +16,20 @@ import (
 func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// Parsing the parameters from the request
-	userA := ps.ByName("userID")
+	userA := ps.ByName("username")
 	userB := ps.ByName("blockedID")
+
+	userA, err := rt.db.GetToken(userA)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	userB, err = rt.db.GetToken(userB)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+	}
 
 	// Check if I am trying to ban myself
 	if userA == userB {
@@ -62,8 +76,20 @@ func (rt *_router) banUser(w http.ResponseWriter, r *http.Request, ps httprouter
 func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	// Parsing the parameters from the request
-	userA := ps.ByName("userID")
+	userA := ps.ByName("username")
 	userB := ps.ByName("blockedID")
+
+	userA, err := rt.db.GetToken(userA)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	userB, err = rt.db.GetToken(userB)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+	}
 
 	// Check if I am trying to unblock myself
 	if userA == userB {
@@ -104,4 +130,49 @@ func (rt *_router) unbanUser(w http.ResponseWriter, r *http.Request, ps httprout
 
 	// Log the action
 	rt.baseLogger.Info("UserB unbanned from userA. userA: " + userA + " userB: " + userB)
+}
+
+func (rt *_router) banStatus(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+
+	// Parsing the parameters from the request
+	userA := ps.ByName("username")
+	userB := ps.ByName("blockedID")
+
+	userA, err := rt.db.GetToken(userA)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	userB, err = rt.db.GetToken(userB)
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error getting token")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	// Check if the user I'm trying to comment the photo of a user that has blocked me
+	isBanned, err := rt.db.IsBanned(userA, userB)
+
+	if err != nil {
+		rt.baseLogger.Error("Error while checking if user " + userA + " has banned user " + userB)
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	} else if isBanned {
+		rt.baseLogger.Error(userA + " has blocked: " + userB)
+		w.WriteHeader(http.StatusOK)
+		err := json.NewEncoder(w).Encode(structs.Status{StatusRes: true}) // Encode the error and send it
+		if err != nil {
+			rt.baseLogger.WithError(err).Error("Error encoding error response")
+			w.WriteHeader(http.StatusInternalServerError) // Set status to the correct error
+		}
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	err = json.NewEncoder(w).Encode(structs.Status{StatusRes: false}) // Encode the error and send it
+	if err != nil {
+		rt.baseLogger.WithError(err).Error("Error encoding error response")
+		w.WriteHeader(http.StatusInternalServerError) // Set status to the correct error
+	}
+
 }

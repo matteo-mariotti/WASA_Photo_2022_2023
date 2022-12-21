@@ -47,7 +47,7 @@ export default {
 
     <div class="text-center">
       <h5>Choose a photo to upload</h5>
-      <hr/>
+      <hr>
       <form enctype="multipart/form-data" @submit.prevent="submitFile">
       <input type="file" class="form-control" ref="file" @change="handleFileUpload"/>
       <br>

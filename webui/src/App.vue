@@ -6,14 +6,15 @@ import { RouterLink, RouterView } from 'vue-router'
 export default {
   data: function () {
     return {
-      username: null,
-      loggedIn: false
+      username: sessionStorage.getItem("username"),
+      loggedIn: sessionStorage.getItem("logged")
     }
   },
   methods:{
     logout(){
       sessionStorage.removeItem("username")
       sessionStorage.removeItem("token")
+      sessionStorage.removeItem("logged")
       this.loggedIn = false
       this.$router.push("/login")
       alert("Logged out")
@@ -67,6 +68,12 @@ export default {
               <RouterLink to="/upload" class="nav-link">
                 <svg class="feather"><use href="/feather-sprite-v4.29.0.svg#layout"/></svg>
                 Upload a photo
+              </RouterLink>
+            </li>
+            <li class="nav-item" v-if="loggedIn">
+              <RouterLink to="/search" class="nav-link">
+                <svg class="feather"><use href="/feather-sprite-v4.29.0.svg#layout"/></svg>
+                Search users
               </RouterLink>
             </li>
           </ul>

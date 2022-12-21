@@ -24,16 +24,31 @@ export default {
       isOpen: ref(false),
       newUsername: null,
       Infomsg: null,
-      moreButton: null
+      moreButton: null,
+      banned: false,
+      following: null,
     }
   },
   methods: {
     async loadContent() {
       try {
         this.ready = false
-        let response = await backend.get(`/users/${this.$route.params.user}`);
-        this.handleResponse(response);
-        this.ready = true
+        let response = await backend.get(`/users/${sessionStorage.getItem("username")}/bans/${this.$route.params.user}`);
+        if (response.status === 200) {
+          if (response.data.status === true) {
+            console.log("Sono qui")
+            this.banned = true
+            this.errormsg = "You banned this user"
+          }
+        }
+
+        if (this.banned === false) {
+          response = await backend.get(`/users/${this.$route.params.user}`);
+          this.handleResponse(response);
+          this.ready = true
+          await this.isFollowing()
+          await this.loadMorePhotos(this.page)
+        }
       } catch (error) {
         this.handleError(error);
       }
@@ -48,9 +63,9 @@ export default {
     },
     handleError(error) {
 
-      if (error.response.status == 401) {
+      if (error.response.status === 401) {
         this.errormsg = "You need to login first"
-      } else if (error.response.status == 403) {
+      } else if (error.response.status === 403) {
         this.errormsg = "User ID not found"
       } else {
         // Print the error from the server (for debugging)
@@ -60,17 +75,16 @@ export default {
       console.log(error)
     },
     async loadMorePhotos(offset) {
-      // TODO Fare la chiamata per ottenere le foto a partire da un certo offset
       try {
         let response = await backend.get(`/users/${this.$route.params.user}/photos?page=${offset}`);
         console.log(response)
-        if (response.status == 200) {
+        if (response.status === 200) {
           response.data.forEach(photo => {
             this.photos.push(photo)
           })
         }
         this.page = this.page + 1
-        if (response.status == 204){
+        if (response.status === 204) {
           this.moreButton = false;
           this.Infomsg = "No more photos are available"
         }
@@ -97,11 +111,86 @@ export default {
     reloadNewUser() {
       this.$router.push(`/users/${this.newUsername}`)
       this.$emit("logging")
-    }
+    },
+    async isBanned() {
+      try {
+        let response = await backend.get(`/users/${sessionStorage.getItem("username")}/bans/${this.$route.params.user}`);
+        console.log(response)
+        if (response.status === 200) {
+          if (response.data.status === true) {
+            console.log("Sono qui")
+            this.banned = true
+            this.errormsg = "You banned this user"
+          }
+        }
+      } catch (error) {
+        this.Modalerrormsg = error.response.data.message
+        console.log(error)
+      }
+    },
+    async isFollowing() {
+      try {
+        let response = await backend.get(`/users/${this.$route.params.user}/followers/${sessionStorage.getItem("username")}`);
+        console.log(response)
+        if (response.status === 200) {
+          if (response.data.status === true) {
+            this.following = true
+          }
+        }
+      } catch (error) {
+        this.Modalerrormsg = error.response.data.message
+        console.log(error)
+      }
+    },
+    async follow() {
+      try {
+        let response = await backend.put(`/users/${this.$route.params.user}/followers/${sessionStorage.getItem("username")}`);
+        if (response.status === 204) {
+          this.following = true
+          this.userData.follower = this.userData.follower + 1
+        }
+      } catch (error) {
+        this.errormsg = error.response.data.message
+        console.log(error)
+      }
+    },
+    async unfollow() {
+      try {
+        let response = await backend.delete(`/users/${this.$route.params.user}/followers/${sessionStorage.getItem("username")}`);
+        if (response.status === 204) {
+          this.following = false
+          this.userData.follower = this.userData.follower - 1
+        }
+      } catch (error) {
+        this.errormsg = error.response.data.message
+        console.log(error)
+      }
+    },
+    async ban() {
+      try {
+        let response = await backend.put(`/users/${sessionStorage.getItem("username")}/bans/${this.$route.params.user}`);
+        if (response.status === 204) {
+          location.reload()
+        }
+      } catch (error) {
+        this.errormsg = error.response.data.message
+        console.log(error)
+      }
+    },
+    async unban() {
+      try {
+        let response = await backend.delete(`/users/${sessionStorage.getItem("username")}/bans/${this.$route.params.user}`);
+        if (response.status === 204) {
+          location.reload()
+        }
+      } catch (error) {
+        this.errormsg = error.response.data.message
+        console.log(error)
+      }
+    },
   },
   mounted() {
-    this.loadContent();
-    this.loadMorePhotos(this.page)
+      this.loadContent();
   }
 }
 </script>
@@ -117,6 +206,9 @@ export default {
     <div class="h2 d-flex justify-content-evenly mt-4" v-if="ready" style="font-size:3.5vw;">
 
       {{ userData.username }}
+
+      <!-- Change username if it is the owner of the profile -->
+
       <button @click="isOpen = true" v-if="isOwner" class="btn btn-outline-primary btn-sm"> Change my username</button>
 
       <ModalV2 :open="isOpen" @close="isOpen=!isOpen">
@@ -129,14 +221,30 @@ export default {
       </ModalV2>
 
     </div>
+
+    <!-- Follow/Unfollow and Ban/Unban buttons -->
+    <div class="d-flex justify-content-evenly" v-if="!isOwner">
+      <button @click="follow()" v-if="!this.following && !this.banned && this.ready" class="btn btn-success btn-sm">
+        Follow
+      </button>
+      <button @click="unfollow()" v-if="this.following && !this.banned && this.ready" class="btn btn-warning btn-sm">
+        Unfollow
+      </button>
+      <button @click="ban()" v-if="!this.banned && this.ready" class="btn btn-danger btn-sm">Ban</button>
+      <button @click="unban()" v-if="this.banned" class="btn btn-danger btn-sm">Unban</button>
+    </div>
+
+    <hr v-if="ready">
+
     <!-- Profile stats -->
-    <div class="d-flex justify-content-around p-2"
-         style="font-size: 2vw;background-color: rgba(137,137,137,0.2);border-radius: 2vw;" v-if="ready">
+    <div class="d-flex justify-content-around p-1 m-1"
+         style="font-size: 1.5vw;" v-if="ready">
       <div v-if="ready">Photo: {{ userData.photoNumber }}</div>
       <div v-if="ready">Follower: {{ userData.follower }}</div>
       <div v-if="ready">Following: {{ userData.following }}</div>
     </div>
 
+    <hr v-if="ready">
     <!-- Images -->
     <div class="d-grid justify-content-center" id="imageList">
       <Card v-bind:imageData="image" v-if="ready" v-for="image in photos"

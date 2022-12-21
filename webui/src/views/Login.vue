@@ -33,6 +33,7 @@ export default {
         // We can redirect him to the home page
         sessionStorage.setItem("token", response.data.token);
         sessionStorage.setItem("username", this.identifier);
+        sessionStorage.setItem("logged", true);
         this.errormsg = null
         this.successmsg = "Login successful"
         this.loading = true

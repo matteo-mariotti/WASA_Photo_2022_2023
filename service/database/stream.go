@@ -39,6 +39,10 @@ func (db *appdbimpl) GetFollowingPhotosChrono(following []string, offset int, re
 		if err != nil {
 			return nil, err
 		}
+		// Get UserName instead of tokenID
+		user := db.c.QueryRow("SELECT UserName FROM Users WHERE UserID=?", photo.Owner)
+		err = user.Scan(&photo.Owner)
+
 		photos = append(photos, photo)
 	}
 	if len(photos) == 0 {
@@ -50,7 +54,7 @@ func (db *appdbimpl) GetFollowingPhotosChrono(following []string, offset int, re
 	// Get number of likes and comments for each photo
 	for i := range photos {
 		// Get number of likes
-		likes, err := db.getLikesNumber(photos[i].PhotoID)
+		likes, err := db.getLikesNumber(photos[i].PhotoID, reqUser)
 		if err != nil {
 			return nil, err
 		}
