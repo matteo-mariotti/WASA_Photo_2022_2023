@@ -239,9 +239,9 @@ export default {
     <!-- Profile stats -->
     <div class="d-flex justify-content-around p-1 m-1"
          style="font-size: 1.5vw;" v-if="ready">
-      <div v-if="ready">Photo: {{ userData.photoNumber }}</div>
-      <div v-if="ready">Follower: {{ userData.follower }}</div>
-      <div v-if="ready">Following: {{ userData.following }}</div>
+      <div v-if="ready">Photos: {{ userData.photoNumber }}</div>
+      <div v-if="ready">Followers: {{ userData.follower }}</div>
+      <div v-if="ready">Followings: {{ userData.following }}</div>
     </div>
 
     <hr v-if="ready">
