@@ -8,6 +8,7 @@ import {ref} from "vue";
 import InfoMsg from "@/components/InfoMsg.vue";
 
 export default {
+  emits:["logging"],
   components: {InfoMsg, ModalV2, Card, SuccessMsg, ErrorMsg},
   data: function () {
     return {
@@ -36,7 +37,6 @@ export default {
         let response = await backend.get(`/users/${sessionStorage.getItem("username")}/bans/${this.$route.params.user}`);
         if (response.status === 200) {
           if (response.data.status === true) {
-            console.log("Sono qui")
             this.banned = true
             this.errormsg = "You banned this user"
           }
@@ -111,22 +111,6 @@ export default {
     reloadNewUser() {
       this.$router.push(`/users/${this.newUsername}`)
       this.$emit("logging")
-    },
-    async isBanned() {
-      try {
-        let response = await backend.get(`/users/${sessionStorage.getItem("username")}/bans/${this.$route.params.user}`);
-        console.log(response)
-        if (response.status === 200) {
-          if (response.data.status === true) {
-            console.log("Sono qui")
-            this.banned = true
-            this.errormsg = "You banned this user"
-          }
-        }
-      } catch (error) {
-        this.Modalerrormsg = error.response.data.message
-        console.log(error)
-      }
     },
     async isFollowing() {
       try {
@@ -209,7 +193,7 @@ export default {
 
       <!-- Change username if it is the owner of the profile -->
 
-      <button @click="isOpen = true" v-if="isOwner" class="btn btn-outline-primary btn-sm"> Change my username</button>
+      <button @click="isOpen = true" v-if="isOwner" class="btn btn-outline-primary"> Change my username</button>
 
       <ModalV2 :open="isOpen" @close="isOpen=!isOpen">
         <SuccessMsg v-if="Modalsuccessmsg" :msg="Modalsuccessmsg"></SuccessMsg>

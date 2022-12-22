@@ -4,6 +4,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 <script>
 export default {
+  emits: ["logging"],
   data: function () {
     return {
       username: sessionStorage.getItem("username"),

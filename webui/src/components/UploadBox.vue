@@ -17,23 +17,42 @@ export default {
     handleFileUpload() {
       this.file = this.$refs.file.files[0];
       console.log(this.file)
+      if (!this.fileValidation()){
+        this.errormsg = "Invalid file type, allowed types are .jpg,.jpeg,.png,.webp"
+        return
+      }
     },
-    reload(){
+    reload() {
       location.reload()
     },
     async submitFile() {
       try {
+
         let formData = new FormData()
         formData.append("file", this.file)
 
-        await backend.post(`/users/${sessionStorage.getItem("username")}/photos`,formData)
+        await backend.post(`/users/${sessionStorage.getItem("username")}/photos`, formData)
         this.errormsg = null
         this.successmsg = "Photo successfully uploaded"
         setTimeout(this.reload, 1000)
-      }catch(error){
+      } catch (error) {
         this.errormsg = "Error while uploading photo"
         console.log(error)
       }
+    },
+    fileValidation() {
+      let fileInput = document.getElementById('file');
+
+      let filePath = fileInput.value;
+
+      // Allowing file type
+      let allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
+
+      if (!allowedExtensions.exec(filePath)) {
+        fileInput.value = '';
+        return false;
+      }
+      return true;
     },
   },
 }
@@ -49,9 +68,9 @@ export default {
       <h5>Choose a photo to upload</h5>
       <hr>
       <form enctype="multipart/form-data" @submit.prevent="submitFile">
-      <input type="file" class="form-control" ref="file" @change="handleFileUpload"/>
-      <br>
-      <button class="btn btn-primary">Upload</button>
+        <input type="file" id="file" class="form-control" ref="file" @change="handleFileUpload" accept=".jpg,.jpeg,.png,.webp" />
+        <br>
+        <button class="btn btn-primary">Upload</button>
       </form>
       <SuccessMsg :msg="successmsg" v-if="successmsg" class="mt-2"></SuccessMsg>
       <ErrorMsg :msg="errormsg" v-if="errormsg" class="mt-2"></ErrorMsg>

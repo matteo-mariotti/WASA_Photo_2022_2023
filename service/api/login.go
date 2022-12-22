@@ -27,7 +27,6 @@ func (rt *_router) login(w http.ResponseWriter, r *http.Request, ps httprouter.P
 	// Checking for errors during the deconding process
 	if err != nil {
 		rt.baseLogger.WithError(err).Warning("Wrong JSON received")
-		//w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}

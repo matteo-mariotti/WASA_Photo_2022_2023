@@ -33,7 +33,6 @@ export default {
     async loadContent() {
       try {
         this.ready = false
-        this.ready = true
         await this.loadMorePhotos(this.page)
       } catch (error) {
         this.handleError(error);
@@ -60,12 +59,13 @@ export default {
           })
         }
         this.page = this.page + 1
+        this.ready = true
         if (response.status === 204) {
           this.moreButton = false;
           this.Infomsg = "No more photos are available"
         }
       } catch (error) {
-        console.log(error)
+        this.handleError(error)
       }
 
     },
@@ -93,7 +93,7 @@ export default {
             v-bind:username="this.username"></Card>
     </div>
     <div class="d-grid justify-content-center">
-      <button @click="loadMorePhotos(this.page)" v-if="moreButton" type="button" class="btn btn-outline-dark m-3">Load
+      <button @click="loadMorePhotos(this.page)" v-if="moreButton && ready" type="button" class="btn btn-outline-dark m-3">Load
         More
       </button>
       <InfoMsg :msg="this.Infomsg" v-if="this.Infomsg"></InfoMsg>
