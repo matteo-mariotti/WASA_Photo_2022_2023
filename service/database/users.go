@@ -6,9 +6,9 @@ import (
 )
 
 // GetUsers is a function that returns a list of users matching the given search string
-func (db *appdbimpl) GetUsers(start string, offset int) ([]string, error) {
+func (db *appdbimpl) GetUsers(start string, offset int, reqUser string) ([]string, error) {
 	var userNames []string
-	rows, err := db.c.Query("SELECT UserName From Users WHERE UserName LIKE ? LIMIT 30 OFFSET ?", start+"%", offset)
+	rows, err := db.c.Query("SELECT UserName From Users WHERE UserName LIKE ? AND (UserID,?) NOT IN (SELECT * FROM Bans) AND (?,UserID) NOT IN (SELECT * FROM Bans) LIMIT 30 OFFSET ?", start+"%", reqUser, reqUser, offset)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, err
 	}

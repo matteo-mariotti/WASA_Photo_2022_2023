@@ -276,8 +276,6 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 	}
 	defer file.Close()
 
-	//http.ServeFile(w, r, rt.photoPath+filename)
-
 	// Copy the file to the response
 	_, err = io.Copy(w, file)
 	if err != nil {

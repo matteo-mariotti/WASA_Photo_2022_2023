@@ -91,7 +91,7 @@ type AppDatabase interface {
 	GetPhotos(userID string, reqUser string, offset int) ([]structs.Photo, error) // Get the photos of a user
 
 	// Search functions
-	GetUsers(start string, offset int) ([]string, error) // Get the list of users that start with the given string
+	GetUsers(start string, offset int, reqUser string) ([]string, error) // Get the list of users that start with the given string
 
 	// Stream
 	GetFollowing(userID string) ([]string, error)                                                     // Get the list of users that a user is following

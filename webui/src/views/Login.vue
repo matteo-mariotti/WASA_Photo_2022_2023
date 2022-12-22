@@ -4,6 +4,7 @@ import ErrorMsg from "@/components/ErrorMsg.vue";
 import SuccessMsg from "@/components/SuccessMsg.vue";
 
 export default {
+  emits: ["logging"],
   components: {SuccessMsg, ErrorMsg},
   data: function () {
     return {
