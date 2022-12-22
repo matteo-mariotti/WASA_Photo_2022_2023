@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="Photo type check">
-      <change afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/webapi" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WASA_photo.db" beforeDir="false" afterPath="$PROJECT_DIR$/WASA_photo.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/login.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/photo.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/photo.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/users.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/users.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/stream.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/stream.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/database/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/database.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/database/users.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/users.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Login.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -114,7 +109,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="dev" />
+                        <option value="devs" />
                       </list>
                     </value>
                   </entry>

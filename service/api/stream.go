@@ -49,7 +49,7 @@ func (rt *_router) stream(w http.ResponseWriter, r *http.Request, ps httprouter.
 		w.WriteHeader(http.StatusNoContent)
 		return
 	} else if err != nil {
-		rt.baseLogger.Error("Error while getting photos")
+		rt.baseLogger.WithError(err).Error("Error while getting photos")
 		httpErrorResponse(rt, w, "Internal Sever Error", http.StatusBadRequest)
 		return
 	}
