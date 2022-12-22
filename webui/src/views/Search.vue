@@ -29,11 +29,15 @@ export default {
             this.userList.push(user)
           })
         }
+
       }else{
         this.userList = []
         this.Infomsg = "Write at least three characters"
       }
       }catch (e) {
+        if (e.response.status === 404){
+          this.Infomsg = "No users found"
+        }
         this.errormsg = e.response.message
         console.log(e)
       }

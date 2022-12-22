@@ -65,11 +65,12 @@ export default {
           <h2>Welcome to WASA Photo</h2>
           <br>
         </div>
-
+        <form @submit.prevent="sendData()">
          <input type="text" v-model="identifier" class="form-control" placeholder="username">
           <div style="text-align: center">
-            <button @click="sendData()" type="submit" class="btn btn-primary m-3">Sign in/up</button>
+            <button type="submit" class="btn btn-primary m-3">Sign in/up</button>
           </div>
+          </form>
         <br>
 
         <ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
