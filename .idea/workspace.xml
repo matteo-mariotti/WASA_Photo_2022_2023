@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="DB cleaned up">
+    <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="Photos file">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WASA_photo.db" beforeDir="false" afterPath="$PROJECT_DIR$/WASA_photo.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/components/UploadBox.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/UploadBox.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +141,8 @@
     <MESSAGE value="Stream completed" />
     <MESSAGE value="Photo type check" />
     <MESSAGE value="DB cleaned up" />
-    <option name="LAST_COMMIT_MESSAGE" value="DB cleaned up" />
+    <MESSAGE value="Photos file" />
+    <option name="LAST_COMMIT_MESSAGE" value="Photos file" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

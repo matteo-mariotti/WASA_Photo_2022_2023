@@ -187,13 +187,13 @@ export default {
   <div class="justify-content-center align-items-center">
 
     <!-- Username of the user -->
-    <div class="h2 d-flex justify-content-evenly mt-4" v-if="ready" style="font-size:3.5vw;">
+    <div class="h2 d-flex justify-content-evenly mt-4 align-items-center" v-if="ready" style="font-size:3.5vw;">
 
       {{ userData.username }}
 
       <!-- Change username if it is the owner of the profile -->
 
-      <button @click="isOpen = true" v-if="isOwner" class="btn btn-outline-primary"> Change my username</button>
+      <button @click="isOpen = true" v-if="isOwner" class="btn btn-outline-primary p-2"> Change my username</button>
 
       <ModalV2 :open="isOpen" @close="isOpen=!isOpen">
         <SuccessMsg v-if="Modalsuccessmsg" :msg="Modalsuccessmsg"></SuccessMsg>

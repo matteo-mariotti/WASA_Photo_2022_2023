@@ -21,6 +21,7 @@ export default {
         this.errormsg = "Invalid file type, allowed types are .jpg,.jpeg,.png,.webp"
         return
       }
+      document.getElementById("uploadBtn").disabled = false;
     },
     reload() {
       location.reload()
@@ -70,7 +71,7 @@ export default {
       <form enctype="multipart/form-data" @submit.prevent="submitFile">
         <input type="file" id="file" class="form-control" ref="file" @change="handleFileUpload" accept=".jpg,.jpeg,.png,.webp" />
         <br>
-        <button class="btn btn-primary">Upload</button>
+        <button id="uploadBtn" class="btn btn-primary" disabled>Upload</button>
       </form>
       <SuccessMsg :msg="successmsg" v-if="successmsg" class="mt-2"></SuccessMsg>
       <ErrorMsg :msg="errormsg" v-if="errormsg" class="mt-2"></ErrorMsg>
