@@ -26,11 +26,10 @@ type WebAPIConfiguration struct {
 	}
 	Debug bool
 	DB    struct {
-		// Filename string `conf:"default:/tmp/decaf.db"`
-		Filename string `conf:"default:./WASA_photo.db"`
+		Filename string `conf:"default:./data/WASA_photo.db"`
 	}
 	Photo struct {
-		Path string `conf:"default:./Photos/"`
+		Path string `conf:"default:./data/Photos/"`
 	}
 }
 

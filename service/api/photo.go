@@ -67,6 +67,32 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
+	res, err := exists(path)
+	if err != nil {
+		// Error, rollback
+		rt.baseLogger.WithError(err).Error("Error while checking path")
+		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		err = rt.db.Rollback()
+		if err != nil {
+			rt.baseLogger.WithError(err).Error("Error while rolling back")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+		}
+		return
+	}
+	if !res {
+		err = os.MkdirAll(path, 0777)
+		if err != nil {
+			// Error, rollback
+			rt.baseLogger.WithError(err).Error("Error while creating path")
+			httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+			err = rt.db.Rollback()
+			if err != nil {
+				rt.baseLogger.WithError(err).Error("Error while rolling back")
+				httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
+			}
+			return
+		}
+	}
 	// Create the physical file in  ../../Photos
 	f, err := os.Create(path + newUuid.String())
 
@@ -451,4 +477,15 @@ func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httpro
 
 	// Log the action
 	rt.baseLogger.Info("User " + ctx.Token + " has successfully got the comments of photo " + photoID)
+}
+
+func exists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }

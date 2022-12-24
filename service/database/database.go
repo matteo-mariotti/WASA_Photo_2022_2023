@@ -162,7 +162,8 @@ func New(db *sql.DB) (AppDatabase, error) {
 				constraint Photos_Users_UserID_fk
 					references Users
 					on update cascade on delete cascade,
-			Filename TEXT not null
+			Filename TEXT not null,
+			Date TEXT
 		);
 		
 		create table Comments
