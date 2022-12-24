@@ -39,7 +39,7 @@ func (rt *_router) getUsers(w http.ResponseWriter, r *http.Request, ps httproute
 
 	if errors.Is(err, sql.ErrNoRows) {
 		rt.baseLogger.Error("No more users are available with this prefix: " + username)
-		httpErrorResponse(rt, w, "404 Not Found", http.StatusNotFound)
+		w.WriteHeader(http.StatusNoContent)
 		return
 	} else if err != nil {
 		rt.baseLogger.Error("Error while getting users")

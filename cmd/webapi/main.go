@@ -83,6 +83,19 @@ func run() error {
 
 	// Start Database
 	logger.Println("initializing database support")
+
+	// Check if data folder exists, create it otherwise
+	res, err := exists("data/")
+	if err != nil {
+		logger.WithError(err).Error("Error while checking path")
+	}
+	if !res {
+		err = os.MkdirAll("data/", 0777)
+		if err != nil {
+			logger.WithError(err).Error("Error while creating path")
+		}
+	}
+
 	dbconn, err := sql.Open("sqlite3", cfg.DB.Filename)
 	if err != nil {
 		logger.WithError(err).Error("error opening SQLite DB")
@@ -185,4 +198,15 @@ func run() error {
 	}
 
 	return nil
+}
+
+func exists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
 }

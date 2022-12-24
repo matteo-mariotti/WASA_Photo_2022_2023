@@ -12,7 +12,8 @@ const router = createRouter({
 		{path: '/login', component: LoginForm},
 		{path: '/users/:user', component: ManageProfile},
 		{path: '/upload', component: Upload},
-		{path: '/search', component: Search}
+		{path: '/search', component: Search},
+		{path: '/users/me', component: ManageProfile}
 
 	]
 })

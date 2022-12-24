@@ -3,12 +3,11 @@ import backend from "@/services/axios";
 import ErrorMsg from "@/components/ErrorMsg.vue";
 import SuccessMsg from "@/components/SuccessMsg.vue";
 import Card from "@/components/Card.vue";
-import ModalV2 from "@/components/ModalV2.vue";
 import {ref} from "vue";
 import InfoMsg from "@/components/InfoMsg.vue";
 
 export default {
-  components: {InfoMsg, ModalV2, Card, SuccessMsg, ErrorMsg},
+  components: {InfoMsg, Card, SuccessMsg, ErrorMsg},
   data: function () {
     return {
       errormsg: null,
@@ -52,7 +51,6 @@ export default {
     async loadMorePhotos(offset) {
       try {
         let response = await backend.get(`/stream?page=${offset}`);
-        console.log(response)
         if (response.status === 200) {
           response.data.forEach(photo => {
             this.photos.push(photo)
