@@ -4,6 +4,7 @@ import (
 	"WASA_Photo/service/api/reqcontext"
 	"WASA_Photo/service/errorDefinition"
 	"WASA_Photo/service/structs"
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -139,13 +140,19 @@ func (rt *_router) banStatus(w http.ResponseWriter, r *http.Request, ps httprout
 	userB := ps.ByName("blockedID")
 
 	userA, err := rt.db.GetToken(userA)
-	if err != nil {
+	if errors.Is(err, sql.ErrNoRows) {
+		rt.baseLogger.WithError(err).Error("User not found")
+		httpErrorResponse(rt, w, "User ID not found", http.StatusNotFound)
+	} else if err != nil {
 		rt.baseLogger.WithError(err).Error("Error getting token")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 	}
 
 	userB, err = rt.db.GetToken(userB)
-	if err != nil {
+	if errors.Is(err, sql.ErrNoRows) {
+		rt.baseLogger.WithError(err).Error("User not found")
+		httpErrorResponse(rt, w, "User ID not found", http.StatusNotFound)
+	} else if err != nil {
 		rt.baseLogger.WithError(err).Error("Error getting token")
 		httpErrorResponse(rt, w, "Internal Server Error", http.StatusInternalServerError)
 	}

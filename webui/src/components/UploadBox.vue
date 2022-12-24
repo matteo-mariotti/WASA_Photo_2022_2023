@@ -16,7 +16,6 @@ export default {
   methods: {
     handleFileUpload() {
       this.file = this.$refs.file.files[0];
-      console.log(this.file)
       if (!this.fileValidation()){
         this.errormsg = "Invalid file type, allowed types are .jpg,.jpeg,.png,.webp"
         return

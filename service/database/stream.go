@@ -42,6 +42,9 @@ func (db *appdbimpl) GetFollowingPhotosChrono(following []string, offset int, re
 		// Get UserName instead of tokenID
 		user := db.c.QueryRow("SELECT UserName FROM Users WHERE UserID=?", photo.Owner)
 		err = user.Scan(&photo.Owner)
+		if err != nil {
+			return nil, err
+		}
 
 		photos = append(photos, photo)
 	}

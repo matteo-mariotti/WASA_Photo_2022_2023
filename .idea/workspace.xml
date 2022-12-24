@@ -4,11 +4,34 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="Upload photo is now protected (frontend)">
-      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Dockerfile-frontend" afterDir="false" />
+    <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="White screen after login fixed, minor improvements">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/vite.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/webui/vite.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile.backend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile-frontend" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile.frontend" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Photos/0fdac350-9aba-4491-8481-7d7f6baac2d9" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WASA_photo.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/webapi/load-configuration.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/webapi/load-configuration.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/webapi/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/webapi/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/doc/api.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/ban-unban-user.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/ban-unban-user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/follow-unfollow-user.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/follow-unfollow-user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/photo.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/photo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/api/users.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/users.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/database/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/profile.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/database/stream.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/stream.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/dist/assets/index.8d4948b0.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/dist/assets/index.f0bad733.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/dist/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/webui/dist/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/components/Card.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/Card.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/components/CommentCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/CommentCard.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/components/UploadBox.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/UploadBox.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/views/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/HomeView.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/webui/src/views/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Search.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,35 +66,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "RunOnceActivity.go.vendoring.notification.had.been.shown": "true",
-    "RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "configurable..is.expanded": "true",
-    "configurable.GoLibrariesConfigurable.is.expanded": "true",
-    "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/Users/matteo/go/src/WASA_Photo",
-    "settings.editor.selected.configurable": "com.goide.configuration.GoLibrariesConfigurableProvider",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.vendoring.notification.had.been.shown&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.watchers.conflict.with.on.save.actions.check.performed&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;configurable..is.expanded&quot;: &quot;true&quot;,
+    &quot;configurable.GoLibrariesConfigurable.is.expanded&quot;: &quot;true&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/matteo&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.goide.configuration.GoLibrariesConfigurableProvider&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Applications/GoLand.app/Contents/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlite"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/data" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -143,7 +169,9 @@
     <MESSAGE value="DB cleaned up" />
     <MESSAGE value="Photos file" />
     <MESSAGE value="Upload photo is now protected (frontend)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Upload photo is now protected (frontend)" />
+    <MESSAGE value="Dockerfiles" />
+    <MESSAGE value="White screen after login fixed, minor improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="White screen after login fixed, minor improvements" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

@@ -12,6 +12,7 @@ export default {
   components: {InfoMsg, ModalV2, Card, SuccessMsg, ErrorMsg},
   data: function () {
     return {
+      user: null,
       errormsg: null,
       successmsg: null,
       Modalsuccessmsg: null,
@@ -23,18 +24,21 @@ export default {
       isOwner: null,
       page: 0,
       isOpen: ref(false),
+      followersModal: ref(false),
+      followingsModal: ref(false),
       newUsername: null,
       Infomsg: null,
       moreButton: null,
       banned: false,
       following: null,
+      userList: [],
     }
   },
   methods: {
     async loadContent() {
       try {
         this.ready = false
-        let response = await backend.get(`/users/${sessionStorage.getItem("username")}/bans/${this.$route.params.user}`);
+        let response = await backend.get(`/users/${sessionStorage.getItem("username")}/bans/${this.user}`);
         if (response.status === 200) {
           if (response.data.status === true) {
             this.banned = true
@@ -43,7 +47,7 @@ export default {
         }
 
         if (this.banned === false) {
-          response = await backend.get(`/users/${this.$route.params.user}`);
+          response = await backend.get(`/users/${this.user}`);
           this.handleResponse(response);
           this.ready = true
           await this.isFollowing()
@@ -59,13 +63,12 @@ export default {
 
       this.isOwner = this.userData.username === sessionStorage.getItem("username")
       this.moreButton = true
-      console.log(response)
     },
     handleError(error) {
 
       if (error.response.status === 401) {
         this.errormsg = "You need to login first"
-      } else if (error.response.status === 403) {
+      } else if (error.response.status === 403 || error.response.status === 404) {
         this.errormsg = "User ID not found"
       } else {
         // Print the error from the server (for debugging)
@@ -76,8 +79,7 @@ export default {
     },
     async loadMorePhotos(offset) {
       try {
-        let response = await backend.get(`/users/${this.$route.params.user}/photos?page=${offset}`);
-        console.log(response)
+        let response = await backend.get(`/users/${this.user}/photos?page=${offset}`);
         if (response.status === 200) {
           response.data.forEach(photo => {
             this.photos.push(photo)
@@ -114,8 +116,7 @@ export default {
     },
     async isFollowing() {
       try {
-        let response = await backend.get(`/users/${this.$route.params.user}/followers/${sessionStorage.getItem("username")}`);
-        console.log(response)
+        let response = await backend.get(`/users/${this.user}/followers/${sessionStorage.getItem("username")}`);
         if (response.status === 200) {
           if (response.data.status === true) {
             this.following = true
@@ -128,7 +129,7 @@ export default {
     },
     async follow() {
       try {
-        let response = await backend.put(`/users/${this.$route.params.user}/followers/${sessionStorage.getItem("username")}`);
+        let response = await backend.put(`/users/${this.user}/followers/${sessionStorage.getItem("username")}`);
         if (response.status === 204) {
           this.following = true
           this.userData.follower = this.userData.follower + 1
@@ -140,7 +141,7 @@ export default {
     },
     async unfollow() {
       try {
-        let response = await backend.delete(`/users/${this.$route.params.user}/followers/${sessionStorage.getItem("username")}`);
+        let response = await backend.delete(`/users/${this.user}/followers/${sessionStorage.getItem("username")}`);
         if (response.status === 204) {
           this.following = false
           this.userData.follower = this.userData.follower - 1
@@ -152,7 +153,7 @@ export default {
     },
     async ban() {
       try {
-        let response = await backend.put(`/users/${sessionStorage.getItem("username")}/bans/${this.$route.params.user}`);
+        let response = await backend.put(`/users/${sessionStorage.getItem("username")}/bans/${this.user}`);
         if (response.status === 204) {
           location.reload()
         }
@@ -163,7 +164,7 @@ export default {
     },
     async unban() {
       try {
-        let response = await backend.delete(`/users/${sessionStorage.getItem("username")}/bans/${this.$route.params.user}`);
+        let response = await backend.delete(`/users/${sessionStorage.getItem("username")}/bans/${this.user}`);
         if (response.status === 204) {
           location.reload()
         }
@@ -174,6 +175,11 @@ export default {
     },
   },
   mounted() {
+    if (this.$route.params.user===undefined){
+      this.user = sessionStorage.getItem("username")
+    }else{
+      this.user = this.$route.params.user
+    }
       this.loadContent();
   }
 }
@@ -221,11 +227,10 @@ export default {
     <hr v-if="ready">
 
     <!-- Profile stats -->
-    <div class="d-flex justify-content-around p-1 m-1"
-         style="font-size: 1.5vw;" v-if="ready">
-      <div v-if="ready">Photos: {{ userData.photoNumber }}</div>
-      <div v-if="ready">Followers: {{ userData.follower }}</div>
-      <div v-if="ready">Followings: {{ userData.following }}</div>
+    <div class="d-flex justify-content-around p-1 m-1" style="font-size: 1.5vw;" v-if="ready">
+      <div>Photos: {{ userData.photoNumber }}</div>
+      <div>Followers: {{ userData.follower }}</div>
+      <div>Followings: {{ userData.following }}</div>
     </div>
 
     <hr v-if="ready">

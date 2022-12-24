@@ -7,14 +7,16 @@ export default {
   data: function () {
     return {
       isOwned: this.comment.userID === sessionStorage.getItem("username"),
+      commentNumber: this.photo.comments,
     }
   },
   methods: {
     async deleteComment(){
       try {
         await backend.delete(`/users/${this.photo.photoOwner}/photos/${this.photo.id}/comments/${this.comment.commentID}`)
-        this.photo.comments = this.photo.comments-1
+        this.commentNumber = this.commentNumber-1
         this.$emit('update', this.comment)
+        this.$emit('updateCount', this.comment)
       }catch(error){
         console.log(error)
       }

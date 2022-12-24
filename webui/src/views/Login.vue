@@ -20,7 +20,6 @@ export default {
         let response = await backend.post("/session", {
           identifier: this.identifier,
         });
-        console.log(response)
         this.handleResponse(response);
       } catch (error) {
         console.log(error)
@@ -49,6 +48,21 @@ export default {
       // Print the error from the server (for debugging)
       this.errormsg = error.response.data.message
     },
+    valid(){
+      if (this.identifier.length <3) {
+        document.getElementById("logButton").disabled = true;
+        this.errormsg = "Usernames must have at least three characters"
+        return false
+      }
+      if (this.identifier.length >12) {
+        document.getElementById("logButton").disabled = true;
+        this.errormsg = "Usernames can't have more than 12 characters"
+        return false
+      }
+      this.errormsg = null
+      document.getElementById("logButton").disabled = false;
+      return true
+    },
   },
 }
 </script>
@@ -67,9 +81,9 @@ export default {
           <br>
         </div>
         <form @submit.prevent="sendData()">
-         <input type="text" v-model="identifier" class="form-control" placeholder="username">
+         <input type="text" v-model="identifier" v-on:input="valid" class="form-control" placeholder="username">
           <div style="text-align: center">
-            <button type="submit" class="btn btn-primary m-3">Sign in/up</button>
+            <button id="logButton" type="submit" class="btn btn-primary m-3" disabled>Sign in/up</button>
           </div>
           </form>
         <br>

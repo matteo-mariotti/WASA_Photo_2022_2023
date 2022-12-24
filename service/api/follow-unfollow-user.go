@@ -217,6 +217,4 @@ func (rt *_router) followStatus(w http.ResponseWriter, r *http.Request, ps httpr
 		rt.baseLogger.WithError(err).Error("Error encoding error response")
 		w.WriteHeader(http.StatusInternalServerError) // Set status to the correct error
 	}
-	return
-
 }

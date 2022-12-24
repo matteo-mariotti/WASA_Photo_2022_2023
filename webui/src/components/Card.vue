@@ -7,6 +7,7 @@ import {ref} from "vue";
 import InfoMsg from "@/components/InfoMsg.vue";
 
 export default {
+  emits: ["update", "updateCount"],
   components: {InfoMsg, SuccessMsg, Modal, Comment},
   props: ["imageData", "username"],
   data: function () {
@@ -14,6 +15,8 @@ export default {
       ready: null,
       liked: this.imageData.loggedLike,
       isOwned: this.imageData.photoOwner === this.username,
+      likeNumber: this.imageData.likes,
+      commentNumber: this.imageData.comments,
       successmsg: null,
       isOpen: ref(false),
       Modalsuccessmsg: null,
@@ -60,7 +63,7 @@ export default {
       try {
         await backend.put(`/users/${this.imageData.photoOwner}/photos/${this.imageData.id}/likes/${sessionStorage.getItem("token")}`); // TODO Sitemare i parametri
         this.liked = true
-        this.imageData.likes = this.imageData.likes + 1
+        this.likeNumber = this.likeNumber + 1
       } catch (error) {
         this.handleError(error);
       }
@@ -69,7 +72,7 @@ export default {
       try {
         await backend.delete(`/users/${this.imageData.photoOwner}/photos/${this.imageData.id}/likes/${sessionStorage.getItem("token")}`);
         this.liked = false
-        this.imageData.likes = this.imageData.likes - 1
+        this.likeNumber = this.likeNumber - 1
       } catch (error) {
         this.handleError(error);
       }
@@ -89,7 +92,7 @@ export default {
         await backend.post(`/users/${this.imageData.photoOwner}/photos/${this.imageData.id}/comments`, {
           text: this.newComment,
         });
-        this.imageData.comments = this.imageData.comments + 1
+        this.commentNumber = this.commentNumber + 1
         this.newComment = null
         this.showComments()
       } catch (error) {
@@ -138,6 +141,9 @@ export default {
         console.log(error)
       }
     },
+    removeAComment(){
+      this.commentNumber = this.commentNumber - 1
+    }
   },
   mounted() {
     this.loadImage();
@@ -176,7 +182,7 @@ export default {
           </path>
         </svg>
 
-        {{ this.imageData.likes }}
+        {{ this.likeNumber }}
       </span>
       <span>
         <svg @click="showComments()" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
@@ -184,13 +190,13 @@ export default {
           <path d="M12 20h9"></path>
           <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
         </svg>
-        {{ this.imageData.comments }}
+        {{this.commentNumber}}
       </span>
 
       <Modal :open="isOpen" v-bind:image="this.imageData" @close="isOpen=!isOpen">
 
         <Comment v-for="comment in this.commentList" v-bind:comment="comment" v-bind:photo="this.imageData"
-                 @update="showComments()"></Comment>
+                 @update="showComments()" @updateCount="removeAComment()"></Comment>
         <div class="d-grid justify-content-center mb-2 mt-4" >
           <InfoMsg v-if="Modalinfomsg" :msg="Modalinfomsg"></InfoMsg>
           <button @click="loadMoreComments()" class="btn btn-outline-secondary" v-if="more">Load more</button>
