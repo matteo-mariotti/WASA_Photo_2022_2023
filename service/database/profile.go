@@ -9,7 +9,7 @@ import (
 // GetFollowerNumber is a function that returns the number of followers of a user
 func (db *appdbimpl) GetFollowerNumber(userID string) (int, error) {
 	var count int
-	row := db.c.QueryRow("SELECT COUNT(*) FROM Followers WHERE UserB=?", userID)
+	row := db.c.QueryRow("SELECT COUNT(*) FROM Followers WHERE UserB=? AND (Followers.UserA,?) NOT IN (SELECT * FROM Bans) AND (?,Followers.UserA) NOT IN (SELECT * FROM Bans)", userID, userID, userID)
 	// Note that we are not checking for sql.ErrNoRows here because we are using count(*) and it will always return a row
 	err := row.Scan(&count)
 	return count, err
@@ -18,7 +18,7 @@ func (db *appdbimpl) GetFollowerNumber(userID string) (int, error) {
 // GetFollowingNumber is a function that returns the number of following of a user
 func (db *appdbimpl) GetFollowingNumber(userID string) (int, error) {
 	var count int
-	row := db.c.QueryRow("SELECT COUNT(*) FROM Followers WHERE UserA=?", userID)
+	row := db.c.QueryRow("SELECT COUNT(*) FROM Followers WHERE UserA=? AND (UserA,Followers.UserB) NOT IN (SELECT * FROM Bans) AND (Followers.UserB,UserA) NOT IN (SELECT * FROM Bans)", userID, userID, userID)
 	// Note that we are not checking for sql.ErrNoRows here because we are using count(*) and it will always return a row
 	err := row.Scan(&count)
 	return count, err
@@ -103,7 +103,7 @@ func (db *appdbimpl) GetPhotos(userID string, reqUser string, offset int) ([]str
 // GetLikesNumber is a function that returns the number of likes of a photo
 func (db *appdbimpl) getLikesNumber(photoID int, userID string) (int, error) {
 	var count int
-	row := db.c.QueryRow("SELECT COUNT(*) FROM Likes WHERE PhotoID=? AND (UserID,?) NOT IN (SELECT * FROM Bans) AND (?,UserID) NOT IN (SELECT * FROM Bans)", photoID, userID, userID)
+	row := db.c.QueryRow("SELECT COUNT(*) FROM Likes, Photos WHERE Likes.PhotoID=? AND Photos.PhotoID=Likes.PhotoID AND (UserID,?) NOT IN (SELECT * FROM Bans) AND (?,UserID) NOT IN (SELECT * FROM Bans) AND (Photos.Owner, UserID) NOT IN (SELECT * FROM Bans) AND (UserID, Photos.Owner) NOT IN (SELECT * FROM Bans)", photoID, userID, userID)
 	// Note that we are not checking for sql.ErrNoRows here because we are using count(*) and it will always return a row
 	err := row.Scan(&count)
 	return count, err
@@ -112,7 +112,7 @@ func (db *appdbimpl) getLikesNumber(photoID int, userID string) (int, error) {
 // GetCommentsNumber is a function that returns the number of comments of a photo
 func (db *appdbimpl) getCommentsNumber(photoID int, userID string) (int, error) {
 	var count int
-	row := db.c.QueryRow("SELECT COUNT(*) FROM Comments WHERE PhotoID=? AND (UserID,?) NOT IN (SELECT * FROM Bans) AND (?,UserID) NOT IN (SELECT * FROM Bans)", photoID, userID, userID)
+	row := db.c.QueryRow("SELECT COUNT(*) FROM Comments,Photos WHERE Comments.PhotoID=? AND Photos.PhotoID=Comments.PhotoID AND (UserID,?) NOT IN (SELECT * FROM Bans) AND (?,UserID) NOT IN (SELECT * FROM Bans) AND (Photos.Owner, UserID) NOT IN (SELECT * FROM Bans) AND (UserID, Photos.Owner) NOT IN (SELECT * FROM Bans)", photoID, userID, userID)
 	// Note that we are not checking for sql.ErrNoRows here because we are using count(*) and it will always return a row
 	err := row.Scan(&count)
 	return count, err

@@ -82,7 +82,7 @@ export default {
 
 
         <div>
-          <UserSummaryCard v-for="user in this.userList" :username="user"></UserSummaryCard>
+          <UserSummaryCard v-for="user in this.userList" v-bind:key="user" :username="user"></UserSummaryCard>
 
           <InfoMsg :msg="this.Infomsg" v-if="this.Infomsg"></InfoMsg>
           <div v-if="moreButton" style="text-align: center">

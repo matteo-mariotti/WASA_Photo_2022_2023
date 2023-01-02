@@ -235,9 +235,10 @@ export default {
 
     <hr v-if="ready">
     <!-- Images -->
-    <div class="d-grid justify-content-center" id="imageList">
-      <Card v-bind:imageData="image" v-if="ready" v-for="image in photos"
-            v-bind:username="this.username"></Card>
+    <div  v-if="ready" class="d-grid justify-content-center" id="imageList">
+      <Card v-bind:imageData="image" v-for="image in photos"
+            v-bind:username="this.username"
+            v-bind:key="image.id"></Card>
     </div>
     <div class="d-grid justify-content-center">
       <button @click="loadMorePhotos(this.page)" v-if="moreButton" type="button" class="btn btn-outline-dark m-3">Load

@@ -2,6 +2,7 @@ FROM node:lts as builder
 WORKDIR /src/
 COPY webui webui
 WORKDIR /src/webui
+#Needed because I'm using an arm platform to develop but the container is x86, I cannot copy the folder
 RUN npm install
 RUN npm run build-prod
 

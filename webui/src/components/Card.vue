@@ -195,7 +195,7 @@ export default {
 
       <Modal :open="isOpen" v-bind:image="this.imageData" @close="isOpen=!isOpen">
 
-        <Comment v-for="comment in this.commentList" v-bind:comment="comment" v-bind:photo="this.imageData"
+        <Comment v-for="comment in this.commentList" v-bind:comment="comment" v-bind:photo="this.imageData" v-bind:key="comment.id"
                  @update="showComments()" @updateCount="removeAComment()"></Comment>
         <div class="d-grid justify-content-center mb-2 mt-4" >
           <InfoMsg v-if="Modalinfomsg" :msg="Modalinfomsg"></InfoMsg>

@@ -5,31 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="White screen after login fixed, minor improvements">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile.backend" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile-frontend" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile.frontend" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Photos/0fdac350-9aba-4491-8481-7d7f6baac2d9" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WASA_photo.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/webapi/load-configuration.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/webapi/load-configuration.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/webapi/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/webapi/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/doc/api.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/ban-unban-user.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/ban-unban-user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/follow-unfollow-user.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/follow-unfollow-user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/photo.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/photo.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/users.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/users.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Dockerfile.frontend" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile.frontend" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service/database/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/profile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/database/stream.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/stream.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/dist/assets/index.8d4948b0.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/dist/assets/index.f0bad733.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/dist/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/webui/dist/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service/database/users.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/database/users.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webui/src/components/Card.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/Card.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/components/CommentCard.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/CommentCard.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/components/UploadBox.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/components/UploadBox.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/router/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webui/src/views/HomeView.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/HomeView.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/ManageProfile.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/webui/src/views/Search.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Search.vue" afterDir="false" />
     </list>
@@ -48,6 +29,11 @@
   </component>
   <component name="GOROOT" url="file:///opt/homebrew/Cellar/go/1.19.3/libexec" />
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="devs" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
   </component>
@@ -139,7 +125,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="devs" />
+                        <option value="master" />
                       </list>
                     </value>
                   </entry>
