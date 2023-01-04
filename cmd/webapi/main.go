@@ -85,12 +85,13 @@ func run() error {
 	logger.Println("initializing database support")
 
 	// Check if data folder exists, create it otherwise
-	res, err := exists("data/")
+	res, err := exists("/tmp/data/")
+	logger.Println("Data path created")
 	if err != nil {
 		logger.WithError(err).Error("Error while checking path")
 	}
 	if !res {
-		err = os.MkdirAll("data/", 0777)
+		err = os.MkdirAll("/tmp/data/", 0777)
 		if err != nil {
 			logger.WithError(err).Error("Error while creating path")
 		}
