@@ -27,7 +27,7 @@ export default {
       }
     },
     handleResponse(response) {
-      // Check if the response is 200 (OK)
+      // Check if the response is 200 (Ok)
       if (response.status === 200) {
         // If the response is 200, then the user is logged in
         // We can redirect him to the home page

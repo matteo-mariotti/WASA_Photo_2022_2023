@@ -204,6 +204,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/identifier"
+        "201":
+          description: User log-in action successful (new user created)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/identifier"
         "500":
           $ref: "#/components/responses/InternalServerError"
 
@@ -265,45 +271,46 @@ paths:
         "500":
           $ref: "#/components/responses/InternalServerError"          
 
-  /photos/{photoID}/likes:
-    get:
-      description: Returns the list of users that liked the photo with the specified identifier (photoID)
-      summary: Returns the list of users that liked the photo
-      tags: ["photo"]
-      operationId: getPhotoLikes
-      parameters:
-        - name: photoID
-          in: path
-          description: Photo identifier
-          required: true
-          schema:
-            $ref: "#/components/schemas/photoID"
-        - name: page
-          in: query
-          description: Page number
-          required: false
-          schema:
-            type: integer
-            minimum: 0
-            default: 0
-      responses:
-        "200":
-          description: List of users that liked the photo
-          content:
-            application/json:
-              schema:
-                description: List of users that liked the photo
-                type: array
-                items:
-                  $ref: "#/components/schemas/like"
-                minItems: 0
-                maxItems: 30 #The stream is limited to 30 likes per chuck of data
-        "401":
-          $ref: "#/components/responses/Unauthorized"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/InternalServerError"          
+# NOT requested, future implementation
+#  /photos/{photoID}/likes:
+#     get:
+#       description: Returns the list of users that liked the photo with the specified identifier (photoID)
+#       summary: Returns the list of users that liked the photo
+#       tags: ["photo"]
+#       operationId: getPhotoLikes
+#       parameters:
+#         - name: photoID
+#           in: path
+#           description: Photo identifier
+#           required: true
+#           schema:
+#             $ref: "#/components/schemas/photoID"
+#         - name: page
+#           in: query
+#           description: Page number
+#           required: false
+#           schema:
+#             type: integer
+#             minimum: 0
+#             default: 0
+#       responses:
+#         "200":
+#           description: List of users that liked the photo
+#           content:
+#             application/json:
+#               schema:
+#                 description: List of users that liked the photo
+#                 type: array
+#                 items:
+#                   $ref: "#/components/schemas/like"
+#                 minItems: 0
+#                 maxItems: 30 #The stream is limited to 30 likes per chuck of data
+#         "401":
+#           $ref: "#/components/responses/Unauthorized"
+#         "404":
+#           $ref: "#/components/responses/NotFound"
+#         "500":
+#           $ref: "#/components/responses/InternalServerError"          
 
   /photos/{photoID}/comments:
     get:

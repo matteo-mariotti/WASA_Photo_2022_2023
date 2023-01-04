@@ -32,7 +32,8 @@ func (rt *_router) Handler() http.Handler {
 
 	// Get photo route
 	rt.router.GET("/photos/:photoID", rt.wrap(rt.wrapAuth(rt.getPhoto)))
-	rt.router.GET("/photos/:photoID/likes", rt.wrap(rt.wrapAuth(rt.getLikes)))
+	// Not requested, future implementation
+	//rt.router.GET("/photos/:photoID/likes", rt.wrap(rt.wrapAuth(rt.getLikes)))
 	rt.router.GET("/photos/:photoID/comments", rt.wrap(rt.wrapAuth(rt.getComments)))
 
 	// Add/Delete like route
