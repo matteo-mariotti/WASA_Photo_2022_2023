@@ -315,7 +315,7 @@ func (rt *_router) getPhoto(w http.ResponseWriter, r *http.Request, ps httproute
 }
 
 // getLikes returns the likes of the photo with the given ID
-func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
+/* func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
 	var likesResponse []structs.Like
 
@@ -394,7 +394,7 @@ func (rt *_router) getLikes(w http.ResponseWriter, r *http.Request, ps httproute
 	// Log the action
 	rt.baseLogger.Info("User " + ctx.Token + " has successfully got the likes of photo " + photoID)
 }
-
+*/
 // getComments returns the comments of the photo with the given ID
 func (rt *_router) getComments(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 

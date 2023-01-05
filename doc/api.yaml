@@ -62,11 +62,11 @@ components:
           minLength: 1
           maxLength: 256
 
-    like:
-      type: object
-      properties:
-        userID:
-          $ref: "#/components/schemas/identifier"
+  #  like:
+  #    type: object
+  #    properties:
+  #      userID:
+  #        $ref: "#/components/schemas/identifier"
 
     photoID:
       type: integer

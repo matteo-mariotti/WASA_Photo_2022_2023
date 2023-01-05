@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="Permission denied error fixed">
+    <list default="true" id="b61b329c-973e-478c-944c-3da6688fad9e" name="Changes" comment="Last errors fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/doc/api.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/doc/api.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/api-handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/api-handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/service/api/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/service/api/login.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/webui/src/views/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/webui/src/views/Login.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +25,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="devs" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -122,7 +119,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="devs" />
+                        <option value="master" />
                       </list>
                     </value>
                   </entry>
